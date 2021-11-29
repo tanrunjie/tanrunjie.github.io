@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>奇幻物语</title>
+  
+  <subtitle>诗酒趁年华!</subtitle>
+  <link href="http://tanrunjie.github.io/atom.xml" rel="self"/>
+  
+  <link href="http://tanrunjie.github.io/"/>
+  <updated>2021-11-26T09:41:35.007Z</updated>
+  <id>http://tanrunjie.github.io/</id>
+  
+  <author>
+    <name>神秘囚徒</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>开篇</title>
+    <link href="http://tanrunjie.github.io/2021/11/26/%E5%BC%80%E7%AF%87/"/>
+    <id>http://tanrunjie.github.io/2021/11/26/%E5%BC%80%E7%AF%87/</id>
+    <published>2021-11-26T09:39:52.000Z</published>
+    <updated>2021-11-26T09:41:35.007Z</updated>
+    
+    <content type="html"><![CDATA[<p>你好，世界。HEXO NEXT</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;你好，世界。HEXO NEXT&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="日常" scheme="http://tanrunjie.github.io/categories/%E6%97%A5%E5%B8%B8/"/>
+    
+    
+    <category term="心得" scheme="http://tanrunjie.github.io/tags/%E5%BF%83%E5%BE%97/"/>
+    
+  </entry>
+  
+</feed>
