@@ -6,7 +6,7 @@
   <link href="http://tanrunjie.github.io/atom.xml" rel="self"/>
   
   <link href="http://tanrunjie.github.io/"/>
-  <updated>2021-12-07T06:30:14.266Z</updated>
+  <updated>2021-12-14T08:32:27.014Z</updated>
   <id>http://tanrunjie.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>cpp数据类型</title>
+    <link href="http://tanrunjie.github.io/2021/12/14/cpp%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
+    <id>http://tanrunjie.github.io/2021/12/14/cpp%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</id>
+    <published>2021-12-14T02:58:56.000Z</published>
+    <updated>2021-12-14T08:32:27.014Z</updated>
+    
+    <content type="html"><![CDATA[<p>c++基本数据类型主要有bool, char, int, float, double。具体如下：</p><p><img src="/images/12_14_2.png" alt="basic data structure"><br><img src="/images/12_14_3.png" alt="basic data structure2"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;c++基本数据类型主要有bool, char, int, float, double。具体如下：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/12_14_2.png&quot; alt=&quot;basic data structure&quot;&gt;&lt;br&gt;&lt;img src=&quot;/images/1</summary>
+      
+    
+    
+    
+    
+    <category term="c++" scheme="http://tanrunjie.github.io/tags/c/"/>
+    
+  </entry>
   
   <entry>
     <title>《浪潮之巅》第4版：读书笔记</title>
