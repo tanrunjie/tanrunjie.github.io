@@ -6,7 +6,7 @@
   <link href="http://tanrunjie.github.io/atom.xml" rel="self"/>
   
   <link href="http://tanrunjie.github.io/"/>
-  <updated>2021-12-14T08:32:27.014Z</updated>
+  <updated>2021-12-15T08:09:32.764Z</updated>
   <id>http://tanrunjie.github.io/</id>
   
   <author>
@@ -17,19 +17,43 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>cpp数据类型</title>
+    <title>字符串</title>
+    <link href="http://tanrunjie.github.io/2021/12/15/%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
+    <id>http://tanrunjie.github.io/2021/12/15/%E5%AD%97%E7%AC%A6%E4%B8%B2/</id>
+    <published>2021-12-15T08:08:04.000Z</published>
+    <updated>2021-12-15T08:09:32.764Z</updated>
+    
+    <content type="html"><![CDATA[<p>C-style字符串：结尾带’\0’,这对于很多处理字符串的函数很关键。另外建议使用string类库</p><p>strlen():只计算数组或者指针中的字符个数，不带结尾</p><p>cin.getline(name,20):读取整行的字串到name,最多20个</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;C-style字符串：结尾带’\0’,这对于很多处理字符串的函数很关键。另外建议使用string类库&lt;/p&gt;
+&lt;p&gt;strlen():只计算数组或者指针中的字符个数，不带结尾&lt;/p&gt;
+&lt;p&gt;cin.getline(name,20):读取整行的字串到name,最多20个&lt;/p</summary>
+      
+    
+    
+    
+    
+    <category term="c++" scheme="http://tanrunjie.github.io/tags/c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>cpp生成代码及数据类型</title>
     <link href="http://tanrunjie.github.io/2021/12/14/cpp%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
     <id>http://tanrunjie.github.io/2021/12/14/cpp%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</id>
     <published>2021-12-14T02:58:56.000Z</published>
-    <updated>2021-12-14T08:32:27.014Z</updated>
+    <updated>2021-12-15T08:07:47.594Z</updated>
     
-    <content type="html"><![CDATA[<p>c++基本数据类型主要有bool, char, int, float, double。具体如下：</p><p><img src="/images/12_14_2.png" alt="basic data structure"><br><img src="/images/12_14_3.png" alt="basic data structure2"></p>]]></content>
+    <content type="html"><![CDATA[<p>c++基本数据类型主要有<em>bool, char, int, float, double</em>。具体如下：</p><p><img src="/images/12_14_2.png" alt="basic data structure"><br><img src="/images/12_14_3.png" alt="basic data structure2"></p><p>另外，C++<strong>生成代码的过程</strong>是：1.程序员编写源代码 2.编译器正确翻译C++为目标代码 3.链接器将环境启动的代码以及引入库的代码与目标代码正确链接 4.最后才输出机器认识的可执行代码<br><img src="/images/12_14_1.png" alt="code procedure"></p><p>整型提升(integral promotion): 计算表达式时，bool, char, unsigned char, signed char short会转换为int，即int为计算机最自然的类型，也是运算速度可能最快的。较小与较大运算也可能提升。</p>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;c++基本数据类型主要有bool, char, int, float, double。具体如下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/images/12_14_2.png&quot; alt=&quot;basic data structure&quot;&gt;&lt;br&gt;&lt;img src=&quot;/images/1</summary>
+    <summary type="html">&lt;p&gt;c++基本数据类型主要有&lt;em&gt;bool, char, int, float, double&lt;/em&gt;。具体如下：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/12_14_2.png&quot; alt=&quot;basic data structure&quot;&gt;&lt;br&gt;&lt;img src=&quot;</summary>
       
     
     
