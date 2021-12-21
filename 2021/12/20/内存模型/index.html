@@ -28,7 +28,7 @@
 <meta property="og:description" content="头文件通常包含的内容 函数原型 使用了#define或const定义的符号常量 结构声明 类声明 模板声明 内联函数用#include “”率先在当前工作目录或者源代码目录下找用#include &lt;&gt;率先在标准头的目录下找  同一个头文件只包含一次1234#ifndef INCLUDE_H_#define INCLUDE_H_...#endif  多个库的链接需要确保对象文件或库都是由">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-12-20T13:03:52.000Z">
-<meta property="article:modified_time" content="2021-12-21T02:33:06.093Z">
+<meta property="article:modified_time" content="2021-12-21T06:24:34.213Z">
 <meta property="article:author" content="神秘囚徒">
 <meta property="article:tag" content="c++">
 <meta name="twitter:card" content="summary">
@@ -226,7 +226,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-21 10:33:06" itemprop="dateModified" datetime="2021-12-21T10:33:06+08:00">2021-12-21</time>
+                <time title="修改时间：2021-12-21 14:24:34" itemprop="dateModified" datetime="2021-12-21T14:24:34+08:00">2021-12-21</time>
               </span>
 
           
@@ -242,7 +242,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.3k</span>
+              <span>1.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -295,7 +295,8 @@
 <h3 id="语言链接性"><a href="#语言链接性" class="headerlink" title="语言链接性"></a>语言链接性</h3><p>由于C和C++编译器对函数翻译不一致，在调用C外部链接函数时，应该标注extern “C”</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">e.g.</span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="function"><span class="keyword">void</span> <span class="title">spiff</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br></pre></td></tr></table></figure>
 
-
+<h3 id="布局new占位符"><a href="#布局new占位符" class="headerlink" title="布局new占位符"></a>布局new占位符</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> BUF = <span class="number">512</span>;</span><br><span class="line"><span class="keyword">char</span> buffer[BUF];</span><br><span class="line"><span class="keyword">double</span> *pd1 = <span class="keyword">new</span> <span class="keyword">double</span>[BUF];</span><br><span class="line"><span class="keyword">double</span> *pd2 = <span class="built_in"><span class="keyword">new</span></span> (buffer)<span class="keyword">double</span>[BUF];</span><br></pre></td></tr></table></figure>
+<p>上述两个指针，pd2为交由程序员自身管理的动态内存；且pd2在delete管辖区域之外。</p>
 
     </div>
 
@@ -380,7 +381,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%B4%E6%96%87%E4%BB%B6%E9%80%9A%E5%B8%B8%E5%8C%85%E5%90%AB%E7%9A%84%E5%86%85%E5%AE%B9"><span class="nav-number">1.</span> <span class="nav-text">头文件通常包含的内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E4%B8%80%E4%B8%AA%E5%A4%B4%E6%96%87%E4%BB%B6%E5%8F%AA%E5%8C%85%E5%90%AB%E4%B8%80%E6%AC%A1"><span class="nav-number">2.</span> <span class="nav-text">同一个头文件只包含一次</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E4%B8%AA%E5%BA%93%E7%9A%84%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">多个库的链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E6%95%B0%E6%8D%AE%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E6%A1%88"><span class="nav-number">4.</span> <span class="nav-text">存储数据的三种方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E5%99%A8%E6%8A%8A%E8%87%AA%E5%8A%A8%E5%8F%98%E9%87%8F%E7%94%A8%E5%A0%86%E6%A0%88%E7%9A%84%E5%BD%A2%E5%BC%8F%E7%AE%A1%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">编译器把自动变量用堆栈的形式管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%AD%98%E5%82%A8%E6%8F%90%E4%BE%9B%E4%B8%89%E7%A7%8D%E9%93%BE%E6%8E%A5%E6%80%A7"><span class="nav-number">6.</span> <span class="nav-text">静态存储提供三种链接性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E9%93%BE%E6%8E%A5%E6%80%A7%E4%BD%BF%E7%94%A8"><span class="nav-number">7.</span> <span class="nav-text">外部链接性使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E4%BD%BF%E7%94%A8%E5%A4%96%E9%83%A8%E5%8F%98%E9%87%8F%E5%9C%A8%E5%A4%9A%E6%96%87%E4%BB%B6%E7%A8%8B%E5%BA%8F%E7%9A%84%E4%B8%8D%E5%90%8C%E9%83%A8%E5%88%86%E5%85%B1%E4%BA%AB%E6%95%B0%E6%8D%AE"><span class="nav-number">8.</span> <span class="nav-text">应使用外部变量在多文件程序的不同部分共享数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E8%AF%B4%E6%98%8E%E7%AC%A6%EF%BC%9Aauto-register-static-extern-mutable"><span class="nav-number">9.</span> <span class="nav-text">存储说明符：auto, register, static, extern, mutable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%87%BD%E6%95%B0%E7%9A%84%E9%93%BE%E6%8E%A5%E6%80%A7"><span class="nav-number">10.</span> <span class="nav-text">关于函数的链接性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E8%A8%80%E9%93%BE%E6%8E%A5%E6%80%A7"><span class="nav-number">11.</span> <span class="nav-text">语言链接性</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%B4%E6%96%87%E4%BB%B6%E9%80%9A%E5%B8%B8%E5%8C%85%E5%90%AB%E7%9A%84%E5%86%85%E5%AE%B9"><span class="nav-number">1.</span> <span class="nav-text">头文件通常包含的内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E4%B8%80%E4%B8%AA%E5%A4%B4%E6%96%87%E4%BB%B6%E5%8F%AA%E5%8C%85%E5%90%AB%E4%B8%80%E6%AC%A1"><span class="nav-number">2.</span> <span class="nav-text">同一个头文件只包含一次</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E4%B8%AA%E5%BA%93%E7%9A%84%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">多个库的链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E6%95%B0%E6%8D%AE%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E6%A1%88"><span class="nav-number">4.</span> <span class="nav-text">存储数据的三种方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E5%99%A8%E6%8A%8A%E8%87%AA%E5%8A%A8%E5%8F%98%E9%87%8F%E7%94%A8%E5%A0%86%E6%A0%88%E7%9A%84%E5%BD%A2%E5%BC%8F%E7%AE%A1%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">编译器把自动变量用堆栈的形式管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%AD%98%E5%82%A8%E6%8F%90%E4%BE%9B%E4%B8%89%E7%A7%8D%E9%93%BE%E6%8E%A5%E6%80%A7"><span class="nav-number">6.</span> <span class="nav-text">静态存储提供三种链接性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E9%93%BE%E6%8E%A5%E6%80%A7%E4%BD%BF%E7%94%A8"><span class="nav-number">7.</span> <span class="nav-text">外部链接性使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E4%BD%BF%E7%94%A8%E5%A4%96%E9%83%A8%E5%8F%98%E9%87%8F%E5%9C%A8%E5%A4%9A%E6%96%87%E4%BB%B6%E7%A8%8B%E5%BA%8F%E7%9A%84%E4%B8%8D%E5%90%8C%E9%83%A8%E5%88%86%E5%85%B1%E4%BA%AB%E6%95%B0%E6%8D%AE"><span class="nav-number">8.</span> <span class="nav-text">应使用外部变量在多文件程序的不同部分共享数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E8%AF%B4%E6%98%8E%E7%AC%A6%EF%BC%9Aauto-register-static-extern-mutable"><span class="nav-number">9.</span> <span class="nav-text">存储说明符：auto, register, static, extern, mutable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%87%BD%E6%95%B0%E7%9A%84%E9%93%BE%E6%8E%A5%E6%80%A7"><span class="nav-number">10.</span> <span class="nav-text">关于函数的链接性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E8%A8%80%E9%93%BE%E6%8E%A5%E6%80%A7"><span class="nav-number">11.</span> <span class="nav-text">语言链接性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B1%80new%E5%8D%A0%E4%BD%8D%E7%AC%A6"><span class="nav-number">12.</span> <span class="nav-text">布局new占位符</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
