@@ -6,7 +6,7 @@
   <link href="http://tanrunjie.github.io/atom.xml" rel="self"/>
   
   <link href="http://tanrunjie.github.io/"/>
-  <updated>2021-12-22T04:24:53.861Z</updated>
+  <updated>2021-12-24T09:47:45.083Z</updated>
   <id>http://tanrunjie.github.io/</id>
   
   <author>
@@ -15,6 +15,101 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>金钱的实际价值</title>
+    <link href="http://tanrunjie.github.io/2021/12/24/%E9%87%91%E9%92%B1%E7%9A%84%E5%AE%9E%E9%99%85%E4%BB%B7%E5%80%BC/"/>
+    <id>http://tanrunjie.github.io/2021/12/24/%E9%87%91%E9%92%B1%E7%9A%84%E5%AE%9E%E9%99%85%E4%BB%B7%E5%80%BC/</id>
+    <published>2021-12-24T09:40:17.000Z</published>
+    <updated>2021-12-24T09:47:45.083Z</updated>
+    
+    <content type="html"><![CDATA[<p><code>摘自十三手记</code></p><p>若是认真观察自己过往对金钱的感受，必定发现一个现象：钱来得容易的时候，也花得容易；钱来得艰难，也就比较耐用。</p><p>但大多数时候，我们不愿面对这样的真相：金钱实际价值的背后有自己投机取巧的小心思。</p><p>此时，十三先生要你深深的明白：二元有相世界，金钱的实际价值必定等于你诚意付出之时创造出的相应实际价值，但是你却一直有种想付出更少收获更多金钱的想法，所以你不自知的不愿搞清楚。因为一旦你搞清楚了这个核心原理，你就无法继续投机取巧，就无法继续偷懒了。但是，只要你真正诚意看懂并接纳了这个关键点，你就能更加务实的面对自己所面对的一切人和事，你才能因此而尽可能减少多余的动作，你才能因减少多余动作而减少障碍环节，你才能因减少障碍环节而减少不必要的消耗，如此，你整体的行动才能更加高效，反而你才能走上人生各种成功的捷径。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;code&gt;摘自十三手记&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;若是认真观察自己过往对金钱的感受，必定发现一个现象：钱来得容易的时候，也花得容易；钱来得艰难，也就比较耐用。&lt;/p&gt;
+&lt;p&gt;但大多数时候，我们不愿面对这样的真相：金钱实际价值的背后有自己投机取巧的小心思。&lt;/p&gt;
+&lt;p&gt;</summary>
+      
+    
+    
+    
+    
+    <category term="十三手记" scheme="http://tanrunjie.github.io/tags/%E5%8D%81%E4%B8%89%E6%89%8B%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>TSDF算法</title>
+    <link href="http://tanrunjie.github.io/2021/12/23/TSDF%E7%AE%97%E6%B3%95/"/>
+    <id>http://tanrunjie.github.io/2021/12/23/TSDF%E7%AE%97%E6%B3%95/</id>
+    <published>2021-12-23T08:54:25.000Z</published>
+    <updated>2021-12-24T09:47:46.682Z</updated>
+    
+    <content type="html"><![CDATA[<p>具体学习于 <a href="https://github.com/andyzeng/tsdf-fusion">https://github.com/andyzeng/tsdf-fusion</a></p><h3 id="Why-TSDF"><a href="#Why-TSDF" class="headerlink" title="Why TSDF"></a>Why TSDF</h3><p>三维重建首当其冲的问题是如何保存以及如何表示模型，通常而言会有点云，mesh等；<br>但是对于室内三维重建，TSDF是一个不错的选择，其优点是</p><ul><li>非常适合CUDA并行运算，从而达到实时。</li><li>开辟固定的内存/显存，模型大小相对可控</li><li>模型大小不随数据量变化，网格的细节比较好<br>缺点：CPU计算耗时，在边缘以及前后景交界出现拖尾现象（体素g在像素坐标系投影有一定的误差）</li></ul><h3 id="How-TSDF"><a href="#How-TSDF" class="headerlink" title="How TSDF"></a>How TSDF</h3><p>1.建立长方体包围盒（能包住房间，一般预设参数：可通过设定划分网格以及网格大小得到)<br>2.将每个体素v转化成三维座标点g(根据模型起点和网格推算)<br>3.对于新来的每一帧深度图：<br>    遍历每一个体素g：<br>        3.1.根据相机外参，将g在世界坐标系转换到相机坐标系的点c,再由相机内参转换到像素坐标系x;<br>        3.2.深度相机像素深度为value(x),点c到相机坐标原点的距离为distance(v)<br>        3.3.sdf(g) = value(x) - distance(v).<br>        3.4.求tsdf(g).<code>预设截断距离t = voxel_size * t_n, 则t以内，tsdf(g) = sdf(p)/|u|;在t以外时，if sdf(p)&gt;1, tsdf(p) = 1;if sdf(p)&lt;-1, tsdf(p)=-1;</code><br>        3.5.权重w(p) = cos(theta)/distance(v), theta为投影光线与表面法向的夹角<br>至此，得到当前帧所有体素的tsdf值以及权重值<br>4.当前帧与全局模型融合<br>    4.1 若当前帧为第一帧，即为融合结果；否则与之前的模型融合,公式如下，其中W(p)为融合权重，w(p)为当前帧权重<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy8xMTEzMzY5Ni02ZWY1Yzk2YWUwMWFlNTZmLnBuZw?x-oss-process=image/format,png"></p><h3 id="Detail-and-Analysis"><a href="#Detail-and-Analysis" class="headerlink" title="Detail and Analysis"></a>Detail and Analysis</h3>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;具体学习于 &lt;a href=&quot;https://github.com/andyzeng/tsdf-fusion&quot;&gt;https://github.com/andyzeng/tsdf-fusion&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;Why-TSDF&quot;&gt;&lt;a href=&quot;#Why-T</summary>
+      
+    
+    
+    
+    
+    <category term="SLAM" scheme="http://tanrunjie.github.io/tags/SLAM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>异常处理</title>
+    <link href="http://tanrunjie.github.io/2021/12/23/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/"/>
+    <id>http://tanrunjie.github.io/2021/12/23/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</id>
+    <published>2021-12-23T02:27:32.000Z</published>
+    <updated>2021-12-23T03:04:07.367Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="处理可能出现异常的方法"><a href="#处理可能出现异常的方法" class="headerlink" title="处理可能出现异常的方法"></a>处理可能出现异常的方法</h3><ul><li>调用abort()或exit()结束程序</li><li>返回错误码</li><li>异常机制：1.使用try块执行可能出现异常的代码段 2.throw引发异常 3.catch捕获并处理对应情况</li></ul><h3 id="throw机制"><a href="#throw机制" class="headerlink" title="throw机制"></a>throw机制</h3><p>若throw引发异常后，匹配对应catch。而后不是将控制权返回调用程序，而是引导程序沿着函数调用序列后退，直到找到try块中的函数<br>若没有throw出异常，则catch被跳过</p><h3 id="通常用对象作为异常类型处理"><a href="#通常用对象作为异常类型处理" class="headerlink" title="通常用对象作为异常类型处理"></a>通常用对象作为异常类型处理</h3><p>好处是：直接根据类型区分异常，另外对象可以携带信息确定原因，catch根据信息来执行对应的操作</p><h3 id="堆栈解退（unwinding-the-stack）"><a href="#堆栈解退（unwinding-the-stack）" class="headerlink" title="堆栈解退（unwinding the stack）"></a>堆栈解退（unwinding the stack）</h3><p>假设函数出现异常，而不是正确返回而终止。程序释放堆栈中的内存，但不会在释放堆栈的第一个返回地址后停止，而是继续释放堆栈，直到找到位于try块的返回地质。</p><p><img src="/images/12_23_1.png"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;处理可能出现异常的方法&quot;&gt;&lt;a href=&quot;#处理可能出现异常的方法&quot; class=&quot;headerlink&quot; title=&quot;处理可能出现异常的方法&quot;&gt;&lt;/a&gt;处理可能出现异常的方法&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;调用abort()或exit()结束程序&lt;/li&gt;
+&lt;l</summary>
+      
+    
+    
+    
+    
+    <category term="c++" scheme="http://tanrunjie.github.io/tags/c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>六年前的自己</title>
+    <link href="http://tanrunjie.github.io/2021/12/22/%E5%85%AD%E5%B9%B4%E5%89%8D%E7%9A%84%E8%87%AA%E5%B7%B1/"/>
+    <id>http://tanrunjie.github.io/2021/12/22/%E5%85%AD%E5%B9%B4%E5%89%8D%E7%9A%84%E8%87%AA%E5%B7%B1/</id>
+    <published>2021-12-22T07:17:53.000Z</published>
+    <updated>2021-12-22T13:12:35.387Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://csrjtan.github.io/">https://csrjtan.github.io/</a><br>回看六年前的自己，摘录一些当时有意义的文段</p><h3 id="23岁的生日"><a href="#23岁的生日" class="headerlink" title="23岁的生日"></a>23岁的生日</h3><p>重读六年前的自己，用文字记录对这个世界的感受和认知，那时候的自己充满了希望，虽然能力配不上欲望而渐渐失落，但依然希望找到那种年轻的感觉。</p><h3 id=""><a href="#" class="headerlink" title=""></a></h3><p>当年的愿望：</p><ul><li>工作上：提高编程和学术能力</li><li>生活上：爱家人，爱生活，爱伴侣</li><li>日常上：坚持读，坚持写，坚持学，坚持感受，坚持表达</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">《成长的天空》 </span><br><span class="line">我沉浸在自己的世界里</span><br><span class="line">写着无关是非的歌谣</span><br><span class="line">点蓝的笔触</span><br><span class="line">划过了年轻的天空</span><br><span class="line">一只飞鸟带走我的青春</span><br><span class="line">还我，岁月沉淀的帽子</span><br><span class="line">轻声说道</span><br><span class="line">年轻总不是永远的借口</span><br></pre></td></tr></table></figure><h3 id="回看中秋自省的自己"><a href="#回看中秋自省的自己" class="headerlink" title="回看中秋自省的自己"></a>回看中秋自省的自己</h3><p>经过5年起起落落，心态转变得很明显甚至于有点得过且过的样子，现在自己比年轻的自己多了一点能力和资源，却失去了做大梦的勇气和毅力。希望自己能依然不断找到人生的兴奋点，勇往直前地去追寻探索，从今天开始，真正的为自己而活，不在乎别人的眼光，不在乎可能会失去的安逸。</p><h3 id="家人信息简要"><a href="#家人信息简要" class="headerlink" title="家人信息简要"></a>家人信息简要</h3><p>爸：1961.7.8，牛，会计。爱好军事政治经济唱歌。性格硬朗好面子。优点：精神好，能干，勤勉<br>妈：1961.11.12，牛，仓管（退休）。爱好家庭家人养生。优点：节俭，爱戴我们，慈祥<br>哥：1987.8.9，兔，前端全栈，爱好广泛潮流酷玩。优点：工程能力强，迁就随和<br>为：1992.08.13，猴，算法攻城狮。爱好：声乐，运动，游戏。优点：耐受力，随和</p><h3 id="选书策略"><a href="#选书策略" class="headerlink" title="选书策略"></a>选书策略</h3><p>出版社-&gt;作者-&gt;版次-&gt;印次-&gt;印数</p><h3 id="追逐幸福的要素"><a href="#追逐幸福的要素" class="headerlink" title="追逐幸福的要素"></a>追逐幸福的要素</h3><ul><li>找到喜欢的工作，有收入又受到社会尊重</li><li>减少上下班耗费的时间，有充足的社交时间</li><li>对国家和社会有政治热情，有参与度</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">不论曾经的彼此多么幼稚，多么可笑</span><br><span class="line">终有一天我们都变得成熟；</span><br><span class="line">也终有一天，我们都会老去；</span><br><span class="line">可是，却没有人可以永远不长大，</span><br><span class="line">却没有人可以永远年轻，</span><br><span class="line">成熟，有时候会让人心痛、很无奈。</span><br><span class="line">那个时候才会懂得：</span><br><span class="line">爱情本不是件该执着的事情。</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://csrjtan.github.io/&quot;&gt;https://csrjtan.github.io/&lt;/a&gt;&lt;br&gt;回看六年前的自己，摘录一些当时有意义的文段&lt;/p&gt;
+&lt;h3 id=&quot;23岁的生日&quot;&gt;&lt;a href=&quot;#23岁的生日&quot; class=</summary>
+      
+    
+    
+    
+    
+    <category term="博客迁移" scheme="http://tanrunjie.github.io/tags/%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB/"/>
+    
+  </entry>
   
   <entry>
     <title>金钱之二元整体观</title>
@@ -94,9 +189,9 @@
     <link href="http://tanrunjie.github.io/2021/12/20/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/"/>
     <id>http://tanrunjie.github.io/2021/12/20/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/</id>
     <published>2021-12-20T13:03:52.000Z</published>
-    <updated>2021-12-22T03:57:24.296Z</updated>
+    <updated>2021-12-22T07:09:05.651Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="头文件通常包含的内容"><a href="#头文件通常包含的内容" class="headerlink" title="头文件通常包含的内容"></a>头文件通常包含的内容</h3><ul><li>函数原型</li><li>使用了#define或const定义的符号常量</li><li>结构声明</li><li>类声明</li><li>模板声明</li><li>内联函数<br>用#include “”率先在当前工作目录或者源代码目录下找<br>用#include &lt;&gt;率先在标准头的目录下找</li></ul><h3 id="同一个头文件只包含一次"><a href="#同一个头文件只包含一次" class="headerlink" title="同一个头文件只包含一次"></a>同一个头文件只包含一次</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> INCLUDE_H_</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> INCLUDE_H_</span></span><br><span class="line">...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure><h3 id="多个库的链接"><a href="#多个库的链接" class="headerlink" title="多个库的链接"></a>多个库的链接</h3><p>需要确保对象文件或库都是由同一个编译器生成的，若不同的编译器，会为同一个函数生成不同的修饰名称。若有源代码建议用<strong>自己的编译器全部重新编译</strong>，以消除链接错误。</p><h3 id="存储数据的三种方案"><a href="#存储数据的三种方案" class="headerlink" title="存储数据的三种方案"></a>存储数据的三种方案</h3><ul><li>自动存储持续性：函数中声明的变量以及函数参数，会在执行中自动创建，执行完自动释放</li><li>静态存储持续性：使用static关键字的变量，在整个程序运行过程均存在</li><li>动态存储持续性：用new分配的内存，一直存在直到delete</li></ul><h3 id="编译器把自动变量用堆栈的形式管理"><a href="#编译器把自动变量用堆栈的形式管理" class="headerlink" title="编译器把自动变量用堆栈的形式管理"></a>编译器把自动变量用堆栈的形式管理</h3><p>register的变量放在寄存器，依然没有链接性</p><h3 id="静态存储提供三种链接性"><a href="#静态存储提供三种链接性" class="headerlink" title="静态存储提供三种链接性"></a>静态存储提供三种链接性</h3><ul><li>外部链接性：全局（外部链接性）变量（main函数外)</li><li>内部链接性：static的全局变量</li><li>无链接性: 内部的static变量<br>静态变量持续整个程序执行期间，编译器将分配固定的内存块来管理。默认情况下，静态数组以及结构的成员都设置为0。</li></ul><h3 id="外部链接性使用"><a href="#外部链接性使用" class="headerlink" title="外部链接性使用"></a>外部链接性使用</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// file1</span></span><br><span class="line"><span class="keyword">int</span> status = <span class="number">100</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;file2.hpp&quot;</span></span></span><br><span class="line"><span class="built_in">print</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// file2</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> status;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cout &lt;&lt; status;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>如果file2中，用status int status或者 extern int status=20;都会报重新定义的错误。</p><h3 id="应使用外部变量在多文件程序的不同部分共享数据"><a href="#应使用外部变量在多文件程序的不同部分共享数据" class="headerlink" title="应使用外部变量在多文件程序的不同部分共享数据"></a>应使用外部变量在多文件程序的不同部分共享数据</h3><p>内部链接性的静态变量用于多个函数之间共享数据(名称空间提供了新的共享数据方法，static的内部链接性逐步淘汰)</p><h3 id="存储说明符：auto-register-static-extern-mutable"><a href="#存储说明符：auto-register-static-extern-mutable" class="headerlink" title="存储说明符：auto, register, static, extern, mutable"></a>存储说明符：auto, register, static, extern, mutable</h3><p>auto为自动变量;register为寄存器存储；static在整个cpp文件的声明具有函数间的链接性；extern是多文件的外部链接性；mutable使const临时失效；<br>volatile指程序代码没有对内存单元修改，其值也可能发生变化。即每次使用该变量都应其查找，别用缓存。</p><p>另外</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> fingers = <span class="number">10</span>; <span class="comment">//same as static const int fingers;</span></span><br></pre></td></tr></table></figure><p>const使全局变量变成了内部链接性。</p><p>但是在另外的文件用 extern const int fingers;又可以强行变成外部链接性而可用。</p><h3 id="关于函数的链接性"><a href="#关于函数的链接性" class="headerlink" title="关于函数的链接性"></a>关于函数的链接性</h3><p>由于C++不允许函数中定义另外的函数，所以所有函数都为静态存储持续性。但依然可以用extern来使函数为另一个文件使用。使用该函数的每个文件应包含函数原型（方便了解接口的描述，内联函数可以无需接口描述）</p><h3 id="语言链接性"><a href="#语言链接性" class="headerlink" title="语言链接性"></a>语言链接性</h3><p>由于C和C++编译器对函数翻译不一致，在调用C外部链接函数时，应该标注extern “C”</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">e.g.</span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="function"><span class="keyword">void</span> <span class="title">spiff</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br></pre></td></tr></table></figure><h3 id="布局new占位符"><a href="#布局new占位符" class="headerlink" title="布局new占位符"></a>布局new占位符</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> BUF = <span class="number">512</span>;</span><br><span class="line"><span class="keyword">char</span> buffer[BUF];</span><br><span class="line"><span class="keyword">double</span> *pd1 = <span class="keyword">new</span> <span class="keyword">double</span>[BUF];</span><br><span class="line"><span class="keyword">double</span> *pd2 = <span class="built_in"><span class="keyword">new</span></span> (buffer)<span class="keyword">double</span>[BUF];</span><br></pre></td></tr></table></figure><p>上述两个指针，pd2为交由程序员自身管理的动态内存；且pd2在delete管辖区域之外。</p><h3 id="命名空间及前途"><a href="#命名空间及前途" class="headerlink" title="命名空间及前途"></a>命名空间及前途</h3><ul><li>命名空间具有外部链接性</li><li>使用在已命名的名称空间中声明的变量，而不是使用外部全局变量</li><li>使用在已命名的名称空间中声明的变量，而不是使用静态全局变量</li><li>如果开发函数库或者类库，将其放入一个名称空间中。如当前C++提倡标准库的都放入std空间中</li><li>不要在头文件使用using,这样会掩盖了可用的名称；另外包含头的顺序会影响程序的行为；若坚持则应在所有的#include后用</li><li>导入名称时，首选用作用域解析或using声明</li><li>对于using声明，首选将作用域于局部，而非全局</li></ul>]]></content>
+    <content type="html"><![CDATA[<h3 id="头文件通常包含的内容"><a href="#头文件通常包含的内容" class="headerlink" title="头文件通常包含的内容"></a>头文件通常包含的内容</h3><ul><li>函数原型</li><li>使用了#define或const定义的符号常量</li><li>结构声明</li><li>类声明</li><li>模板声明</li><li>内联函数<br>用#include “”率先在当前工作目录或者源代码目录下找<br>用#include &lt;&gt;率先在标准头的目录下找</li></ul><h3 id="同一个头文件只包含一次"><a href="#同一个头文件只包含一次" class="headerlink" title="同一个头文件只包含一次"></a>同一个头文件只包含一次</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> INCLUDE_H_</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> INCLUDE_H_</span></span><br><span class="line">...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure><h3 id="多个库的链接"><a href="#多个库的链接" class="headerlink" title="多个库的链接"></a>多个库的链接</h3><p>需要确保对象文件或库都是由同一个编译器生成的，若不同的编译器，会为同一个函数生成不同的修饰名称。若有源代码建议用<strong>自己的编译器全部重新编译</strong>，以消除链接错误。</p><h3 id="存储数据的三种方案"><a href="#存储数据的三种方案" class="headerlink" title="存储数据的三种方案"></a>存储数据的三种方案</h3><ul><li>自动存储持续性：函数中声明的变量以及函数参数，会在执行中自动创建，执行完自动释放</li><li>静态存储持续性：使用static关键字的变量，在整个程序运行过程均存在</li><li>动态存储持续性：用new分配的内存，一直存在直到delete</li></ul><h3 id="编译器把自动变量用堆栈的形式管理"><a href="#编译器把自动变量用堆栈的形式管理" class="headerlink" title="编译器把自动变量用堆栈的形式管理"></a>编译器把自动变量用堆栈的形式管理</h3><p>register的变量放在寄存器，依然没有链接性</p><h3 id="静态存储提供三种链接性"><a href="#静态存储提供三种链接性" class="headerlink" title="静态存储提供三种链接性"></a>静态存储提供三种链接性</h3><ul><li>外部链接性：全局（外部链接性）变量（main函数外)</li><li>内部链接性：static的全局变量</li><li>无链接性: 内部的static变量<br>静态变量持续整个程序执行期间，编译器将分配固定的内存块来管理。默认情况下，静态数组以及结构的成员都设置为0。</li></ul><h3 id="外部链接性使用"><a href="#外部链接性使用" class="headerlink" title="外部链接性使用"></a>外部链接性使用</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// file1</span></span><br><span class="line"><span class="keyword">int</span> status = <span class="number">100</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;file2.hpp&quot;</span></span></span><br><span class="line"><span class="built_in">print</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// file2</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> status;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cout &lt;&lt; status;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>如果file2中，用status int status或者 extern int status=20;都会报重新定义的错误。</p><h3 id="应使用外部变量在多文件程序的不同部分共享数据"><a href="#应使用外部变量在多文件程序的不同部分共享数据" class="headerlink" title="应使用外部变量在多文件程序的不同部分共享数据"></a>应使用外部变量在多文件程序的不同部分共享数据</h3><p>内部链接性的静态变量用于多个函数之间共享数据(名称空间提供了新的共享数据方法，static的内部链接性逐步淘汰)</p><h3 id="存储说明符：auto-register-static-extern-mutable"><a href="#存储说明符：auto-register-static-extern-mutable" class="headerlink" title="存储说明符：auto, register, static, extern, mutable"></a>存储说明符：auto, register, static, extern, mutable</h3><p>auto为自动变量;register为寄存器存储；static在整个cpp文件的声明具有函数间的链接性；extern是多文件的外部链接性；mutable使const临时失效；<br>volatile指程序代码没有对内存单元修改，其值也可能发生变化。即每次使用该变量都应其查找，别用缓存。</p><p>另外</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> fingers = <span class="number">10</span>; <span class="comment">//same as static const int fingers;</span></span><br></pre></td></tr></table></figure><p>const使全局变量变成了内部链接性。</p><p>但是在另外的文件用 extern const int fingers;又可以强行变成外部链接性而可用。</p><h3 id="关于函数的链接性"><a href="#关于函数的链接性" class="headerlink" title="关于函数的链接性"></a>关于函数的链接性</h3><p>由于C++不允许函数中定义另外的函数，所以所有函数都为静态存储持续性。但依然可以用extern来使函数为另一个文件使用。使用该函数的每个文件应包含函数原型（方便了解接口的描述，内联函数可以无需接口描述）</p><h3 id="语言链接性"><a href="#语言链接性" class="headerlink" title="语言链接性"></a>语言链接性</h3><p>由于C和C++编译器对函数翻译不一致，在调用C外部链接函数时，应该标注extern “C”</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">e.g.</span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="function"><span class="keyword">void</span> <span class="title">spiff</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br></pre></td></tr></table></figure><h3 id="布局new占位符"><a href="#布局new占位符" class="headerlink" title="布局new占位符"></a>布局new占位符</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> BUF = <span class="number">512</span>;</span><br><span class="line"><span class="keyword">char</span> buffer[BUF];</span><br><span class="line"><span class="keyword">double</span> *pd1 = <span class="keyword">new</span> <span class="keyword">double</span>[BUF];</span><br><span class="line"><span class="keyword">double</span> *pd2 = <span class="built_in"><span class="keyword">new</span></span> (buffer)<span class="keyword">double</span>[BUF];</span><br></pre></td></tr></table></figure><p>上述两个指针，pd2为交由程序员自身管理的动态内存；且pd2在delete管辖区域之外。</p><h3 id="命名空间及前途"><a href="#命名空间及前途" class="headerlink" title="命名空间及前途"></a>命名空间及前途</h3><ul><li>命名空间具有外部链接性</li><li>使用在已命名的名称空间中声明的变量，而不是使用外部全局变量</li><li>使用在已命名的名称空间中声明的变量，而不是使用静态全局变量</li><li>如果开发函数库或者类库，将其放入一个名称空间中。如当前C++提倡标准库的都放入std空间中</li><li>不要在头文件使用using,这样会掩盖了可用的名称；另外包含头的顺序会影响程序的行为；若坚持则应在所有的#include后用</li><li>导入名称时，首选用作用域解析或using声明</li><li>对于using声明，首选将作用域于局部，而非全局</li></ul><p>命名空间可以是全局的，也可以位于另一个名称空间中，但<strong>不能位于代码块中</strong></p><p>using namespace std;就是using编译指令，使整个名称空间可用。</p>]]></content>
     
     
       
