@@ -180,6 +180,18 @@
       </tags>
   </entry>
   <entry>
+    <title>cpp生成代码及数据类型</title>
+    <url>/2021/12/14/cpp%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</url>
+    <content><![CDATA[<p>c++基本数据类型主要有<em>bool, char, int, float, double</em>。具体如下：</p>
+<p><img src="/images/12_14_2.png" alt="basic data structure"><br><img src="/images/12_14_3.png" alt="basic data structure2"></p>
+<p>另外，C++<strong>生成代码的过程</strong>是：1.程序员编写源代码 2.编译器正确翻译C++为目标代码 3.链接器将环境启动的代码以及引入库的代码与目标代码正确链接 4.最后才输出机器认识的可执行代码<br><img src="/images/12_14_1.png" alt="code procedure"></p>
+<p>整型提升(integral promotion): 计算表达式时，bool, char, unsigned char, signed char short会转换为int，即int为计算机最自然的类型，也是运算速度可能最快的。较小与较大运算也可能提升。</p>
+]]></content>
+      <tags>
+        <tag>c++ primer</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>六年前的自己</title>
     <url>/2021/12/22/%E5%85%AD%E5%B9%B4%E5%89%8D%E7%9A%84%E8%87%AA%E5%B7%B1/</url>
     <content><![CDATA[<p><a href="https://csrjtan.github.io/">https://csrjtan.github.io/</a><br>回看六年前的自己，摘录一些当时有意义的文段</p>
@@ -203,18 +215,6 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">不论曾经的彼此多么幼稚，多么可笑</span><br><span class="line">终有一天我们都变得成熟；</span><br><span class="line">也终有一天，我们都会老去；</span><br><span class="line">可是，却没有人可以永远不长大，</span><br><span class="line">却没有人可以永远年轻，</span><br><span class="line">成熟，有时候会让人心痛、很无奈。</span><br><span class="line">那个时候才会懂得：</span><br><span class="line">爱情本不是件该执着的事情。</span><br></pre></td></tr></table></figure>]]></content>
       <tags>
         <tag>博客迁移</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>cpp生成代码及数据类型</title>
-    <url>/2021/12/14/cpp%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</url>
-    <content><![CDATA[<p>c++基本数据类型主要有<em>bool, char, int, float, double</em>。具体如下：</p>
-<p><img src="/images/12_14_2.png" alt="basic data structure"><br><img src="/images/12_14_3.png" alt="basic data structure2"></p>
-<p>另外，C++<strong>生成代码的过程</strong>是：1.程序员编写源代码 2.编译器正确翻译C++为目标代码 3.链接器将环境启动的代码以及引入库的代码与目标代码正确链接 4.最后才输出机器认识的可执行代码<br><img src="/images/12_14_1.png" alt="code procedure"></p>
-<p>整型提升(integral promotion): 计算表达式时，bool, char, unsigned char, signed char short会转换为int，即int为计算机最自然的类型，也是运算速度可能最快的。较小与较大运算也可能提升。</p>
-]]></content>
-      <tags>
-        <tag>c++ primer</tag>
       </tags>
   </entry>
   <entry>
