@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://tanrunjie.github.io/2022/02/21/reading/%E8%BD%AF%E6%8A%80%E8%83%BD/</loc>
+    <loc>http://tanrunjie.github.io/2022/03/04/SLAMBOOK2/SLAMBOOK_5_6/</loc>
     
     <lastmod>2022-03-04</lastmod>
     
@@ -11,7 +11,14 @@
   <url>
     <loc>http://tanrunjie.github.io/2022/02/28/SLAMBOOK2/SLAMBOOK_3_4/</loc>
     
-    <lastmod>2022-03-02</lastmod>
+    <lastmod>2022-03-04</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://tanrunjie.github.io/2022/02/21/reading/%E8%BD%AF%E6%8A%80%E8%83%BD/</loc>
+    
+    <lastmod>2022-03-04</lastmod>
     
   </url>
   
@@ -298,14 +305,14 @@
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/%E8%BA%AB%E4%BD%93%E5%81%A5%E5%BA%B7/</loc>
+    <loc>http://tanrunjie.github.io/tags/SLAMBOOK/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/SLAMBOOK/</loc>
+    <loc>http://tanrunjie.github.io/tags/%E8%BA%AB%E4%BD%93%E5%81%A5%E5%BA%B7/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -419,14 +426,14 @@
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/categories/%E8%BA%AB%E4%BD%93%E5%81%A5%E5%BA%B7/</loc>
+    <loc>http://tanrunjie.github.io/categories/SLAMBOOK/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/categories/SLAMBOOK/</loc>
+    <loc>http://tanrunjie.github.io/categories/%E8%BA%AB%E4%BD%93%E5%81%A5%E5%BA%B7/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
