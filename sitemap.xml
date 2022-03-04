@@ -298,14 +298,14 @@
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/bash/</loc>
+    <loc>http://tanrunjie.github.io/tags/%E8%BA%AB%E4%BD%93%E5%81%A5%E5%BA%B7/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/%E8%BA%AB%E4%BD%93%E5%81%A5%E5%BA%B7/</loc>
+    <loc>http://tanrunjie.github.io/tags/bash/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -326,14 +326,14 @@
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/c/</loc>
+    <loc>http://tanrunjie.github.io/tags/c-primer/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/c-primer/</loc>
+    <loc>http://tanrunjie.github.io/tags/c/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -354,14 +354,14 @@
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/pcl/</loc>
+    <loc>http://tanrunjie.github.io/tags/opencv/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/opencv/</loc>
+    <loc>http://tanrunjie.github.io/tags/pcl/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -419,14 +419,14 @@
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/categories/%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/</loc>
+    <loc>http://tanrunjie.github.io/categories/%E8%BA%AB%E4%BD%93%E5%81%A5%E5%BA%B7/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/categories/%E8%BA%AB%E4%BD%93%E5%81%A5%E5%BA%B7/</loc>
+    <loc>http://tanrunjie.github.io/categories/%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -454,14 +454,14 @@
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/categories/pcl/</loc>
+    <loc>http://tanrunjie.github.io/categories/opencv/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/categories/opencv/</loc>
+    <loc>http://tanrunjie.github.io/categories/pcl/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
