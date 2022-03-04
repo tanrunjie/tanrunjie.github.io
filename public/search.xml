@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>TSDF算法</title>
+    <url>/2021/12/23/TSDF%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<p>具体学习于 <a href="https://github.com/andyzeng/tsdf-fusion">https://github.com/andyzeng/tsdf-fusion</a></p>
+<h3 id="Why-TSDF"><a href="#Why-TSDF" class="headerlink" title="Why TSDF"></a>Why TSDF</h3><p>三维重建首当其冲的问题是如何保存以及如何表示模型，通常而言会有点云，mesh等；<br>但是对于室内三维重建，TSDF是一个不错的选择，其优点是</p>
+<ul>
+<li>非常适合CUDA并行运算，从而达到实时。</li>
+<li>开辟固定的内存/显存，模型大小相对可控</li>
+<li>模型大小不随数据量变化，网格的细节比较好<br>缺点：CPU计算耗时，在边缘以及前后景交界出现拖尾现象（体素g在像素坐标系投影有一定的误差）</li>
+</ul>
+<h3 id="How-TSDF"><a href="#How-TSDF" class="headerlink" title="How TSDF"></a>How TSDF</h3><p>1.建立长方体包围盒（能包住房间，一般预设参数：可通过设定划分网格以及网格大小得到)<br>2.将每个体素v转化成三维座标点g(根据模型起点和网格推算)<br>3.对于新来的每一帧深度图：<br>    遍历每一个体素g：<br>        3.1.根据相机外参，将g在世界坐标系转换到相机坐标系的点c,再由相机内参转换到像素坐标系x;<br>        3.2.深度相机像素深度为value(x),点c到相机坐标原点的距离为distance(v)<br>        3.3.sdf(g) = value(x) - distance(v).<br>        3.4.求tsdf(g).<code>预设截断距离t = voxel_size * t_n, 则t以内，tsdf(g) = sdf(p)/|u|;在t以外时，if sdf(p)&gt;1, tsdf(p) = 1;if sdf(p)&lt;-1, tsdf(p)=-1;</code><br>        3.5.权重w(p) = cos(theta)/distance(v), theta为投影光线与表面法向的夹角<br>至此，得到当前帧所有体素的tsdf值以及权重值<br>4.当前帧与全局模型融合<br>    4.1 若当前帧为第一帧，即为融合结果；否则与之前的模型融合,公式如下，其中W(p)为融合权重，w(p)为当前帧权重<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy8xMTEzMzY5Ni02ZWY1Yzk2YWUwMWFlNTZmLnBuZw?x-oss-process=image/format,png"></p>
+<h3 id="Detail-and-Analysis"><a href="#Detail-and-Analysis" class="headerlink" title="Detail and Analysis"></a>Detail and Analysis</h3>]]></content>
+      <categories>
+        <category>SLAM</category>
+      </categories>
+      <tags>
+        <tag>SLAM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>UNIX_Tutorial</title>
     <url>/2021/12/27/UNIX-Tutorial/</url>
     <content><![CDATA[<p>Unix和Linux的基本指令<br><a href="http://www.ee.surrey.ac.uk/Teaching/Unix/">http://www.ee.surrey.ac.uk/Teaching/Unix/</a></p>
@@ -167,25 +186,6 @@
       </tags>
   </entry>
   <entry>
-    <title>TSDF算法</title>
-    <url>/2021/12/23/TSDF%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<p>具体学习于 <a href="https://github.com/andyzeng/tsdf-fusion">https://github.com/andyzeng/tsdf-fusion</a></p>
-<h3 id="Why-TSDF"><a href="#Why-TSDF" class="headerlink" title="Why TSDF"></a>Why TSDF</h3><p>三维重建首当其冲的问题是如何保存以及如何表示模型，通常而言会有点云，mesh等；<br>但是对于室内三维重建，TSDF是一个不错的选择，其优点是</p>
-<ul>
-<li>非常适合CUDA并行运算，从而达到实时。</li>
-<li>开辟固定的内存/显存，模型大小相对可控</li>
-<li>模型大小不随数据量变化，网格的细节比较好<br>缺点：CPU计算耗时，在边缘以及前后景交界出现拖尾现象（体素g在像素坐标系投影有一定的误差）</li>
-</ul>
-<h3 id="How-TSDF"><a href="#How-TSDF" class="headerlink" title="How TSDF"></a>How TSDF</h3><p>1.建立长方体包围盒（能包住房间，一般预设参数：可通过设定划分网格以及网格大小得到)<br>2.将每个体素v转化成三维座标点g(根据模型起点和网格推算)<br>3.对于新来的每一帧深度图：<br>    遍历每一个体素g：<br>        3.1.根据相机外参，将g在世界坐标系转换到相机坐标系的点c,再由相机内参转换到像素坐标系x;<br>        3.2.深度相机像素深度为value(x),点c到相机坐标原点的距离为distance(v)<br>        3.3.sdf(g) = value(x) - distance(v).<br>        3.4.求tsdf(g).<code>预设截断距离t = voxel_size * t_n, 则t以内，tsdf(g) = sdf(p)/|u|;在t以外时，if sdf(p)&gt;1, tsdf(p) = 1;if sdf(p)&lt;-1, tsdf(p)=-1;</code><br>        3.5.权重w(p) = cos(theta)/distance(v), theta为投影光线与表面法向的夹角<br>至此，得到当前帧所有体素的tsdf值以及权重值<br>4.当前帧与全局模型融合<br>    4.1 若当前帧为第一帧，即为融合结果；否则与之前的模型融合,公式如下，其中W(p)为融合权重，w(p)为当前帧权重<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy8xMTEzMzY5Ni02ZWY1Yzk2YWUwMWFlNTZmLnBuZw?x-oss-process=image/format,png"></p>
-<h3 id="Detail-and-Analysis"><a href="#Detail-and-Analysis" class="headerlink" title="Detail and Analysis"></a>Detail and Analysis</h3>]]></content>
-      <categories>
-        <category>SLAM</category>
-      </categories>
-      <tags>
-        <tag>SLAM</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>盐选健康</title>
     <url>/2022/01/21/%E7%9B%90%E9%80%89%E5%81%A5%E5%BA%B7/</url>
     <content><![CDATA[<h3 id="优雅起床"><a href="#优雅起床" class="headerlink" title="优雅起床"></a>优雅起床</h3><p>熬夜:睡眠不规律,睡眠不足以及整夜不睡.而非指定睡觉时间,当然中医养生的角度应该是需要早睡早起,早上练功升阳.</p>
@@ -332,31 +332,6 @@
       </tags>
   </entry>
   <entry>
-    <title>c++并发实战</title>
-    <url>/2021/12/28/cpp/c-%E5%B9%B6%E5%8F%91%E5%AE%9E%E6%88%98/</url>
-    <content><![CDATA[<h3 id="chap1-c-并发世界"><a href="#chap1-c-并发世界" class="headerlink" title="chap1 c++并发世界"></a>chap1 c++并发世界</h3><p>C++98的13年后，2011的C++11成为新的规范，同时确认了每三年发布新的扩展技术规范。<br>在C++11中，c++ standard第一次承认多线程存在于C++语言中，意味CPP编写与平台无关的多线程程序成为可能。以往编写多线程并发需要针对运行平台部署依赖扩展库，如今可移植性成为可能。</p>
-<p><code>何谓并发和多线程？</code><br>单核的并发存在切换上下文的不必要损耗。<br>多线程：一个进程下，多个小单元共用数据资源，单机并发较常用，实际上CPP支持的是多线程。<br>多进程：开辟多个共用数据资源，多个进程并行，占用大量资源，通讯成本加大，适用于多机。</p>
-<p>并行：关注性能； 并发：关注任务分离；</p>
-<p><code>为什么要并发?</code>  </p>
-<ol>
-<li>关注分离：将相关代码与无关代码分离，使得程序更容易理解和测试。</li>
-<li>关注性能：将任务并行以及可以将数据并行<br>不使用并发的原因：收益比不上成本，一方面脑力以及代码维护成本，一方面是线程资源。尤其32位地址的架构，<br>对于4G(32bit)的架构，每个线程占用1MB，那么开4096个就用尽所有地址，运行太多会出问题。对于现用的板子有1GB的内存可用。对于现用的64位PC，开一个线程ulimit -s可知为8MB;ulimit -u可以看当前可开多少个线程上限，64GB可开约26万个上限。<br>由于多线程使代码复杂且难以理解，只有显著提升性能才值得一干。</li>
-</ol>
-<h3 id="chap2-线程管理"><a href="#chap2-线程管理" class="headerlink" title="chap2 线程管理"></a>chap2 线程管理</h3><ul>
-<li>线程启动：std::thread对象用函数或者类初始化的同时，开始自动启动线程。</li>
-<li>线程等待与分离：join为等待线程执行完成；detach则让线程分离自主执行，此时访问已销毁的变量会引起错误。如果线程已使用过join,则不可再次join。joinable()返回false。<br>解决方法：将数据复制到线程中，可以总结用一个访问局部变量的函数创建线程是危险行为。</li>
-<li>分离线程：通常又称守护线程，没有任何显式的用户接口并在后台运行的线程，通常长时间运行。</li>
-<li>转移线程： thread2 = std::move(thread1);若thread2已有线程，则系统直接调用terminate结束错误。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>c++</category>
-      </categories>
-      <tags>
-        <tag>c++ 多线程 并发</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SLAMBOOK_3_4</title>
     <url>/2022/02/28/SLAMBOOK2/SLAMBOOK_3_4/</url>
     <content><![CDATA[<h3 id="三维空间刚体运动"><a href="#三维空间刚体运动" class="headerlink" title="三维空间刚体运动"></a>三维空间刚体运动</h3><p>目标：</p>
@@ -408,6 +383,31 @@
       </categories>
       <tags>
         <tag>SLAMBOOK</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>c++并发实战</title>
+    <url>/2021/12/28/cpp/c-%E5%B9%B6%E5%8F%91%E5%AE%9E%E6%88%98/</url>
+    <content><![CDATA[<h3 id="chap1-c-并发世界"><a href="#chap1-c-并发世界" class="headerlink" title="chap1 c++并发世界"></a>chap1 c++并发世界</h3><p>C++98的13年后，2011的C++11成为新的规范，同时确认了每三年发布新的扩展技术规范。<br>在C++11中，c++ standard第一次承认多线程存在于C++语言中，意味CPP编写与平台无关的多线程程序成为可能。以往编写多线程并发需要针对运行平台部署依赖扩展库，如今可移植性成为可能。</p>
+<p><code>何谓并发和多线程？</code><br>单核的并发存在切换上下文的不必要损耗。<br>多线程：一个进程下，多个小单元共用数据资源，单机并发较常用，实际上CPP支持的是多线程。<br>多进程：开辟多个共用数据资源，多个进程并行，占用大量资源，通讯成本加大，适用于多机。</p>
+<p>并行：关注性能； 并发：关注任务分离；</p>
+<p><code>为什么要并发?</code>  </p>
+<ol>
+<li>关注分离：将相关代码与无关代码分离，使得程序更容易理解和测试。</li>
+<li>关注性能：将任务并行以及可以将数据并行<br>不使用并发的原因：收益比不上成本，一方面脑力以及代码维护成本，一方面是线程资源。尤其32位地址的架构，<br>对于4G(32bit)的架构，每个线程占用1MB，那么开4096个就用尽所有地址，运行太多会出问题。对于现用的板子有1GB的内存可用。对于现用的64位PC，开一个线程ulimit -s可知为8MB;ulimit -u可以看当前可开多少个线程上限，64GB可开约26万个上限。<br>由于多线程使代码复杂且难以理解，只有显著提升性能才值得一干。</li>
+</ol>
+<h3 id="chap2-线程管理"><a href="#chap2-线程管理" class="headerlink" title="chap2 线程管理"></a>chap2 线程管理</h3><ul>
+<li>线程启动：std::thread对象用函数或者类初始化的同时，开始自动启动线程。</li>
+<li>线程等待与分离：join为等待线程执行完成；detach则让线程分离自主执行，此时访问已销毁的变量会引起错误。如果线程已使用过join,则不可再次join。joinable()返回false。<br>解决方法：将数据复制到线程中，可以总结用一个访问局部变量的函数创建线程是危险行为。</li>
+<li>分离线程：通常又称守护线程，没有任何显式的用户接口并在后台运行的线程，通常长时间运行。</li>
+<li>转移线程： thread2 = std::move(thread1);若thread2已有线程，则系统直接调用terminate结束错误。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>c++</category>
+      </categories>
+      <tags>
+        <tag>c++ 多线程 并发</tag>
       </tags>
   </entry>
   <entry>
@@ -466,40 +466,6 @@
       </tags>
   </entry>
   <entry>
-    <title>字符串</title>
-    <url>/2021/12/15/cpp/%E5%AD%97%E7%AC%A6%E4%B8%B2/</url>
-    <content><![CDATA[<h3 id="C-style字符串"><a href="#C-style字符串" class="headerlink" title="C-style字符串"></a>C-style字符串</h3><p>结尾带’\0’,这对于很多处理字符串的函数很关键。#include <cstring>包含大量C语言字串的操作函数如strlen, strcpy, strcat…</p>
-<p>strlen():只计算数组或者指针中的字符个数，不带结尾</p>
-<p><code>cin.getline(name,20)</code>:读取整行的字串到name,最多20个<br>cin.get()：类似，但下一次调用开头会带有换行(换行缓存到下次get)，顺便检查了上一次输入的正确程度。</p>
-<p>针对string类的getline(cin, string); 与cin混合使用时，在cin&gt;&gt;完成后，getline前需要通过getline(cin,”\n”)清除缓存，否则不进入getline输入。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 清除缓存</span></span><br><span class="line">string str=<span class="string">&quot;\n&quot;</span>;</span><br><span class="line"><span class="built_in">getline</span>(cin,str);</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="string类"><a href="#string类" class="headerlink" title="string类"></a>string类</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line">std::string</span><br></pre></td></tr></table></figure>
-<p>更方便，也更安全。像vector一样管理char.</p>
-<h3 id="struct和union"><a href="#struct和union" class="headerlink" title="struct和union"></a>struct和union</h3><p>union只能同时存储<strong>一种</strong>类型，其他类型的会lost</p>
-<h3 id="new和delete"><a href="#new和delete" class="headerlink" title="new和delete"></a>new和delete</h3><ul>
-<li>不要delete释放不是new的内存</li>
-<li>不要delete同一块内存两次</li>
-<li>new[]数组应当用delete []释放</li>
-<li>若用new[]为单一实体分配内存，应使用delete（不带方括号）释放</li>
-<li>对空指针delete是安全的</li>
-</ul>
-<h3 id="cin与cin-getline区别"><a href="#cin与cin-getline区别" class="headerlink" title="cin与cin.getline区别"></a>cin与cin.getline区别</h3><p>cin.getline(addr,80) 与cin&gt;&gt;addr<br>getline:读整行直到‘回车’<br>cin:首先跳过‘空格’，读取字串，再次遇‘空格’停止；即跳过前面的空格，读取单个单词。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">cin&gt;&gt;ch;</span><br><span class="line">cin.<span class="built_in">get</span>(ch);</span><br><span class="line">ch=cin.<span class="built_in">get</span>();</span><br></pre></td></tr></table></figure>
-<p>上面区别主要是cin&gt;&gt;ch直接跳过空格换行以及制表符</p>
-<h3 id="string格式化输出4位数字-前面补0，多用于文件名操作"><a href="#string格式化输出4位数字-前面补0，多用于文件名操作" class="headerlink" title="string格式化输出4位数字,前面补0，多用于文件名操作"></a>string格式化输出4位数字,前面补0，多用于文件名操作</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> num_zero = <span class="number">4</span>;</span><br><span class="line">string num = <span class="built_in">to_string</span>(int_val);</span><br><span class="line">string new_num = <span class="built_in">string</span>(num_zero-num.<span class="built_in">length</span>(),<span class="string">&#x27;0&#x27;</span>) + num;</span><br></pre></td></tr></table></figure>
-<p>注意int_val长度小于num_zero。</p>
-]]></content>
-      <categories>
-        <category>c++</category>
-      </categories>
-      <tags>
-        <tag>c++ primer</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>内存模型</title>
     <url>/2021/12/20/cpp/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/</url>
     <content><![CDATA[<h3 id="头文件通常包含的内容"><a href="#头文件通常包含的内容" class="headerlink" title="头文件通常包含的内容"></a>头文件通常包含的内容</h3><ul>
@@ -555,6 +521,40 @@
       </categories>
       <tags>
         <tag>c++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>字符串</title>
+    <url>/2021/12/15/cpp/%E5%AD%97%E7%AC%A6%E4%B8%B2/</url>
+    <content><![CDATA[<h3 id="C-style字符串"><a href="#C-style字符串" class="headerlink" title="C-style字符串"></a>C-style字符串</h3><p>结尾带’\0’,这对于很多处理字符串的函数很关键。#include <cstring>包含大量C语言字串的操作函数如strlen, strcpy, strcat…</p>
+<p>strlen():只计算数组或者指针中的字符个数，不带结尾</p>
+<p><code>cin.getline(name,20)</code>:读取整行的字串到name,最多20个<br>cin.get()：类似，但下一次调用开头会带有换行(换行缓存到下次get)，顺便检查了上一次输入的正确程度。</p>
+<p>针对string类的getline(cin, string); 与cin混合使用时，在cin&gt;&gt;完成后，getline前需要通过getline(cin,”\n”)清除缓存，否则不进入getline输入。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 清除缓存</span></span><br><span class="line">string str=<span class="string">&quot;\n&quot;</span>;</span><br><span class="line"><span class="built_in">getline</span>(cin,str);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="string类"><a href="#string类" class="headerlink" title="string类"></a>string类</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line">std::string</span><br></pre></td></tr></table></figure>
+<p>更方便，也更安全。像vector一样管理char.</p>
+<h3 id="struct和union"><a href="#struct和union" class="headerlink" title="struct和union"></a>struct和union</h3><p>union只能同时存储<strong>一种</strong>类型，其他类型的会lost</p>
+<h3 id="new和delete"><a href="#new和delete" class="headerlink" title="new和delete"></a>new和delete</h3><ul>
+<li>不要delete释放不是new的内存</li>
+<li>不要delete同一块内存两次</li>
+<li>new[]数组应当用delete []释放</li>
+<li>若用new[]为单一实体分配内存，应使用delete（不带方括号）释放</li>
+<li>对空指针delete是安全的</li>
+</ul>
+<h3 id="cin与cin-getline区别"><a href="#cin与cin-getline区别" class="headerlink" title="cin与cin.getline区别"></a>cin与cin.getline区别</h3><p>cin.getline(addr,80) 与cin&gt;&gt;addr<br>getline:读整行直到‘回车’<br>cin:首先跳过‘空格’，读取字串，再次遇‘空格’停止；即跳过前面的空格，读取单个单词。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">cin&gt;&gt;ch;</span><br><span class="line">cin.<span class="built_in">get</span>(ch);</span><br><span class="line">ch=cin.<span class="built_in">get</span>();</span><br></pre></td></tr></table></figure>
+<p>上面区别主要是cin&gt;&gt;ch直接跳过空格换行以及制表符</p>
+<h3 id="string格式化输出4位数字-前面补0，多用于文件名操作"><a href="#string格式化输出4位数字-前面补0，多用于文件名操作" class="headerlink" title="string格式化输出4位数字,前面补0，多用于文件名操作"></a>string格式化输出4位数字,前面补0，多用于文件名操作</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> num_zero = <span class="number">4</span>;</span><br><span class="line">string num = <span class="built_in">to_string</span>(int_val);</span><br><span class="line">string new_num = <span class="built_in">string</span>(num_zero-num.<span class="built_in">length</span>(),<span class="string">&#x27;0&#x27;</span>) + num;</span><br></pre></td></tr></table></figure>
+<p>注意int_val长度小于num_zero。</p>
+]]></content>
+      <categories>
+        <category>c++</category>
+      </categories>
+      <tags>
+        <tag>c++ primer</tag>
       </tags>
   </entry>
   <entry>
@@ -1305,7 +1305,92 @@
 <li>时不时实践以下专注，选一项大概需要占用你半小时或者更长时间的任务，给完成这项任务分配一个完整的时间段。完全专注于这项任务，迫使自己只集中精力在这一项任务上。当你进入专注状态时，在心里记住是什么感觉。</li>
 </ul>
 <h4 id="提升计划"><a href="#提升计划" class="headerlink" title="提升计划"></a>提升计划</h4><p>知名的方法有：GTD(getting things done),番茄工作法以及 Don’t break the chain等等。<br>作者建议把一周的时间分配给一个一个用时不超过两小时的小任务。使用看板安排一周的活动，看板主要有几个列，你可以轻松地在列之间移动任务项。用敏捷方法管理状态包括：未启动、进行中和已完成。具体做法可参考《看板实战》(Kanban in Action)</p>
-<p>计划从“季度”开始，把一年分成4个季度，会尽力列出想在本季度完成的每一个大项目，同时制订一些较小的目标。然后思考每一周每一天分别完成哪些工作，让自己清楚了解自己的主要目标是什么，同时会让自己保持专注。</p>
+<p>计划从“季度”开始，把一年分成4个季度，会尽力列出想在本季度完成的每一个大项目，同时制订一些较小的目标。然后思考每一周每一天分别完成哪些工作，让自己清楚了解自己的主要目标是什么，同时会让自己保持专注。按照设定的轨道运转对富有成效地工很重要，应该为自己设定一些制度，确保自己获得持续的成果，把每周的任务记下来，看看可以为自己制订一个能按月周天可重复使用的方法。</p>
+<p>养成使用番茄钟的习惯，学会规划自己的25分钟的任务，跟踪记录番茄钟，安排好每天每个番茄钟。一个较好的用法：高效地跟踪自己一天内完成了多少个番茄钟，并为每天要完成的番茄钟的数量设定目标。以此真正评估自己每日工作的努力程度，也知晓自己的工作能力。同时以此调整自己的任务优先级以及工作量。正常而言，每天10个番茄钟已经非常繁重，一周50～55个。刚开始6个已然困难。开始你的番茄钟挑战把！</p>
+<p>采取行动：</p>
+<ul>
+<li>尝试使用番茄工作法，不用担心要给每天设置多少个番茄钟的目标。列出一整周完成的工作</li>
+<li>一旦了解自己一周能完成多少个番茄钟，你就可以给下一周设定目标了，看看能否达标，留意你最后完成了多少工作，以及完成每天设定的番茄钟后感觉如何。</li>
+</ul>
+<h4 id="定额工作法"><a href="#定额工作法" class="headerlink" title="定额工作法"></a>定额工作法</h4><p>生产力提升方法主要问题：对于每天重复发生的任务似乎束手无策，且无法正常达到预期的计划</p>
+<p>给计划实施定额制，长期如此可以将工作量和时间正相关并提前预估。<br>定额示例：</p>
+<ul>
+<li>每周跑步3次</li>
+<li>每周发布一篇博客</li>
+<li>写书：每天写一章</li>
+<li>每周完成50个番茄钟</li>
+</ul>
+<p>定额不要太高，遵循一个规则：不能在定额必须完成的有效时间段内放弃。宁可降低定额的配额，保持对定额的尊重以及积极完成的习惯。</p>
+<p>定额工作法的规则：</p>
+<ul>
+<li>挑选一项重复性任务</li>
+<li>明确有效时限，在此期间该任务被重复执行</li>
+<li>明确在给定的有效时间内完成该任务完成的次数配额</li>
+<li>给自己承诺：一定达到定额</li>
+<li>调整：适当地调高或者调低定额，但是不能在有效时间段之内调整</li>
+<li>开始的时候可以将该法只应用到一件事情上<br>个人心得：定额工作法主要结合番茄钟形成个人习惯，并量化优化习惯的进度。<br>该法成功的秘密：以缓慢但稳定的节奏工作，要优于快速但缺乏持久和坚持的工作方法。关键保证方法落实到位，保证自己每天每月每周都在进展即可。定额可以帮助克服意志力的问题，习惯消除了作出决策的部分，因此可以快速转化成行动。</li>
+</ul>
+<p>采取行动：</p>
+<ul>
+<li>列出生活中需要重复做的所有任务，特别专注于那些目前你还无法持续完成但一旦完成就会从中受益的事情</li>
+<li>选择至少一项任务，承诺规定时间段内完成额度。认真对待这一承诺，试着坚持至少5个时间段。想象以下，如果自己能坚持几个月或者几年，会发生什么变化。</li>
+</ul>
+<h4 id="对自己负责"><a href="#对自己负责" class="headerlink" title="对自己负责"></a>对自己负责</h4><p>工作主要两大动机：来自内心的冬季和来自外部奖励或者惩罚的动机<br>通常内在动机比外在有效得多：自我的激励工作，我们能完成更多的工作，也更倾向于把工作做得更好。感兴趣可研读《内驱力》</p>
+<p>内部问责：<br>每天按时上下班是对雇主负责，工作的责任感促使我们做一些自主决定不愿意做的事情，培养出没有人监督自己的时候也能高效工作的自我责任感非常重要，也可称为性格或者素质。如果缺乏对自我的责任感，你将永远依赖外部动机来驱使努力工作，自我控制是自我激励的艺术，核心在于自我责任感。<br>为自己制订一些规则，以便让自己的生活井然有序。</p>
+<p>外部问责：<br>请别人来监督自己履行责任，每周例会讲解自己这周以及计划的任务，通过内部讨论每人的计划互相监督落实。</p>
+<p>采取行动：</p>
+<ul>
+<li>抉择以下：你想如何度过自己的一生，花点时间创建一些自己的规则，确保自己朝着正确的方向前进</li>
+<li>创建自己的责任制度，帮助自己严格执行规则</li>
+</ul>
+<p>选择批量处理而不是并行处理，适合批量处理的领域：处理电子邮件，打电话沟通，修复bug，开短会</p>
+<p>采取行动：</p>
+<ul>
+<li>停止任何并非真正的多任务并行的多任务并行，每天力争一个时间段只做一件事。番茄工作法巩固加强这一方法</li>
+<li>一次性批量处理小任务，而非每天或者每周做许多次</li>
+<li>找出能够真正实现多任务并行的领域，将不需要耗费脑力的活动都可与其他活动结合。任何耗费脑力的活动可于简单体育运动结合。</li>
+</ul>
+<h4 id="职业倦怠的解药"><a href="#职业倦怠的解药" class="headerlink" title="职业倦怠的解药"></a>职业倦怠的解药</h4><p>生产力的最大障碍之一是身体和心理上的倦怠。</p>
+<p>生物新鲜感和好奇心的原因，做事的动机和兴趣逐渐濒临谷底，同时成果并未到来，因此撞倒了那堵看不见的“墙”。大部分人没有穿过那堵墙看到成功的彼岸。只要坚持，越过大部分人，你将收获少数人带来的巨大成就感以及快乐。</p>
+<p>采取行动：</p>
+<ul>
+<li>想一想以前哪些项目是你付出努力却没有最终完成而半途而废了。是什么原因让你放弃的？你现在对这件事有什么感受？</li>
+<li>下次开始新项目的时候，下定决心：你一定会完成或者完全掌握。设定规则和约束条件，强迫自己穿过那堵不可避免的墙</li>
+<li>如果你正面临职业生涯或者个人生活中的一堵墙，试着去穿越它。想想墙的另一侧有怎样的收获在等着你。想象自己的动机和兴趣终将获得回报。</li>
+</ul>
+<h4 id="时间怎样被浪费掉"><a href="#时间怎样被浪费掉" class="headerlink" title="时间怎样被浪费掉"></a>时间怎样被浪费掉</h4><p>减少被浪费的时间，停止电视等娱乐视频，注意社交时间以及开会。<br>一些常见的时间杀手：</p>
+<ul>
+<li>电视</li>
+<li>社交媒体</li>
+<li>新闻网站</li>
+<li>不必要会议</li>
+<li>烹饪</li>
+<li>电子游戏</li>
+<li>段视频</li>
+</ul>
+<p>采取行动：</p>
+<ul>
+<li>下一周，精心地跟踪自己时间花费，获得精确的数字，了解每天每小时怎样花掉的，找出最大的2～3个时间杀手</li>
+<li>如果有看电视习惯，尝试离开电视一周，度过一个“无电视周”</li>
+<li>弄清楚哪些时间是可以“买回来的”，比如雇人做保洁，切断电视等</li>
+</ul>
+<h4 id="每天的惯例"><a href="#每天的惯例" class="headerlink" title="每天的惯例"></a>每天的惯例</h4><p>挑选好大目标，接下来想清楚怎样才能每天每周推进，最终实现目标。如果想减肥，每周要减掉几斤。</p>
+<p>采取行动：</p>
+<ul>
+<li>你目前有哪些惯例？跟踪一下你的日常活动，看看你已经在遵循的惯例有哪些</li>
+<li>选择一个大目标，以每个工作日为单位例行安排。计算以下，如果每天朝这个目前前进，一年下来你会取得多大的成就</li>
+</ul>
+<h4 id="培养习惯：刷新你的代码"><a href="#培养习惯：刷新你的代码" class="headerlink" title="培养习惯：刷新你的代码"></a>培养习惯：刷新你的代码</h4><p><code>成就我们的恰恰就是那些不断重复做的事情。因此，优秀不是一种行为，而是一种习惯   --亚里士多德</code></p>
+<p>好的习惯推动我们前进，帮助我们成长。坏的习惯阻止我们前进，阻碍我们成长。养成良好的习惯，帮助你无需刻意努力就保持很高的生产效率。惯例是我们可以控制的，而习惯却不受我们控制。更深了解阅读《习惯的力量》</p>
+<p>习惯三要素：暗示、惯例和奖励；一件事做得越多越能形成习惯，习惯力量基于奖励的价值。可变化的奖励要比已知的标准奖励更令人着迷。</p>
+<p>重要的一点：找出坏习惯，改掉。比如说：坐在电脑前就不自觉浏览无聊资讯或者无益的内容。分析这个习惯过程：首先暗示是坐在电脑面前，接下来就是无益的行为，最后空虚快乐的奖励；</p>
+<p>不要试图马上改变它，相反尽量找出习惯是被什么触发的。意识到奖励是期待能实现但从未兑现的承诺。一旦你能够掌控习惯本身，你就会发现自己对习惯可以保持更清醒的认知，甚至于近距离审视一个习惯而打破并改变它。同时努力找出是否有别的惯例可以代替当前这个为了某个习惯而执行的惯例，如果可能尽量寻找那些会带来相似的奖励甚至相同的奖励的事情。<br>最后也是最重要的部分是，强迫自己坚持足够长的时间，以使得新的习惯能取代旧有习惯。只要能在新习惯坚持足够久，新习惯一定会变得轻松而且自发的。</p>
+<p>试想，你想要完成的大目标是什么，你是否能养成某种习惯，推动你奔向大目标的方向上前进，你的习惯越积极，你向着目标前进的过程就越轻松。</p>
+<p>采取行动</p>
+<ul>
+<li>跟踪你的习惯，哪些习惯对你目前的生活影响最大？你认为其中多少是好习惯，多少是坏习惯</li>
+<li>挑选一项你的坏习惯，试图将它转变成好习惯。开始前，现在脑海里设想一周后，一月后以及一年后你有什么成果。</li>
+</ul>
 ]]></content>
       <categories>
         <category>读书笔记</category>
@@ -1357,20 +1442,11 @@
       </tags>
   </entry>
   <entry>
-    <title>金钱之二元整体观</title>
-    <url>/2021/12/22/shisan/%E9%87%91%E9%92%B1%E4%B9%8B%E4%BA%8C%E5%85%83%E6%95%B4%E4%BD%93%E8%A7%82/</url>
-    <content><![CDATA[<p><code>摘自微信号十三手记</code></p>
-<p>金钱只是金钱的样子吗？<br>你以为是，但必定不是。</p>
-<p>首先明白，金钱的有形或无形形式为什么存在？<br>是为了运行金钱背后的实际价值</p>
-<p>对于金钱而言，一般有三种状态：获取，存储，使用<br>三种状态在一起就是你金钱的留存路径，也是金钱存在的整体。</p>
-<p>此时，十三先生要你深深的明白：只要你对待金钱的这三种状态不平衡，只偏向执着于其一或其二，被你忽略掉的部分都必定会让你体验到金钱的匮乏，你都必定会经历金钱的反复障碍，无论金钱多少，你都是被金钱牵制捆绑的奴才；若是你懂得了今天讲的金钱整体性，在金钱对境中，把这三部分中你当时所处的部分运作出最大的价值和质感，并透过自己的障碍和痛苦主动去发现自己的单边局限，并及时主动透过逆袭自己的小气和不尊重金钱之粗糙的行为来扩大自己的金钱进出通道和格局，如此，假以时日，你便不会被金钱三部分中任何一部分障碍，你便会逐步成为内心富足的金钱主人。</p>
-<p><strong>一条手记</strong>：二元有相世界，金钱是你自己其中一个相，你对待金钱的状态就是你对待自己和对待世界的状态。</p>
-<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>这边十三先生提到关于金钱从获得，存储和使用三个维度分析，从提升个人金钱观上升提高个人世界观。</p>
-<ul>
-<li>关于获得：没有人会嫌钱多，在尽个人最大努力以及精力下，应最高效提升金钱的获得效率。</li>
-<li>关于存储：有了上一步，存储才有意义，如何有效理财，提升金钱的有效价值；另外，足够的存储才能带给个人底气和自信。</li>
-<li>关于使用：根据上两步的情况，具体规划用度，及时安抚自我，时刻让自己充满斗志与动力。</li>
-</ul>
+    <title>能量朗读</title>
+    <url>/2021/12/20/shisan/%E8%83%BD%E9%87%8F%E6%9C%97%E8%AF%BB/</url>
+    <content><![CDATA[<p><code>文章摘自微信公众号：十三先生手记</code></p>
+<p>小时候，我就一直渴望幸福，一直渴望坚强；<br>小时候，我就一直渴望正直，一直渴望善良；<br>小时候，为就一直渴望快乐，一直渴望成长；<br>现在，我几乎丢失了我的信心，我几乎丢失了我的梦想！<br>我知道，我不能再这样消极的逃避。<br>我知道，我不能再这样平庸的彷徨。<br>我知道，我要全力迸发我的热情；我要勇敢的收复我的希望。<br>我知道，我要真诚的对待身边每一个人，这样，我才能被每一个人真诚的对待；<br>我知道，我要用心的对待每天的时光，这样，我才能收获每天的力量；<br>我知道，我要帮助身边每一个人达成心愿，这样，大家才能帮助我实现梦想。<br>从今天起，我要打败我的懒惰，重拾我的阳光；<br>从今天起，我要改变我的粗俗，提升我的修养；<br>从今天起，我要挑战我的懦弱，找回我的坚强；</p>
+<p>我是为爱这个世界而来<br>我要让世界因我的爱而更加美丽，<br>我要让世界因我的爱而更加安康，<br>我要让世界因我的爱而更加真诚，<br>我要让世界因我的爱而更加和畅。</p>
 ]]></content>
       <categories>
         <category>十三手记</category>
@@ -1397,11 +1473,20 @@
       </tags>
   </entry>
   <entry>
-    <title>能量朗读</title>
-    <url>/2021/12/20/shisan/%E8%83%BD%E9%87%8F%E6%9C%97%E8%AF%BB/</url>
-    <content><![CDATA[<p><code>文章摘自微信公众号：十三先生手记</code></p>
-<p>小时候，我就一直渴望幸福，一直渴望坚强；<br>小时候，我就一直渴望正直，一直渴望善良；<br>小时候，为就一直渴望快乐，一直渴望成长；<br>现在，我几乎丢失了我的信心，我几乎丢失了我的梦想！<br>我知道，我不能再这样消极的逃避。<br>我知道，我不能再这样平庸的彷徨。<br>我知道，我要全力迸发我的热情；我要勇敢的收复我的希望。<br>我知道，我要真诚的对待身边每一个人，这样，我才能被每一个人真诚的对待；<br>我知道，我要用心的对待每天的时光，这样，我才能收获每天的力量；<br>我知道，我要帮助身边每一个人达成心愿，这样，大家才能帮助我实现梦想。<br>从今天起，我要打败我的懒惰，重拾我的阳光；<br>从今天起，我要改变我的粗俗，提升我的修养；<br>从今天起，我要挑战我的懦弱，找回我的坚强；</p>
-<p>我是为爱这个世界而来<br>我要让世界因我的爱而更加美丽，<br>我要让世界因我的爱而更加安康，<br>我要让世界因我的爱而更加真诚，<br>我要让世界因我的爱而更加和畅。</p>
+    <title>金钱之二元整体观</title>
+    <url>/2021/12/22/shisan/%E9%87%91%E9%92%B1%E4%B9%8B%E4%BA%8C%E5%85%83%E6%95%B4%E4%BD%93%E8%A7%82/</url>
+    <content><![CDATA[<p><code>摘自微信号十三手记</code></p>
+<p>金钱只是金钱的样子吗？<br>你以为是，但必定不是。</p>
+<p>首先明白，金钱的有形或无形形式为什么存在？<br>是为了运行金钱背后的实际价值</p>
+<p>对于金钱而言，一般有三种状态：获取，存储，使用<br>三种状态在一起就是你金钱的留存路径，也是金钱存在的整体。</p>
+<p>此时，十三先生要你深深的明白：只要你对待金钱的这三种状态不平衡，只偏向执着于其一或其二，被你忽略掉的部分都必定会让你体验到金钱的匮乏，你都必定会经历金钱的反复障碍，无论金钱多少，你都是被金钱牵制捆绑的奴才；若是你懂得了今天讲的金钱整体性，在金钱对境中，把这三部分中你当时所处的部分运作出最大的价值和质感，并透过自己的障碍和痛苦主动去发现自己的单边局限，并及时主动透过逆袭自己的小气和不尊重金钱之粗糙的行为来扩大自己的金钱进出通道和格局，如此，假以时日，你便不会被金钱三部分中任何一部分障碍，你便会逐步成为内心富足的金钱主人。</p>
+<p><strong>一条手记</strong>：二元有相世界，金钱是你自己其中一个相，你对待金钱的状态就是你对待自己和对待世界的状态。</p>
+<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>这边十三先生提到关于金钱从获得，存储和使用三个维度分析，从提升个人金钱观上升提高个人世界观。</p>
+<ul>
+<li>关于获得：没有人会嫌钱多，在尽个人最大努力以及精力下，应最高效提升金钱的获得效率。</li>
+<li>关于存储：有了上一步，存储才有意义，如何有效理财，提升金钱的有效价值；另外，足够的存储才能带给个人底气和自信。</li>
+<li>关于使用：根据上两步的情况，具体规划用度，及时安抚自我，时刻让自己充满斗志与动力。</li>
+</ul>
 ]]></content>
       <categories>
         <category>十三手记</category>
