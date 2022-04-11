@@ -196,6 +196,106 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://tanrunjie.github.io/2022/01/14/pcl/%E5%A2%99%E9%9D%A2%E5%88%86%E5%89%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="神秘囚徒">
+      <meta itemprop="description" content="你太习惯这个世界了，才会对任何事情都不感到惊奇。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="奇幻物语">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/14/pcl/%E5%A2%99%E9%9D%A2%E5%88%86%E5%89%B2/" class="post-title-link" itemprop="url">墙面分割</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-01-14 14:12:27" itemprop="dateCreated datePublished" datetime="2022-01-14T14:12:27+08:00">2022-01-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-17 17:21:51" itemprop="dateModified" datetime="2022-01-17T17:21:51+08:00">2022-01-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pcl/" itemprop="url" rel="index"><span itemprop="name">pcl</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>524</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="区域生长分割region-growing-segmentation"><a href="#区域生长分割region-growing-segmentation" class="headerlink" title="区域生长分割region growing segmentation"></a>区域生长分割region growing segmentation</h3><p>算法核心：基于点法线之间角度的比较，尽量将满足平滑约束的相邻点合并在一起，以一簇点集的形式输出，视为相同平面</p>
+<p>工作原理：区域增长从有最小曲率值curvature的点。则需要计算所有曲率值并进行排序；因为曲率最小的点位于平坦区域，从平坦区域增长可以减少区域的总数。（曲率与法线的求解方法类似,法线描述点在表面的法向，曲率则是法线间协方差矩阵的特征值，描述法向一致性)</p>
+<p>具体过程：</p>
+<ol>
+<li>对未标记点的曲率排序，将最小曲率点放入种子集</li>
+<li>对每个种子的所有邻点计算</li>
+<li>1 每个近邻点与当前点的法线角度差(reg.setSmoothnessThreshold),如果小于阈值则重点考虑，进入2.2判断</li>
+<li>2 该点通过2.1法线角度差检验，如果曲率小于设定的阈值(reg.setCurvatureThreshold)，这个点即被添加到种子点集，属于当前平面</li>
+<li>通过两次检验的点，被从原始点云去除</li>
+<li>设置最小点簇的点数reg.setMinClusterSize,以及最大簇reg.segMaxClusterSize</li>
+<li>重复1-3生成min~max个点数的所有平面，并对不同平面标记颜色区分</li>
+<li>直到算法在剩余点中生成的点簇不能满足min,停止工作</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://tanrunjie.github.io/2022/01/13/opencv/%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1171,107 +1271,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://tanrunjie.github.io/2021/12/28/cpp/c-%E5%B9%B6%E5%8F%91%E5%AE%9E%E6%88%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="神秘囚徒">
-      <meta itemprop="description" content="你太习惯这个世界了，才会对任何事情都不感到惊奇。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="奇幻物语">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/12/28/cpp/c-%E5%B9%B6%E5%8F%91%E5%AE%9E%E6%88%98/" class="post-title-link" itemprop="url">c++并发实战</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-12-28 10:48:17" itemprop="dateCreated datePublished" datetime="2021-12-28T10:48:17+08:00">2021-12-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-05 14:25:34" itemprop="dateModified" datetime="2022-01-05T14:25:34+08:00">2022-01-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/c/" itemprop="url" rel="index"><span itemprop="name">c++</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>855</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="chap1-c-并发世界"><a href="#chap1-c-并发世界" class="headerlink" title="chap1 c++并发世界"></a>chap1 c++并发世界</h3><p>C++98的13年后，2011的C++11成为新的规范，同时确认了每三年发布新的扩展技术规范。<br>在C++11中，c++ standard第一次承认多线程存在于C++语言中，意味CPP编写与平台无关的多线程程序成为可能。以往编写多线程并发需要针对运行平台部署依赖扩展库，如今可移植性成为可能。</p>
-<p><code>何谓并发和多线程？</code><br>单核的并发存在切换上下文的不必要损耗。<br>多线程：一个进程下，多个小单元共用数据资源，单机并发较常用，实际上CPP支持的是多线程。<br>多进程：开辟多个共用数据资源，多个进程并行，占用大量资源，通讯成本加大，适用于多机。</p>
-<p>并行：关注性能； 并发：关注任务分离；</p>
-<p><code>为什么要并发?</code>  </p>
-<ol>
-<li>关注分离：将相关代码与无关代码分离，使得程序更容易理解和测试。</li>
-<li>关注性能：将任务并行以及可以将数据并行<br>不使用并发的原因：收益比不上成本，一方面脑力以及代码维护成本，一方面是线程资源。尤其32位地址的架构，<br>对于4G(32bit)的架构，每个线程占用1MB，那么开4096个就用尽所有地址，运行太多会出问题。对于现用的板子有1GB的内存可用。对于现用的64位PC，开一个线程ulimit -s可知为8MB;ulimit -u可以看当前可开多少个线程上限，64GB可开约26万个上限。<br>由于多线程使代码复杂且难以理解，只有显著提升性能才值得一干。</li>
-</ol>
-<h3 id="chap2-线程管理"><a href="#chap2-线程管理" class="headerlink" title="chap2 线程管理"></a>chap2 线程管理</h3><ul>
-<li>线程启动：std::thread对象用函数或者类初始化的同时，开始自动启动线程。</li>
-<li>线程等待与分离：join为等待线程执行完成；detach则让线程分离自主执行，此时访问已销毁的变量会引起错误。如果线程已使用过join,则不可再次join。joinable()返回false。<br>解决方法：将数据复制到线程中，可以总结用一个访问局部变量的函数创建线程是危险行为。</li>
-<li>分离线程：通常又称守护线程，没有任何显式的用户接口并在后台运行的线程，通常长时间运行。</li>
-<li>转移线程： thread2 = std::move(thread1);若thread2已有线程，则系统直接调用terminate结束错误。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1343,7 +1342,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1397,12 +1396,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">88k</span>
+    <span title="站点总字数">89k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:20</span>
+    <span title="站点阅读时长">1:21</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
