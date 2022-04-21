@@ -186,61 +186,6 @@
       </tags>
   </entry>
   <entry>
-    <title>SLAMBOOK_3_4</title>
-    <url>/2022/02/28/SLAMBOOK2/SLAMBOOK_3_4/</url>
-    <content><![CDATA[<h3 id="三维空间刚体运动"><a href="#三维空间刚体运动" class="headerlink" title="三维空间刚体运动"></a>三维空间刚体运动</h3><p>目标：</p>
-<ul>
-<li>理解三维空间的刚体运动描述方式：旋转、变换、四元数和欧拉角</li>
-<li>掌握Eigen库的矩阵和几何模块</li>
-</ul>
-<p>基本概念：<br>坐标：一方面与向量本身有关，另一方面与坐标系选取有关。<br>向量：可以是空间中的一样东西<br>外积可表示旋转：右手系叉乘<br>欧式变换：保证同一个向量在各个坐标系下的长度和夹角都不会变化，则可由一个旋转和平移组成<br>旋转矩阵的性质：行列式为1的正交矩阵，SO(n)是特殊正交群<br>齐次坐标：把旋转和平移写入一个矩阵，且保持整个关系为线性关系<br>变换矩阵T：左上为旋转，右侧为平移，左下为0，右下为1的特殊欧式群</p>
-<h4 id="旋转的表达"><a href="#旋转的表达" class="headerlink" title="旋转的表达"></a>旋转的表达</h4><p>1.旋转矩阵：正交阵且行列式为1,行列向量相互正交；内积为0；</p>
-<p>2.三个旋转轴和旋转角：使用一个向量，方向与旋转轴一致，长度等于旋转角，即李代数。由Rodrigues’s Formula可得：$R = cos\theta I + (1-cos\theta)nn^T + sin\theta n^`$ 其中n’是向量到反对称的转换符，从旋转矩阵到旋转向量转换$\theta = arccos(\frac{tr(R)-1}{2})$<br>转轴n是矩阵R特征值1对应的特征向量。解此方程归一化可得旋转轴。</p>
-<p>3.欧拉角：分离成三次绕坐标轴旋转即yaw-pitch-roll.注意著名的<strong>万向锁</strong>问题，+-90度时，丢失一个自由度，产生奇异性问题。因此不适于插值和迭代，往往只用于人机交互。</p>
-<p>4.四元数：既是紧凑的，也没有奇异性的旋转表达。缺点不够直观和运算复杂。<br>熟悉相互表达之间的转换。</p>
-<h4 id="相似、仿射、射影变换"><a href="#相似、仿射、射影变换" class="headerlink" title="相似、仿射、射影变换"></a>相似、仿射、射影变换</h4><p>1.相似： $T_s = [sR t]$, 7个自由度，xyz坐标上均匀缩放<br>2.仿射： $T_A = [A t]$, 12个自由度，A是可逆矩阵而不必是正交矩阵<br>3.射影： $T_p $, 15个自由度，最不规则的</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Eigen rotate data structure</span></span><br><span class="line">Eigen::Matrix3d;  <span class="comment">// 3*3 R matrix</span></span><br><span class="line">Eigen::AngleAxisd;  <span class="comment">// 3*1 R vector</span></span><br><span class="line">Eigen::Vector3d;   <span class="comment">// 3*1 Euler Angle</span></span><br><span class="line">Eigen::Quaterniond;  <span class="comment">// 4*1 quaternion</span></span><br><span class="line">Eigen::Isometry3d;  <span class="comment">// 4*4 T transformed</span></span><br><span class="line">Eigen::Affine3d;   <span class="comment">// 4*4 affine matrix</span></span><br><span class="line">Eigen::Projective3d;  <span class="comment">// 4*4 projective matrix</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="李群与李代数"><a href="#李群与李代数" class="headerlink" title="李群与李代数"></a>李群与李代数</h3><p>目标：</p>
-<ul>
-<li>理解概念，掌握SO(3),SE(3)</li>
-<li>理解BCH近似意义</li>
-<li>李代数的扰动模型</li>
-<li>运用Sohpus对李代数运算</li>
-</ul>
-<p>什么是Sophus? Sophus是Eigen的拓展，李代数库</p>
-<p>为何引入李代数？ 旋转矩阵自身带有正交和行列式为1的约束，作为优化变量引入额外的约束使得优化困难。通过李群和李代数的转换关系，使位姿估计变成无约束的优化问题，简化求解方式。</p>
-<h4 id="数学基础"><a href="#数学基础" class="headerlink" title="数学基础"></a>数学基础</h4><p>什么是群？ 一种集合加上一种运算的代数结构。封结幺逆<br>可以验证：</p>
-<ul>
-<li>旋转矩阵集合和矩阵乘法构成群</li>
-<li>变换矩阵和矩阵乘法也构成群</li>
-<li>因此它们为旋转矩阵群和交换矩阵群</li>
-</ul>
-<p>矩阵中常见的群：</p>
-<ul>
-<li>一般线性群GL(n) : n*n的可逆矩阵，对矩阵乘法成群</li>
-<li>特殊正交群SO(n) : 旋转矩阵群SO(2)和SO(3)</li>
-<li>特殊欧式群SE(n) : 前面的n维欧式变换， SE(2)和SE(3)</li>
-</ul>
-<p>什么是李群Lie Group？ 指具有连续（光滑）性质的群，既是群也是流形。整数群是离散的，不属于。而SO和SE在实数空间连续运动，所以属于李群。SO(3)和SE(3)只有定义良好的乘法，没有加法所以难以进行取极限和求导的操作。将旋转矩阵用李代数逼近迭代优化。</p>
-<p>一种李代数（小写）对应一种李群（大写）。</p>
-<p>$RR^T = I$ 对连续时间求导得 $ R^, R^T = -(R^, R^T )^T $, $R^,$为对时间t的导数。即满足反对称矩阵。最后得$R(t) = exp(\phi_0t)$<br>这表示：</p>
-<ul>
-<li>1.给定某时刻的R，我们能求一个$\phi$描述R在局部的导数关系，正切空间邻域。$\phi$正是SO(3)上的李代数so(3)</li>
-<li>2.矩阵指数如何计算？事实上这正是李群与李代数之间的指数/对数映射</li>
-</ul>
-<p>什么是李代数？ 每个李群对应一个李代数，描述了李群单位元数的正切空间性质。满足封闭性、双线性、自反性、雅可比等价</p>
-<p>什么是李括号？二元运算，表达了两个元素的差异。</p>
-<h4 id="指数与对数映射"><a href="#指数与对数映射" class="headerlink" title="指数与对数映射"></a>指数与对数映射</h4><p>// To do 后续补充，本章涉及较多数学和公式</p>
-]]></content>
-      <categories>
-        <category>SLAMBOOK</category>
-      </categories>
-      <tags>
-        <tag>SLAMBOOK</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SLAM十四讲_一预备及初识</title>
     <url>/2022/01/07/SLAMBOOK2/SLAMBOOK_1_2/</url>
     <content><![CDATA[<h3 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h3><h4 id="SLAM：Simultaneous-Localization-and-Mapping"><a href="#SLAM：Simultaneous-Localization-and-Mapping" class="headerlink" title="SLAM：Simultaneous Localization and Mapping"></a>SLAM：Simultaneous Localization and Mapping</h4><p>同步定位及建图：搭载特定传感器的主体，在没有环境先验信息情况下，在运动过程中建立环境模型，同时估计自己位姿的过程。根据传感器分为深度相机，RGB相机和激光。不同传感器特点不一样，应用环境以及遇到的难点不同。本书主要是视觉SLAM：围绕RGB相机，也会引入Depth相机。</p>
@@ -324,36 +269,52 @@
       </tags>
   </entry>
   <entry>
-    <title>SLAMBOOK_7_8</title>
-    <url>/2022/03/04/SLAMBOOK2/SLAMBOOK_7_8/</url>
-    <content><![CDATA[<h3 id="视觉里程计"><a href="#视觉里程计" class="headerlink" title="视觉里程计"></a>视觉里程计</h3><p>主要目标：</p>
+    <title>SLAMBOOK_3_4</title>
+    <url>/2022/02/28/SLAMBOOK2/SLAMBOOK_3_4/</url>
+    <content><![CDATA[<h3 id="三维空间刚体运动"><a href="#三维空间刚体运动" class="headerlink" title="三维空间刚体运动"></a>三维空间刚体运动</h3><p>目标：</p>
 <ul>
-<li>理解图像特征点的意义，掌握单幅图像提取特征点及多幅图像中匹配特征点的方法</li>
-<li>理解对极几何原理，利用对极约束，恢复图像之间的camera位姿</li>
-<li>理解PnP问题，利用已知三维结构与图像对应关系，求解camera位姿</li>
-<li>理解ICP问题，利用点云匹配关系，求解camera位姿</li>
-<li>理解三角化获得二维图像上对应点的三维结构</li>
+<li>理解三维空间的刚体运动描述方式：旋转、变换、四元数和欧拉角</li>
+<li>掌握Eigen库的矩阵和几何模块</li>
 </ul>
-<p>图像特征性质：多图可重复、可区别、高效率、本地性</p>
-<p>对极几何：从两张RGB图的特征匹配中求解本质矩阵，从而推出R，t.由8组特征匹配对SVD求解有4个可能解，幸运地只有一个解均在两个相机的光轴正向。但因缺乏深度尺度，所以t为单位1.<br>不稳定的问题：1.初始化纯旋转t为0，三角化R不稳定； 2.多于8个特征匹配点可用最小二乘或者RANSAC方法求E，F，H；</p>
-<p>三角测量：将两个二维点对以及之间的位姿变换输入opencv的triangulatePoints中，得到点对的三维空间坐标；由于三角测量由平移产生，引出核心矛盾：平移小，则像素有较大深度不确定性；平移大，则图像外观变化大，特征匹配困难。</p>
-<p>PnP:载入两张RGB图及其中一张对齐的Depth图，使用opencv的solvePnP解三维点对及二维点对的外参位姿变化R，t;</p>
-<p>Bundle Adjustment：用于最小化重投影误差，将观测到的三维空间点与当前估计位姿投影位置得到的误差。考虑匹配特征点上的最优化重投影。</p>
-<p>ICP方法：载入两个位姿状态的RGBD图，图像匹配后获得匹配好的3D点对，直接采用线性代数的求解（SVD）及BA优化获得最佳外参位姿即可。</p>
-<h4 id="课后习题"><a href="#课后习题" class="headerlink" title="课后习题"></a>课后习题</h4><p>1.图像特征点原理及区别<br>Harris角点：基于图像灰度的一阶导数滤波检测，主要依赖与移动方向窗口内图像块的相似性。</p>
-<p>SIFT/SURF：1.构建高斯差分金字塔 2.准确提取关键点 3.结合邻域构建描述子</p>
-<p>2.opencv接口，SIFT::create(nfeatures, nOctavelLayers, constrastThreshold, edgeThreshold, sigma);<br>特征数量，金字塔最小层数，特征过滤阈值，边缘过滤阈值，高斯层级。<br>默认参数下，1000个SIFT特征点用时0.15s;</p>
-<p>3.如何让特征点分布更均匀：goodFeatureToTrack(GFTT)方法</p>
-<p>4.特征匹配方法有哪些？<br>FLANN快速最近邻搜索包，大数据下比BFMatcher暴力搜索要佳。FLANN主要三种算法：KD tree, k-means tree, hiearachy tree;</p>
-<p>5.其他PNP方法：EPNP精度较高，复杂度为O（N）.DLT更快，精度下降。</p>
-<p>6.G2O可把两图的空间点都加进来一起优化</p>
-<p>7.图像误匹配影响整体优化效果，可以通过鲁棒核函数降低影响程度，同时引入RANSAC.</p>
-<h3 id="视觉里程计2"><a href="#视觉里程计2" class="headerlink" title="视觉里程计2"></a>视觉里程计2</h3><p>本章目标：</p>
+<p>基本概念：<br>坐标：一方面与向量本身有关，另一方面与坐标系选取有关。<br>向量：可以是空间中的一样东西<br>外积可表示旋转：右手系叉乘<br>欧式变换：保证同一个向量在各个坐标系下的长度和夹角都不会变化，则可由一个旋转和平移组成<br>旋转矩阵的性质：行列式为1的正交矩阵，SO(n)是特殊正交群<br>齐次坐标：把旋转和平移写入一个矩阵，且保持整个关系为线性关系<br>变换矩阵T：左上为旋转，右侧为平移，左下为0，右下为1的特殊欧式群</p>
+<h4 id="旋转的表达"><a href="#旋转的表达" class="headerlink" title="旋转的表达"></a>旋转的表达</h4><p>1.旋转矩阵：正交阵且行列式为1,行列向量相互正交；内积为0；</p>
+<p>2.三个旋转轴和旋转角：使用一个向量，方向与旋转轴一致，长度等于旋转角，即李代数。由Rodrigues’s Formula可得：$R = cos\theta I + (1-cos\theta)nn^T + sin\theta n^`$ 其中n’是向量到反对称的转换符，从旋转矩阵到旋转向量转换$\theta = arccos(\frac{tr(R)-1}{2})$<br>转轴n是矩阵R特征值1对应的特征向量。解此方程归一化可得旋转轴。</p>
+<p>3.欧拉角：分离成三次绕坐标轴旋转即yaw-pitch-roll.注意著名的<strong>万向锁</strong>问题，+-90度时，丢失一个自由度，产生奇异性问题。因此不适于插值和迭代，往往只用于人机交互。</p>
+<p>4.四元数：既是紧凑的，也没有奇异性的旋转表达。缺点不够直观和运算复杂。<br>熟悉相互表达之间的转换。</p>
+<h4 id="相似、仿射、射影变换"><a href="#相似、仿射、射影变换" class="headerlink" title="相似、仿射、射影变换"></a>相似、仿射、射影变换</h4><p>1.相似： $T_s = [sR t]$, 7个自由度，xyz坐标上均匀缩放<br>2.仿射： $T_A = [A t]$, 12个自由度，A是可逆矩阵而不必是正交矩阵<br>3.射影： $T_p $, 15个自由度，最不规则的</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Eigen rotate data structure</span></span><br><span class="line">Eigen::Matrix3d;  <span class="comment">// 3*3 R matrix</span></span><br><span class="line">Eigen::AngleAxisd;  <span class="comment">// 3*1 R vector</span></span><br><span class="line">Eigen::Vector3d;   <span class="comment">// 3*1 Euler Angle</span></span><br><span class="line">Eigen::Quaterniond;  <span class="comment">// 4*1 quaternion</span></span><br><span class="line">Eigen::Isometry3d;  <span class="comment">// 4*4 T transformed</span></span><br><span class="line">Eigen::Affine3d;   <span class="comment">// 4*4 affine matrix</span></span><br><span class="line">Eigen::Projective3d;  <span class="comment">// 4*4 projective matrix</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="李群与李代数"><a href="#李群与李代数" class="headerlink" title="李群与李代数"></a>李群与李代数</h3><p>目标：</p>
 <ul>
-<li>理解光流法特征点跟踪</li>
-<li>理解直接法估计相机位姿</li>
-<li>使用G2O进行直接法计算</li>
+<li>理解概念，掌握SO(3),SE(3)</li>
+<li>理解BCH近似意义</li>
+<li>李代数的扰动模型</li>
+<li>运用Sohpus对李代数运算</li>
 </ul>
+<p>什么是Sophus? Sophus是Eigen的拓展，李代数库</p>
+<p>为何引入李代数？ 旋转矩阵自身带有正交和行列式为1的约束，作为优化变量引入额外的约束使得优化困难。通过李群和李代数的转换关系，使位姿估计变成无约束的优化问题，简化求解方式。</p>
+<h4 id="数学基础"><a href="#数学基础" class="headerlink" title="数学基础"></a>数学基础</h4><p>什么是群？ 一种集合加上一种运算的代数结构。封结幺逆<br>可以验证：</p>
+<ul>
+<li>旋转矩阵集合和矩阵乘法构成群</li>
+<li>变换矩阵和矩阵乘法也构成群</li>
+<li>因此它们为旋转矩阵群和交换矩阵群</li>
+</ul>
+<p>矩阵中常见的群：</p>
+<ul>
+<li>一般线性群GL(n) : n*n的可逆矩阵，对矩阵乘法成群</li>
+<li>特殊正交群SO(n) : 旋转矩阵群SO(2)和SO(3)</li>
+<li>特殊欧式群SE(n) : 前面的n维欧式变换， SE(2)和SE(3)</li>
+</ul>
+<p>什么是李群Lie Group？ 指具有连续（光滑）性质的群，既是群也是流形。整数群是离散的，不属于。而SO和SE在实数空间连续运动，所以属于李群。SO(3)和SE(3)只有定义良好的乘法，没有加法所以难以进行取极限和求导的操作。将旋转矩阵用李代数逼近迭代优化。</p>
+<p>一种李代数（小写）对应一种李群（大写）。</p>
+<p>$RR^T = I$ 对连续时间求导得 $ R^, R^T = -(R^, R^T )^T $, $R^,$为对时间t的导数。即满足反对称矩阵。最后得$R(t) = exp(\phi_0t)$<br>这表示：</p>
+<ul>
+<li>1.给定某时刻的R，我们能求一个$\phi$描述R在局部的导数关系，正切空间邻域。$\phi$正是SO(3)上的李代数so(3)</li>
+<li>2.矩阵指数如何计算？事实上这正是李群与李代数之间的指数/对数映射</li>
+</ul>
+<p>什么是李代数？ 每个李群对应一个李代数，描述了李群单位元数的正切空间性质。满足封闭性、双线性、自反性、雅可比等价</p>
+<p>什么是李括号？二元运算，表达了两个元素的差异。</p>
+<h4 id="指数与对数映射"><a href="#指数与对数映射" class="headerlink" title="指数与对数映射"></a>指数与对数映射</h4><p>// To do 后续补充，本章涉及较多数学和公式</p>
 ]]></content>
       <categories>
         <category>SLAMBOOK</category>
@@ -437,6 +398,62 @@
       </tags>
   </entry>
   <entry>
+    <title>SLAMBOOK_7_8</title>
+    <url>/2022/03/04/SLAMBOOK2/SLAMBOOK_7_8/</url>
+    <content><![CDATA[<h3 id="视觉里程计"><a href="#视觉里程计" class="headerlink" title="视觉里程计"></a>视觉里程计</h3><p>主要目标：</p>
+<ul>
+<li>理解图像特征点的意义，掌握单幅图像提取特征点及多幅图像中匹配特征点的方法</li>
+<li>理解对极几何原理，利用对极约束，恢复图像之间的camera位姿</li>
+<li>理解PnP问题，利用已知三维结构与图像对应关系，求解camera位姿</li>
+<li>理解ICP问题，利用点云匹配关系，求解camera位姿</li>
+<li>理解三角化获得二维图像上对应点的三维结构</li>
+</ul>
+<p>图像特征性质：多图可重复、可区别、高效率、本地性</p>
+<p>对极几何：从两张RGB图的特征匹配中求解本质矩阵，从而推出R，t.由8组特征匹配对SVD求解有4个可能解，幸运地只有一个解均在两个相机的光轴正向。但因缺乏深度尺度，所以t为单位1.<br>不稳定的问题：1.初始化纯旋转t为0，三角化R不稳定； 2.多于8个特征匹配点可用最小二乘或者RANSAC方法求E，F，H；</p>
+<p>三角测量：将两个二维点对以及之间的位姿变换输入opencv的triangulatePoints中，得到点对的三维空间坐标；由于三角测量由平移产生，引出核心矛盾：平移小，则像素有较大深度不确定性；平移大，则图像外观变化大，特征匹配困难。</p>
+<p>PnP:载入两张RGB图及其中一张对齐的Depth图，使用opencv的solvePnP解三维点对及二维点对的外参位姿变化R，t;</p>
+<p>Bundle Adjustment：用于最小化重投影误差，将观测到的三维空间点与当前估计位姿投影位置得到的误差。考虑匹配特征点上的最优化重投影。</p>
+<p>ICP方法：载入两个位姿状态的RGBD图，图像匹配后获得匹配好的3D点对，直接采用线性代数的求解（SVD）及BA优化获得最佳外参位姿即可。</p>
+<h4 id="课后习题"><a href="#课后习题" class="headerlink" title="课后习题"></a>课后习题</h4><p>1.图像特征点原理及区别<br>Harris角点：基于图像灰度的一阶导数滤波检测，主要依赖与移动方向窗口内图像块的相似性。</p>
+<p>SIFT/SURF：1.构建高斯差分金字塔 2.准确提取关键点 3.结合邻域构建描述子</p>
+<p>2.opencv接口，SIFT::create(nfeatures, nOctavelLayers, constrastThreshold, edgeThreshold, sigma);<br>特征数量，金字塔最小层数，特征过滤阈值，边缘过滤阈值，高斯层级。<br>默认参数下，1000个SIFT特征点用时0.15s;</p>
+<p>3.如何让特征点分布更均匀：goodFeatureToTrack(GFTT)方法</p>
+<p>4.特征匹配方法有哪些？<br>FLANN快速最近邻搜索包，大数据下比BFMatcher暴力搜索要佳。FLANN主要三种算法：KD tree, k-means tree, hiearachy tree;</p>
+<p>5.其他PNP方法：EPNP精度较高，复杂度为O（N）.DLT更快，精度下降。</p>
+<p>6.G2O可把两图的空间点都加进来一起优化</p>
+<p>7.图像误匹配影响整体优化效果，可以通过鲁棒核函数降低影响程度，同时引入RANSAC.</p>
+<h3 id="视觉里程计2"><a href="#视觉里程计2" class="headerlink" title="视觉里程计2"></a>视觉里程计2</h3><p>本章目标：</p>
+<ul>
+<li>理解光流法特征点跟踪</li>
+<li>理解直接法估计相机位姿</li>
+<li>使用G2O进行直接法计算</li>
+</ul>
+]]></content>
+      <categories>
+        <category>SLAMBOOK</category>
+      </categories>
+      <tags>
+        <tag>SLAMBOOK</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>chrono库</title>
+    <url>/2021/12/29/cpp/chrono%E5%BA%93/</url>
+    <content><![CDATA[<p>计时，常用于测试代码的运行时间和效率。</p>
+<h3 id="以往用法ctime"><a href="#以往用法ctime" class="headerlink" title="以往用法ctime"></a>以往用法ctime</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ctime&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">clock_t</span> start = <span class="built_in">clock</span>();</span><br><span class="line"><span class="built_in">func</span>();</span><br><span class="line"><span class="keyword">clock_t</span> end = <span class="built_in">clock</span>();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;spend &quot;</span> &lt;&lt; (<span class="keyword">double</span>)(end-start)/CLOCKS_PER_SEC &lt;&lt;<span class="string">&quot; second&quot;</span> &lt;&lt; endl;  <span class="comment">// 精确到毫秒</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="chrono用法"><a href="#chrono用法" class="headerlink" title="chrono用法"></a>chrono用法</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;chrono&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> chrono;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> start = system_clock::<span class="built_in">now</span>();</span><br><span class="line"><span class="built_in">func</span>();</span><br><span class="line"><span class="keyword">auto</span> end = system_clock::<span class="built_in">now</span>();</span><br><span class="line"><span class="keyword">auto</span> duration = duration_cast&lt;microseconds&gt;(end-start);</span><br><span class="line">cout &lt;&lt;<span class="string">&quot;spend &quot;</span> &lt;&lt; <span class="built_in"><span class="keyword">double</span></span>(duration.<span class="built_in">count</span>()) * microseconds::period::num / microseconds::period::den &lt;&lt; <span class="string">&quot; second&quot;</span> &lt;&lt; endl;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>其中，auto为自动类型；除了system_clock,还可用steady_clock和high_resolution_clock; microseconds表示微妙，甚至还有nanoseconds纳秒；num和den表示计时单位的分子和分母。</p>
+]]></content>
+      <categories>
+        <category>c++</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>c++并发实战</title>
     <url>/2021/12/28/cpp/c-%E5%B9%B6%E5%8F%91%E5%AE%9E%E6%88%98/</url>
     <content><![CDATA[<h3 id="chap1-c-并发世界"><a href="#chap1-c-并发世界" class="headerlink" title="chap1 c++并发世界"></a>chap1 c++并发世界</h3><p>C++98的13年后，2011的C++11成为新的规范，同时确认了每三年发布新的扩展技术规范。<br>在C++11中，c++ standard第一次承认多线程存在于C++语言中，意味CPP编写与平台无关的多线程程序成为可能。以往编写多线程并发需要针对运行平台部署依赖扩展库，如今可移植性成为可能。</p>
@@ -462,23 +479,6 @@
       </tags>
   </entry>
   <entry>
-    <title>chrono库</title>
-    <url>/2021/12/29/cpp/chrono%E5%BA%93/</url>
-    <content><![CDATA[<p>计时，常用于测试代码的运行时间和效率。</p>
-<h3 id="以往用法ctime"><a href="#以往用法ctime" class="headerlink" title="以往用法ctime"></a>以往用法ctime</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ctime&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">clock_t</span> start = <span class="built_in">clock</span>();</span><br><span class="line"><span class="built_in">func</span>();</span><br><span class="line"><span class="keyword">clock_t</span> end = <span class="built_in">clock</span>();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;spend &quot;</span> &lt;&lt; (<span class="keyword">double</span>)(end-start)/CLOCKS_PER_SEC &lt;&lt;<span class="string">&quot; second&quot;</span> &lt;&lt; endl;  <span class="comment">// 精确到毫秒</span></span><br></pre></td></tr></table></figure>
-
-
-<h3 id="chrono用法"><a href="#chrono用法" class="headerlink" title="chrono用法"></a>chrono用法</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;chrono&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> chrono;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> start = system_clock::<span class="built_in">now</span>();</span><br><span class="line"><span class="built_in">func</span>();</span><br><span class="line"><span class="keyword">auto</span> end = system_clock::<span class="built_in">now</span>();</span><br><span class="line"><span class="keyword">auto</span> duration = duration_cast&lt;microseconds&gt;(end-start);</span><br><span class="line">cout &lt;&lt;<span class="string">&quot;spend &quot;</span> &lt;&lt; <span class="built_in"><span class="keyword">double</span></span>(duration.<span class="built_in">count</span>()) * microseconds::period::num / microseconds::period::den &lt;&lt; <span class="string">&quot; second&quot;</span> &lt;&lt; endl;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>其中，auto为自动类型；除了system_clock,还可用steady_clock和high_resolution_clock; microseconds表示微妙，甚至还有nanoseconds纳秒；num和den表示计时单位的分子和分母。</p>
-]]></content>
-      <categories>
-        <category>c++</category>
-      </categories>
-      <tags>
-        <tag>c++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>cpp生成代码及数据类型</title>
     <url>/2021/12/14/cpp/cpp%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</url>
     <content><![CDATA[<p>c++基本数据类型主要有<em>bool, char, int, float, double</em>。具体如下：</p>
@@ -491,29 +491,6 @@
       </categories>
       <tags>
         <tag>c++ primer</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>代码重用</title>
-    <url>/2022/01/26/cpp/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8/</url>
-    <content><![CDATA[<h3 id="类的复用"><a href="#类的复用" class="headerlink" title="类的复用"></a>类的复用</h3><p>上一节了解了public继承是is-a关系;C++ PRIMER第十四章重用讲解包含has-a的两种用法：1.组件包含 2.私有继承包含<br>大多数人会倾向于使用包含，一方面方便理解，另一方面多重继承容易引起问题；私有继承主要区别在于私有成员变成了继承而来的无名成员，调用成员时依赖this的类型转换。</p>
-<h3 id="多重继承"><a href="#多重继承" class="headerlink" title="多重继承"></a>多重继承</h3><p>MI会带来许多新问题：1.两个基类的同名方法； 2.多个相关基类继承同一个类的多个实例问题；为此大家对MI有喜忧参半不同的态度。</p>
-<p>祖先相同时，要用虚基类解决 class Singer:virtual public Worker，虚拟继承。禁止正常的信息再中间类自动传递。</p>
-<p>MI中间隐含较多问题，尽量减少使用，要么就不用。</p>
-<h3 id="类模板"><a href="#类模板" class="headerlink" title="类模板"></a>类模板</h3><p>模板主要作用是提供参数化类型，将类型关键名作为参数传递给模板类或函数，从而实现最大程度代码复用。</p>
-<p>模板类型使用指针时，代码实现上也得调整，所以一般减少依赖指针模板使用，尽量时bool,char,int,double,string，及一般对象等。</p>
-<p>为容器类提供可重用代码是引入模板的主要动机。非类型参数可以是int,枚举，引用或指针，因此double m 不合法，但double *m是合法的。</p>
-<p>模板多功能性，可用于基类，组件类以及其他模板的类型参数。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ARray</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="keyword">private</span>:</span><br><span class="line">    T entry;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">Type</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GrowArray</span>:</span><span class="keyword">public</span> Array&lt;Type&gt; &#123;...&#125;; <span class="comment">// inheritance</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;calss Tp&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Stack</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  Array&lt;Tp&gt; ar;    <span class="comment">// use an Array&lt;&gt; as a component</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// need a blank between &gt; &gt;, show differ from &gt;&gt; operator</span></span><br><span class="line">Array &lt; Stack&lt;<span class="keyword">int</span>&gt; &gt; asi; <span class="comment">// an array of stacks of int</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 模板也可传参</span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>, <span class="title">int</span> <span class="title">n</span>&gt;</span></span><br><span class="line">ArrayTP&lt;T, n&gt;::<span class="built_in">ArrayTP</span>(<span class="keyword">const</span> T &amp; v)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++&gt;)</span><br><span class="line">    ar[i] = v;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 显示具体化，用于专用定义，优先匹配</span></span><br><span class="line"><span class="keyword">template</span>&lt;&gt; <span class="class"><span class="keyword">class</span> <span class="title">Ic</span>&lt;</span><span class="keyword">char</span> *&gt;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">private</span>:</span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>模板参数类似函数参数，带有隐式显式转换及参数匹配规则。</p>
-<h3 id="友元类"><a href="#友元类" class="headerlink" title="友元类"></a>友元类</h3><p>两个类关系既不是is-a也不是has-a，但存在控制的关系如电视和遥控。则可以定义遥控为电视的友元类，能够合理范围内修改电视的私有和保护的部分。相当于友元类需要直到朋友类的数据细节乃至实现细节。</p>
-]]></content>
-      <categories>
-        <category>c++</category>
-      </categories>
-      <tags>
-        <tag>c++</tag>
       </tags>
   </entry>
   <entry>
@@ -566,6 +543,29 @@
 </ul>
 <p>命名空间可以是全局的，也可以位于另一个名称空间中，但<strong>不能位于代码块中</strong></p>
 <p>using namespace std;就是using编译指令，使整个名称空间可用。</p>
+]]></content>
+      <categories>
+        <category>c++</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>代码重用</title>
+    <url>/2022/01/26/cpp/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8/</url>
+    <content><![CDATA[<h3 id="类的复用"><a href="#类的复用" class="headerlink" title="类的复用"></a>类的复用</h3><p>上一节了解了public继承是is-a关系;C++ PRIMER第十四章重用讲解包含has-a的两种用法：1.组件包含 2.私有继承包含<br>大多数人会倾向于使用包含，一方面方便理解，另一方面多重继承容易引起问题；私有继承主要区别在于私有成员变成了继承而来的无名成员，调用成员时依赖this的类型转换。</p>
+<h3 id="多重继承"><a href="#多重继承" class="headerlink" title="多重继承"></a>多重继承</h3><p>MI会带来许多新问题：1.两个基类的同名方法； 2.多个相关基类继承同一个类的多个实例问题；为此大家对MI有喜忧参半不同的态度。</p>
+<p>祖先相同时，要用虚基类解决 class Singer:virtual public Worker，虚拟继承。禁止正常的信息再中间类自动传递。</p>
+<p>MI中间隐含较多问题，尽量减少使用，要么就不用。</p>
+<h3 id="类模板"><a href="#类模板" class="headerlink" title="类模板"></a>类模板</h3><p>模板主要作用是提供参数化类型，将类型关键名作为参数传递给模板类或函数，从而实现最大程度代码复用。</p>
+<p>模板类型使用指针时，代码实现上也得调整，所以一般减少依赖指针模板使用，尽量时bool,char,int,double,string，及一般对象等。</p>
+<p>为容器类提供可重用代码是引入模板的主要动机。非类型参数可以是int,枚举，引用或指针，因此double m 不合法，但double *m是合法的。</p>
+<p>模板多功能性，可用于基类，组件类以及其他模板的类型参数。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ARray</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="keyword">private</span>:</span><br><span class="line">    T entry;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">Type</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GrowArray</span>:</span><span class="keyword">public</span> Array&lt;Type&gt; &#123;...&#125;; <span class="comment">// inheritance</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;calss Tp&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Stack</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  Array&lt;Tp&gt; ar;    <span class="comment">// use an Array&lt;&gt; as a component</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// need a blank between &gt; &gt;, show differ from &gt;&gt; operator</span></span><br><span class="line">Array &lt; Stack&lt;<span class="keyword">int</span>&gt; &gt; asi; <span class="comment">// an array of stacks of int</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 模板也可传参</span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>, <span class="title">int</span> <span class="title">n</span>&gt;</span></span><br><span class="line">ArrayTP&lt;T, n&gt;::<span class="built_in">ArrayTP</span>(<span class="keyword">const</span> T &amp; v)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++&gt;)</span><br><span class="line">    ar[i] = v;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 显示具体化，用于专用定义，优先匹配</span></span><br><span class="line"><span class="keyword">template</span>&lt;&gt; <span class="class"><span class="keyword">class</span> <span class="title">Ic</span>&lt;</span><span class="keyword">char</span> *&gt;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">private</span>:</span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>模板参数类似函数参数，带有隐式显式转换及参数匹配规则。</p>
+<h3 id="友元类"><a href="#友元类" class="headerlink" title="友元类"></a>友元类</h3><p>两个类关系既不是is-a也不是has-a，但存在控制的关系如电视和遥控。则可以定义遥控为电视的友元类，能够合理范围内修改电视的私有和保护的部分。相当于友元类需要直到朋友类的数据细节乃至实现细节。</p>
 ]]></content>
       <categories>
         <category>c++</category>
@@ -676,56 +676,6 @@
       </tags>
   </entry>
   <entry>
-    <title>异常处理</title>
-    <url>/2021/12/23/cpp/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</url>
-    <content><![CDATA[<h3 id="处理可能出现异常的方法"><a href="#处理可能出现异常的方法" class="headerlink" title="处理可能出现异常的方法"></a>处理可能出现异常的方法</h3><ul>
-<li>调用abort()或exit()结束程序</li>
-<li>返回错误码</li>
-<li>异常机制：1.使用try块执行可能出现异常的代码段 2.throw引发异常 3.catch捕获并处理对应情况</li>
-</ul>
-<h3 id="throw机制"><a href="#throw机制" class="headerlink" title="throw机制"></a>throw机制</h3><p>若throw引发异常后，匹配对应catch。而后不是将控制权返回调用程序，而是引导程序沿着函数调用序列后退，直到找到try块中的函数<br>若没有throw出异常，则catch被跳过.<br>一般而言后退多步，再在main()中寻找与引发异常<strong>类型匹配</strong>的处理程序作处理。</p>
-<h3 id="通常用对象作为异常类型处理"><a href="#通常用对象作为异常类型处理" class="headerlink" title="通常用对象作为异常类型处理"></a>通常用对象作为异常类型处理</h3><p>好处是：直接根据类型区分异常，另外对象可以携带信息确定原因，catch根据信息来执行对应的操作</p>
-<h3 id="堆栈解退（unwinding-the-stack）"><a href="#堆栈解退（unwinding-the-stack）" class="headerlink" title="堆栈解退（unwinding the stack）"></a>堆栈解退（unwinding the stack）</h3><p>假设函数出现异常，而不是正确返回而终止。程序释放堆栈中的内存，但不会在释放堆栈的第一个返回地址后停止，而是继续释放堆栈，直到找到位于try块的返回地质。程序进行堆栈解退以回到能够捕获异常的地方时，将释放堆栈中的自动存储型变量。</p>
-<p><img src="/images/12_23_1.png"></p>
-<h3 id="文件IO"><a href="#文件IO" class="headerlink" title="文件IO"></a>文件IO</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ifstream inFile;</span><br><span class="line">    inFile.<span class="built_in">open</span>(<span class="string">&quot;file.txt&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(!inFile.<span class="built_in">is_open</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        cerr &lt;&lt;<span class="string">&quot;Failed open file.txt\n&quot;</span>;</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">char</span> ch;</span><br><span class="line">    <span class="keyword">int</span> cnt=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(inFile&gt;&gt;ch)</span><br><span class="line">    &#123;</span><br><span class="line">        cnt++;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; cnt &lt;&lt;endl;</span><br><span class="line">    inFile.<span class="built_in">close</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>下面程序为harmony mean的除0错误，抛出const char *类型，匹配输出错误信息的代码。一般抛出错误类型通常为类。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdlib&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">hmean</span><span class="params">(<span class="keyword">double</span> a, <span class="keyword">double</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (a == -b)</span><br><span class="line">        <span class="keyword">throw</span> <span class="string">&quot;bad hmean() arguments: a = -b not allowed&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2.0</span> * a * b / (a + b);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">double</span> x, y, z;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;Enter two numbers:&quot;</span>;</span><br><span class="line">    <span class="keyword">while</span> (cin &gt;&gt; x &gt;&gt; y)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            z = <span class="built_in">hmean</span>(x, y);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in"><span class="keyword">catch</span></span>(<span class="keyword">const</span> <span class="keyword">char</span> * s)</span><br><span class="line">        &#123;</span><br><span class="line">            cout &lt;&lt; s &lt;&lt; endl;</span><br><span class="line">            cout &lt;&lt;<span class="string">&quot;Enter a new pair of numbers: &quot;</span>;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Harmonic mean of &quot;</span> &lt;&lt; x &lt;&lt; <span class="string">&quot; and &quot;</span> &lt;&lt; y &lt;&lt; <span class="string">&quot;. is &quot;</span> &lt;&lt; z &lt;&lt; endl;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Enter next set of numbers &lt;q to quit&gt;:&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;Bye!&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="throw-catch机制和函数参数以及函数返回机制的区别"><a href="#throw-catch机制和函数参数以及函数返回机制的区别" class="headerlink" title="throw-catch机制和函数参数以及函数返回机制的区别"></a>throw-catch机制和函数参数以及函数返回机制的区别</h3><p>1.函数控制权返回到调用函数的函数，throw语句控制权向上返回到第一个包含能够捕获相应异常的try-catch组合<br>2.引发异常时，编译器总是创建一个临时拷贝，彻底避免了函数机制指向不存在的临时变量的问题。<br>3.经常可见catch(problem &amp; p)，使用了引用，主要是针对通过继承关联起来的异常类型；此时使用基类引用即可执行派生类对象。此时层次结构最下面的异常类的catch语句应当放在最前面。</p>
-<p>catch (…)表示捕获任何异常</p>
-<h3 id="异常处理的注意事项"><a href="#异常处理的注意事项" class="headerlink" title="异常处理的注意事项"></a>异常处理的注意事项</h3><p>1.使用异常，应在设计程序时就加入，而不是以后才添加。<br>2.使用异常会增加程序代码，降低程序运行速度。<br>3.异常规范不适用于模板，异常和动态内存分配不能总是协同工作<br>因此，虽然异常处理对于某些项目极为重要，但也会增加编程的工作量、增大程序以及降低程序的速度。另外编译器对异常的支持以及用户的经验还没有达到成熟的程度，应有节制地使用这一特性。</p>
-<p>如无堆栈解退，则会出现内存泄漏，如下</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">(<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">double</span> * ar = <span class="keyword">new</span> <span class="keyword">double</span>[n];</span><br><span class="line">    <span class="keyword">if</span>(oh_no)</span><br><span class="line">        <span class="keyword">throw</span> <span class="built_in">exception</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">delete</span> [] ar;</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>throw了，则delete[]被忽略，ar指针消失了，内存块未释放且不可访问。</p>
-<h3 id="RTTI（RunTime-Type-Identification"><a href="#RTTI（RunTime-Type-Identification" class="headerlink" title="RTTI（RunTime Type Identification)"></a>RTTI（RunTime Type Identification)</h3><p>三个支持RTTI的元素：</p>
-<ul>
-<li>dynamic_cast操作符将基类指针生成派生指针：回答是否可以安全将对象的地址赋给特定类型的指针？如可，返回对象地址；否则，返回空指针。这对比“指向哪个类型的对象”，这更通用且有用。</li>
-<li>typeid操作符返回对象的类型</li>
-<li>type_info存储特定类型的信息<br>注意：RTTI只适用于包含虚函数的类</li>
-</ul>
-<p>与通用转换机制相比，dynamic_cast、static_cast、const_cast、reinterpret_cast提供了更安全和明确的类型转换。</p>
-<h3 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h3><p>通用编程技术，迭代器概念。<br>操作复杂度：固定时间、线性时间、随机时间<br>线性容器以及联合容器(set、map、multiset、multimap)<br>()函数符functor的概念,STL使用模板让for_each原型看上去像</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;class InputIterator, class Function&gt;</span></span><br><span class="line"><span class="function">Function <span class="title">for_each</span><span class="params">(InputIterator first, InputIterator last, Function f)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="STL算法库"><a href="#STL算法库" class="headerlink" title="STL算法库"></a>STL算法库</h3><p>分为四大类</p>
-<ul>
-<li>非修改式序列操作</li>
-<li>修改式序列操作</li>
-<li>排序和相关操作</li>
-<li>通用数字运算<br>就地算法：在原始数据位置上操作；复制算法：在新的位置操作</li>
-</ul>
-<h3 id="IO"><a href="#IO" class="headerlink" title="IO"></a>IO</h3><p>cout不会截断数据，会尽量全部打印内容。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">cout.<span class="built_in">width</span>(<span class="keyword">int</span> n); <span class="comment">// 单次有效</span></span><br><span class="line">cout.<span class="built_in">fill</span>(<span class="keyword">char</span> c); <span class="comment">// 一直有效</span></span><br><span class="line">cout.<span class="built_in">precision</span>(<span class="keyword">int</span> n); <span class="comment">// 一直有效</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>c++</category>
-      </categories>
-      <tags>
-        <tag>c++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>逻辑控制</title>
     <url>/2021/12/16/cpp/%E9%80%BB%E8%BE%91%E6%8E%A7%E5%88%B6/</url>
     <content><![CDATA[<h3 id="do…while…-至少会执行一次的循环逻辑"><a href="#do…while…-至少会执行一次的循环逻辑" class="headerlink" title="do…while… 至少会执行一次的循环逻辑"></a>do…while… 至少会执行一次的循环逻辑</h3><p>哨兵(sentinel)字符: 一直读取，直到’他‘为止</p>
@@ -805,6 +755,68 @@
       </categories>
       <tags>
         <tag>EIGEN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>异常处理</title>
+    <url>/2021/12/23/cpp/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</url>
+    <content><![CDATA[<h3 id="处理可能出现异常的方法"><a href="#处理可能出现异常的方法" class="headerlink" title="处理可能出现异常的方法"></a>处理可能出现异常的方法</h3><ul>
+<li>调用abort()或exit()结束程序</li>
+<li>返回错误码</li>
+<li>异常机制：1.使用try块执行可能出现异常的代码段 2.throw引发异常 3.catch捕获并处理对应情况</li>
+</ul>
+<h3 id="throw机制"><a href="#throw机制" class="headerlink" title="throw机制"></a>throw机制</h3><p>若throw引发异常后，匹配对应catch。而后不是将控制权返回调用程序，而是引导程序沿着函数调用序列后退，直到找到try块中的函数<br>若没有throw出异常，则catch被跳过.<br>一般而言后退多步，再在main()中寻找与引发异常<strong>类型匹配</strong>的处理程序作处理。</p>
+<h3 id="通常用对象作为异常类型处理"><a href="#通常用对象作为异常类型处理" class="headerlink" title="通常用对象作为异常类型处理"></a>通常用对象作为异常类型处理</h3><p>好处是：直接根据类型区分异常，另外对象可以携带信息确定原因，catch根据信息来执行对应的操作</p>
+<h3 id="堆栈解退（unwinding-the-stack）"><a href="#堆栈解退（unwinding-the-stack）" class="headerlink" title="堆栈解退（unwinding the stack）"></a>堆栈解退（unwinding the stack）</h3><p>假设函数出现异常，而不是正确返回而终止。程序释放堆栈中的内存，但不会在释放堆栈的第一个返回地址后停止，而是继续释放堆栈，直到找到位于try块的返回地质。程序进行堆栈解退以回到能够捕获异常的地方时，将释放堆栈中的自动存储型变量。</p>
+<p><img src="/images/12_23_1.png"></p>
+<h3 id="文件IO"><a href="#文件IO" class="headerlink" title="文件IO"></a>文件IO</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ifstream inFile;</span><br><span class="line">    inFile.<span class="built_in">open</span>(<span class="string">&quot;file.txt&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(!inFile.<span class="built_in">is_open</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        cerr &lt;&lt;<span class="string">&quot;Failed open file.txt\n&quot;</span>;</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">char</span> ch;</span><br><span class="line">    <span class="keyword">int</span> cnt=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(inFile&gt;&gt;ch)</span><br><span class="line">    &#123;</span><br><span class="line">        cnt++;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; cnt &lt;&lt;endl;</span><br><span class="line">    inFile.<span class="built_in">close</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>下面程序为harmony mean的除0错误，抛出const char *类型，匹配输出错误信息的代码。一般抛出错误类型通常为类。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdlib&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">hmean</span><span class="params">(<span class="keyword">double</span> a, <span class="keyword">double</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (a == -b)</span><br><span class="line">        <span class="keyword">throw</span> <span class="string">&quot;bad hmean() arguments: a = -b not allowed&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2.0</span> * a * b / (a + b);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">double</span> x, y, z;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;Enter two numbers:&quot;</span>;</span><br><span class="line">    <span class="keyword">while</span> (cin &gt;&gt; x &gt;&gt; y)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            z = <span class="built_in">hmean</span>(x, y);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in"><span class="keyword">catch</span></span>(<span class="keyword">const</span> <span class="keyword">char</span> * s)</span><br><span class="line">        &#123;</span><br><span class="line">            cout &lt;&lt; s &lt;&lt; endl;</span><br><span class="line">            cout &lt;&lt;<span class="string">&quot;Enter a new pair of numbers: &quot;</span>;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Harmonic mean of &quot;</span> &lt;&lt; x &lt;&lt; <span class="string">&quot; and &quot;</span> &lt;&lt; y &lt;&lt; <span class="string">&quot;. is &quot;</span> &lt;&lt; z &lt;&lt; endl;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Enter next set of numbers &lt;q to quit&gt;:&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;Bye!&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="throw-catch机制和函数参数以及函数返回机制的区别"><a href="#throw-catch机制和函数参数以及函数返回机制的区别" class="headerlink" title="throw-catch机制和函数参数以及函数返回机制的区别"></a>throw-catch机制和函数参数以及函数返回机制的区别</h3><p>1.函数控制权返回到调用函数的函数，throw语句控制权向上返回到第一个包含能够捕获相应异常的try-catch组合<br>2.引发异常时，编译器总是创建一个临时拷贝，彻底避免了函数机制指向不存在的临时变量的问题。<br>3.经常可见catch(problem &amp; p)，使用了引用，主要是针对通过继承关联起来的异常类型；此时使用基类引用即可执行派生类对象。此时层次结构最下面的异常类的catch语句应当放在最前面。</p>
+<p>catch (…)表示捕获任何异常</p>
+<h3 id="异常处理的注意事项"><a href="#异常处理的注意事项" class="headerlink" title="异常处理的注意事项"></a>异常处理的注意事项</h3><p>1.使用异常，应在设计程序时就加入，而不是以后才添加。<br>2.使用异常会增加程序代码，降低程序运行速度。<br>3.异常规范不适用于模板，异常和动态内存分配不能总是协同工作<br>因此，虽然异常处理对于某些项目极为重要，但也会增加编程的工作量、增大程序以及降低程序的速度。另外编译器对异常的支持以及用户的经验还没有达到成熟的程度，应有节制地使用这一特性。</p>
+<p>如无堆栈解退，则会出现内存泄漏，如下</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">(<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">double</span> * ar = <span class="keyword">new</span> <span class="keyword">double</span>[n];</span><br><span class="line">    <span class="keyword">if</span>(oh_no)</span><br><span class="line">        <span class="keyword">throw</span> <span class="built_in">exception</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">delete</span> [] ar;</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>throw了，则delete[]被忽略，ar指针消失了，内存块未释放且不可访问。</p>
+<h3 id="RTTI（RunTime-Type-Identification"><a href="#RTTI（RunTime-Type-Identification" class="headerlink" title="RTTI（RunTime Type Identification)"></a>RTTI（RunTime Type Identification)</h3><p>三个支持RTTI的元素：</p>
+<ul>
+<li>dynamic_cast操作符将基类指针生成派生指针：回答是否可以安全将对象的地址赋给特定类型的指针？如可，返回对象地址；否则，返回空指针。这对比“指向哪个类型的对象”，这更通用且有用。</li>
+<li>typeid操作符返回对象的类型</li>
+<li>type_info存储特定类型的信息<br>注意：RTTI只适用于包含虚函数的类</li>
+</ul>
+<p>与通用转换机制相比，dynamic_cast、static_cast、const_cast、reinterpret_cast提供了更安全和明确的类型转换。</p>
+<h3 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h3><p>通用编程技术，迭代器概念。<br>操作复杂度：固定时间、线性时间、随机时间<br>线性容器以及联合容器(set、map、multiset、multimap)<br>()函数符functor的概念,STL使用模板让for_each原型看上去像</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;class InputIterator, class Function&gt;</span></span><br><span class="line"><span class="function">Function <span class="title">for_each</span><span class="params">(InputIterator first, InputIterator last, Function f)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="STL算法库"><a href="#STL算法库" class="headerlink" title="STL算法库"></a>STL算法库</h3><p>分为四大类</p>
+<ul>
+<li>非修改式序列操作</li>
+<li>修改式序列操作</li>
+<li>排序和相关操作</li>
+<li>通用数字运算<br>就地算法：在原始数据位置上操作；复制算法：在新的位置操作</li>
+</ul>
+<h3 id="IO"><a href="#IO" class="headerlink" title="IO"></a>IO</h3><p>cout不会截断数据，会尽量全部打印内容。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">cout.<span class="built_in">width</span>(<span class="keyword">int</span> n); <span class="comment">// 单次有效</span></span><br><span class="line">cout.<span class="built_in">fill</span>(<span class="keyword">char</span> c); <span class="comment">// 一直有效</span></span><br><span class="line">cout.<span class="built_in">precision</span>(<span class="keyword">int</span> n); <span class="comment">// 一直有效</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>c++</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>九章行测</title>
+    <url>/2022/04/01/jiuzhang/behavior/</url>
+    <content><![CDATA[<h4 id="Intro-yourself"><a href="#Intro-yourself" class="headerlink" title="Intro yourself"></a>Intro yourself</h4><p>要点：适当的内容表达，元气健康的兴趣，</p>
+]]></content>
+      <categories>
+        <category>九章算法</category>
+      </categories>
+      <tags>
+        <tag>九章算法</tag>
       </tags>
   </entry>
   <entry>
@@ -920,15 +932,14 @@
       </tags>
   </entry>
   <entry>
-    <title>九章行测</title>
-    <url>/2022/04/01/jiuzhang/behavior/</url>
-    <content><![CDATA[<h4 id="Intro-yourself"><a href="#Intro-yourself" class="headerlink" title="Intro yourself"></a>Intro yourself</h4><p>要点：适当的内容表达，元气健康的兴趣，</p>
-]]></content>
+    <title>九章基础class_7_8</title>
+    <url>/2022/04/18/jiuzhang/class7-8/</url>
+    <content><![CDATA[<h3 id="第七课-图搜索"><a href="#第七课-图搜索" class="headerlink" title="第七课 图搜索"></a>第七课 图搜索</h3>]]></content>
       <categories>
-        <category>九章算法</category>
+        <category>九章基础</category>
       </categories>
       <tags>
-        <tag>九章算法</tag>
+        <tag>九章基础</tag>
       </tags>
   </entry>
   <entry>
@@ -1080,17 +1091,6 @@
       </tags>
   </entry>
   <entry>
-    <title>九章基础class_7_8</title>
-    <url>/2022/04/18/jiuzhang/class7-8/</url>
-    <content><![CDATA[<h3 id="第七课-图搜索"><a href="#第七课-图搜索" class="headerlink" title="第七课 图搜索"></a>第七课 图搜索</h3>]]></content>
-      <categories>
-        <category>九章基础</category>
-      </categories>
-      <tags>
-        <tag>九章基础</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>墙面分割</title>
     <url>/2022/01/14/pcl/%E5%A2%99%E9%9D%A2%E5%88%86%E5%89%B2/</url>
     <content><![CDATA[<h3 id="区域生长分割region-growing-segmentation"><a href="#区域生长分割region-growing-segmentation" class="headerlink" title="区域生长分割region growing segmentation"></a>区域生长分割region growing segmentation</h3><p>算法核心：基于点法线之间角度的比较，尽量将满足平滑约束的相邻点合并在一起，以一簇点集的形式输出，视为相同平面</p>
@@ -1159,6 +1159,35 @@
       </categories>
       <tags>
         <tag>opencv</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>六年前的自己</title>
+    <url>/2021/12/22/personal/%E5%85%AD%E5%B9%B4%E5%89%8D%E7%9A%84%E8%87%AA%E5%B7%B1/</url>
+    <content><![CDATA[<p><a href="https://csrjtan.github.io/">https://csrjtan.github.io/</a><br>回看六年前的自己，摘录一些当时有意义的文段</p>
+<h3 id="23岁的生日"><a href="#23岁的生日" class="headerlink" title="23岁的生日"></a>23岁的生日</h3><p>重读六年前的自己，用文字记录对这个世界的感受和认知，那时候的自己充满了希望，虽然能力配不上欲望而渐渐失落，但依然希望找到那种年轻的感觉。</p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3><p>当年的愿望：</p>
+<ul>
+<li>工作上：提高编程和学术能力</li>
+<li>生活上：爱家人，爱生活，爱伴侣</li>
+<li>日常上：坚持读，坚持写，坚持学，坚持感受，坚持表达</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">《成长的天空》 </span><br><span class="line">我沉浸在自己的世界里</span><br><span class="line">写着无关是非的歌谣</span><br><span class="line">点蓝的笔触</span><br><span class="line">划过了年轻的天空</span><br><span class="line">一只飞鸟带走我的青春</span><br><span class="line">还我，岁月沉淀的帽子</span><br><span class="line">轻声说道</span><br><span class="line">年轻总不是永远的借口</span><br></pre></td></tr></table></figure>
+
+<h3 id="回看中秋自省的自己"><a href="#回看中秋自省的自己" class="headerlink" title="回看中秋自省的自己"></a>回看中秋自省的自己</h3><p>经过5年起起落落，心态转变得很明显甚至于有点得过且过的样子，现在自己比年轻的自己多了一点能力和资源，却失去了做大梦的勇气和毅力。希望自己能依然不断找到人生的兴奋点，勇往直前地去追寻探索，从今天开始，真正的为自己而活，不在乎别人的眼光，不在乎可能会失去的安逸。</p>
+<h3 id="家人信息简要"><a href="#家人信息简要" class="headerlink" title="家人信息简要"></a>家人信息简要</h3><p>爸：1961.7.8，牛，会计。爱好军事政治经济唱歌。性格硬朗好面子。优点：精神好，能干，勤勉<br>妈：1961.11.12，牛，仓管（退休）。爱好家庭家人养生。优点：节俭，爱戴我们，慈祥<br>哥：1987.8.9，兔，前端全栈，爱好广泛潮流酷玩。优点：工程能力强，迁就随和<br>为：1992.08.13，猴，算法攻城狮。爱好：声乐，运动，游戏。优点：耐受力，随和</p>
+<h3 id="选书策略"><a href="#选书策略" class="headerlink" title="选书策略"></a>选书策略</h3><p>出版社-&gt;作者-&gt;版次-&gt;印次-&gt;印数</p>
+<h3 id="追逐幸福的要素"><a href="#追逐幸福的要素" class="headerlink" title="追逐幸福的要素"></a>追逐幸福的要素</h3><ul>
+<li>找到喜欢的工作，有收入又受到社会尊重</li>
+<li>减少上下班耗费的时间，有充足的社交时间</li>
+<li>对国家和社会有政治热情，有参与度</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">不论曾经的彼此多么幼稚，多么可笑</span><br><span class="line">终有一天我们都变得成熟；</span><br><span class="line">也终有一天，我们都会老去；</span><br><span class="line">可是，却没有人可以永远不长大，</span><br><span class="line">却没有人可以永远年轻，</span><br><span class="line">成熟，有时候会让人心痛、很无奈。</span><br><span class="line">那个时候才会懂得：</span><br><span class="line">爱情本不是件该执着的事情。</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>日常</category>
+      </categories>
+      <tags>
+        <tag>博客迁移</tag>
       </tags>
   </entry>
   <entry>
@@ -1236,6 +1265,21 @@
       </tags>
   </entry>
   <entry>
+    <title>effective_cpp 3rd</title>
+    <url>/2022/04/21/reading/effective-cpp/</url>
+    <content><![CDATA[<h3 id="chap1-Accustoming-to-C"><a href="#chap1-Accustoming-to-C" class="headerlink" title="chap1 Accustoming to C++"></a>chap1 Accustoming to C++</h3><h4 id="C-的四大组成部分："><a href="#C-的四大组成部分：" class="headerlink" title="C++的四大组成部分："></a>C++的四大组成部分：</h4><ul>
+<li>原生C，C语言的区别在于没有：模板，异常及重载</li>
+<li>面向对象C++特性：类、封装、继承、多态、虚函数</li>
+<li>模板C++特性：泛型编程</li>
+<li>STL算法库<br>根据应用场合所需使用其中的主要成分。</li>
+</ul>
+<h4 id="const-enum-inline-rather-than-define"><a href="#const-enum-inline-rather-than-define" class="headerlink" title="const, enum, inline rather than #define"></a>const, enum, inline rather than #define</h4><p>使用#define则预处理器解释，编译器不可见,因此也没有进符号表，可能导致编译器无法跟踪具体错误。</p>
+]]></content>
+      <tags>
+        <tag>读书笔记</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CMAKE实践</title>
     <url>/2022/02/25/reading/CMAKE%E5%AE%9E%E8%B7%B5/</url>
     <content><![CDATA[<h3 id="初识cmake"><a href="#初识cmake" class="headerlink" title="初识cmake"></a>初识cmake</h3><p>主要特点：</p>
@@ -1268,69 +1312,6 @@
       </categories>
       <tags>
         <tag>读书笔记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>六年前的自己</title>
-    <url>/2021/12/22/personal/%E5%85%AD%E5%B9%B4%E5%89%8D%E7%9A%84%E8%87%AA%E5%B7%B1/</url>
-    <content><![CDATA[<p><a href="https://csrjtan.github.io/">https://csrjtan.github.io/</a><br>回看六年前的自己，摘录一些当时有意义的文段</p>
-<h3 id="23岁的生日"><a href="#23岁的生日" class="headerlink" title="23岁的生日"></a>23岁的生日</h3><p>重读六年前的自己，用文字记录对这个世界的感受和认知，那时候的自己充满了希望，虽然能力配不上欲望而渐渐失落，但依然希望找到那种年轻的感觉。</p>
-<h3 id=""><a href="#" class="headerlink" title=""></a></h3><p>当年的愿望：</p>
-<ul>
-<li>工作上：提高编程和学术能力</li>
-<li>生活上：爱家人，爱生活，爱伴侣</li>
-<li>日常上：坚持读，坚持写，坚持学，坚持感受，坚持表达</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">《成长的天空》 </span><br><span class="line">我沉浸在自己的世界里</span><br><span class="line">写着无关是非的歌谣</span><br><span class="line">点蓝的笔触</span><br><span class="line">划过了年轻的天空</span><br><span class="line">一只飞鸟带走我的青春</span><br><span class="line">还我，岁月沉淀的帽子</span><br><span class="line">轻声说道</span><br><span class="line">年轻总不是永远的借口</span><br></pre></td></tr></table></figure>
-
-<h3 id="回看中秋自省的自己"><a href="#回看中秋自省的自己" class="headerlink" title="回看中秋自省的自己"></a>回看中秋自省的自己</h3><p>经过5年起起落落，心态转变得很明显甚至于有点得过且过的样子，现在自己比年轻的自己多了一点能力和资源，却失去了做大梦的勇气和毅力。希望自己能依然不断找到人生的兴奋点，勇往直前地去追寻探索，从今天开始，真正的为自己而活，不在乎别人的眼光，不在乎可能会失去的安逸。</p>
-<h3 id="家人信息简要"><a href="#家人信息简要" class="headerlink" title="家人信息简要"></a>家人信息简要</h3><p>爸：1961.7.8，牛，会计。爱好军事政治经济唱歌。性格硬朗好面子。优点：精神好，能干，勤勉<br>妈：1961.11.12，牛，仓管（退休）。爱好家庭家人养生。优点：节俭，爱戴我们，慈祥<br>哥：1987.8.9，兔，前端全栈，爱好广泛潮流酷玩。优点：工程能力强，迁就随和<br>为：1992.08.13，猴，算法攻城狮。爱好：声乐，运动，游戏。优点：耐受力，随和</p>
-<h3 id="选书策略"><a href="#选书策略" class="headerlink" title="选书策略"></a>选书策略</h3><p>出版社-&gt;作者-&gt;版次-&gt;印次-&gt;印数</p>
-<h3 id="追逐幸福的要素"><a href="#追逐幸福的要素" class="headerlink" title="追逐幸福的要素"></a>追逐幸福的要素</h3><ul>
-<li>找到喜欢的工作，有收入又受到社会尊重</li>
-<li>减少上下班耗费的时间，有充足的社交时间</li>
-<li>对国家和社会有政治热情，有参与度</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">不论曾经的彼此多么幼稚，多么可笑</span><br><span class="line">终有一天我们都变得成熟；</span><br><span class="line">也终有一天，我们都会老去；</span><br><span class="line">可是，却没有人可以永远不长大，</span><br><span class="line">却没有人可以永远年轻，</span><br><span class="line">成熟，有时候会让人心痛、很无奈。</span><br><span class="line">那个时候才会懂得：</span><br><span class="line">爱情本不是件该执着的事情。</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>日常</category>
-      </categories>
-      <tags>
-        <tag>博客迁移</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>皮肤的秘密</title>
-    <url>/2022/01/19/reading/%E7%9A%AE%E8%82%A4%E7%9A%84%E7%A7%98%E5%AF%86/</url>
-    <content><![CDATA[<h3 id="认识皮肤"><a href="#认识皮肤" class="headerlink" title="认识皮肤"></a>认识皮肤</h3><p>皮肤是人体最大的器官，展开达两平方米，是人体之于外界环境的保护膜，同时也是零距离感受外界的第一道关卡，所以每一寸都遍布了神经细胞。</p>
-<p>皮肤主要由三层构成：表皮，真皮以及皮下组合。其中表皮与真皮间的基底膜带决定了皮肤的弹性紧致，而且是在1岁形成不可逆的衰老，无法重生所以只能好好保护延缓其衰老。皮肤细胞从底层出生，衰老于真皮并死亡在表皮并成为保护屏障，正常周期为4周。患有皮肤病的可能会加速该过程至5天，导致表皮的屏障并不完整。</p>
-<h3 id="表皮"><a href="#表皮" class="headerlink" title="表皮"></a>表皮</h3><p>由于皮肤表面存在着大量微生物群，所以保持皮肤的pH值是非常重要的，应当合理维持完好无损的酸性保护膜，人工清洁剂约5.5，另外对于皮下脂肪过厚的皮肤褶皱，唯一有效办法是减肥。可以用抗真菌软膏，另外带锌软膏可缓解皮肤炎症，带走多余水分。</p>
-<p><img src="/images/01_19_1.png"></p>
-<p>生长纹无足轻重，关于肤色，是有黑色素影响的。研究表明，橙色皮肤最具吸引力，可多摄入胡萝卜素B达到。颠痕主要由基底膜带大面积受损，表皮过度损耗引起的。对于渗水伤口可用硅霜或贴上硅凝胶伤口贴。治疗疙瘩需要强效疗法如：激光疗法、热针、冷冻疗法以及X射线放射疗法。</p>
-<h3 id="真皮"><a href="#真皮" class="headerlink" title="真皮"></a>真皮</h3><p>真皮充满紧致的结缔组织，带来稳固性以及拉伸性，任何的日晒、日光浴、烟草、压力、睡眠不足、营养不良以及缺乏运动等会加速弹性纤维的流失。臀部皮肤就是自然老化的参考，面部等受光照影响较大是老化较快的皮肤。另外，皮肤在4度就开始出现冻疮，而冬天皮肤也能适应，所以只在晚上睡前使用保湿即可，白天冬天保湿使皮肤含水量升高，反而容易冻伤。</p>
-<p>真皮层拥有大量神经，使皮肤成为最大的神经器官，抚摸有调节中枢神经和社交等作用。同时含有腺体，会分泌激素气味等。</p>
-]]></content>
-      <categories>
-        <category>读书笔记</category>
-      </categories>
-      <tags>
-        <tag>读书笔记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>努力方向之正解</title>
-    <url>/2021/12/21/shisan/%E5%8A%AA%E5%8A%9B%E6%96%B9%E5%90%91%E4%B9%8B%E6%AD%A3%E8%A7%A3/</url>
-    <content><![CDATA[<p><code>文章摘自微信公众号：十三先生手记</code></p>
-<p>人们总是误以为”方向不对，努力白费“</p>
-<p>所以到底什么方向是努力的正确方向，是对事情方向性的选择吗？<br>看起来是这样的，其实不然，在事情没有出现结果之前，谁能确定方向对不对？<br>于是乎，在很长一段时间里，你在方向的选择上纠结，大量耗费了精力；久而久之，方向选择对你的意义就逐步降低；久而久之，你在没有了方向的努力中不断的迷茫，努力所收获到的就多半不如意；久而久之，你便自然逐步丧失了努力的动力。</p>
-<p>所以其中蕴含<em><strong>真正的智慧</strong></em>是什么呢？<br>此刻，十三先生要你深深的明白：对于你真正想要成就的方向而言，基于外在目标而牵引你的行动方向就是你的迷障，基于你内心真正愿意去做的方向才是真正利于你达成整体目标的方向。若是你在每次做选择之际，你都按你内心真正未权衡的意愿立刻去着手行动，并在行动的过程中，实事求是的不断优化解决遇到的问题，而不是在事前先拿你预设的可能遇到的问题去和你的资源做权衡匹配，在来做方向选择的决定，假以时日，必定你会不断收获到你真正想要收获到的利益。</p>
-<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>与其纠结于方向正确，不如尽快行动起来，尽快在行动中感受自我。那些未经反复驱动，内心自发想要完成的事情就是你人生的正确方向了。</p>
-]]></content>
-      <categories>
-        <category>十三手记</category>
-      </categories>
-      <tags>
-        <tag>十三手记</tag>
       </tags>
   </entry>
   <entry>
@@ -1409,6 +1390,24 @@
       </tags>
   </entry>
   <entry>
+    <title>皮肤的秘密</title>
+    <url>/2022/01/19/reading/%E7%9A%AE%E8%82%A4%E7%9A%84%E7%A7%98%E5%AF%86/</url>
+    <content><![CDATA[<h3 id="认识皮肤"><a href="#认识皮肤" class="headerlink" title="认识皮肤"></a>认识皮肤</h3><p>皮肤是人体最大的器官，展开达两平方米，是人体之于外界环境的保护膜，同时也是零距离感受外界的第一道关卡，所以每一寸都遍布了神经细胞。</p>
+<p>皮肤主要由三层构成：表皮，真皮以及皮下组合。其中表皮与真皮间的基底膜带决定了皮肤的弹性紧致，而且是在1岁形成不可逆的衰老，无法重生所以只能好好保护延缓其衰老。皮肤细胞从底层出生，衰老于真皮并死亡在表皮并成为保护屏障，正常周期为4周。患有皮肤病的可能会加速该过程至5天，导致表皮的屏障并不完整。</p>
+<h3 id="表皮"><a href="#表皮" class="headerlink" title="表皮"></a>表皮</h3><p>由于皮肤表面存在着大量微生物群，所以保持皮肤的pH值是非常重要的，应当合理维持完好无损的酸性保护膜，人工清洁剂约5.5，另外对于皮下脂肪过厚的皮肤褶皱，唯一有效办法是减肥。可以用抗真菌软膏，另外带锌软膏可缓解皮肤炎症，带走多余水分。</p>
+<p><img src="/images/01_19_1.png"></p>
+<p>生长纹无足轻重，关于肤色，是有黑色素影响的。研究表明，橙色皮肤最具吸引力，可多摄入胡萝卜素B达到。颠痕主要由基底膜带大面积受损，表皮过度损耗引起的。对于渗水伤口可用硅霜或贴上硅凝胶伤口贴。治疗疙瘩需要强效疗法如：激光疗法、热针、冷冻疗法以及X射线放射疗法。</p>
+<h3 id="真皮"><a href="#真皮" class="headerlink" title="真皮"></a>真皮</h3><p>真皮充满紧致的结缔组织，带来稳固性以及拉伸性，任何的日晒、日光浴、烟草、压力、睡眠不足、营养不良以及缺乏运动等会加速弹性纤维的流失。臀部皮肤就是自然老化的参考，面部等受光照影响较大是老化较快的皮肤。另外，皮肤在4度就开始出现冻疮，而冬天皮肤也能适应，所以只在晚上睡前使用保湿即可，白天冬天保湿使皮肤含水量升高，反而容易冻伤。</p>
+<p>真皮层拥有大量神经，使皮肤成为最大的神经器官，抚摸有调节中枢神经和社交等作用。同时含有腺体，会分泌激素气味等。</p>
+]]></content>
+      <categories>
+        <category>读书笔记</category>
+      </categories>
+      <tags>
+        <tag>读书笔记</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《浪潮之巅》第4版：读书笔记</title>
     <url>/2021/11/26/reading/%E6%B5%AA%E6%BD%AE%E4%B9%8B%E5%B7%85/</url>
     <content><![CDATA[<h3 id="一部工业革命后的近代科技发展史"><a href="#一部工业革命后的近代科技发展史" class="headerlink" title="一部工业革命后的近代科技发展史"></a>一部工业革命后的近代科技发展史</h3><p>第一次阅读这本书大概是在大学的时期，当时应该还是第一第二版的样子。可惜当时认知有限或者是兴趣使然，确实是没有坚持读下来。作为一本信息科技人的导论书籍，吴军老师主要是从<strong>创始人及公司基因，资本加速以及调整创新</strong>等多个维度阐释每一个时代的技术浪潮。也让我重新认识硅谷，重新认识所有信息产业耳熟能详的近代技术及工业制品。有点后悔当初年少没有认认真真开启好这一本导论，以致于没有一个非常完备的大局观去规划个人职业生涯以及技术路线。弯弯曲曲之下，也就不难预见自己人生所能触及的高度了。</p>
@@ -1437,36 +1436,43 @@
       </tags>
   </entry>
   <entry>
-    <title>奖惩精要</title>
-    <url>/2021/12/27/shisan/%E5%A5%96%E6%83%A9%E7%B2%BE%E8%A6%81/</url>
-    <content><![CDATA[<p><code>摘自微信公众号十三手记</code></p>
-<p>自古以来，在团队、组织及家庭教育等人际关系管理中，奖惩都是当事人的必修课，凡能善用者，都能收获到相当的人生成就，可是真正能把奖惩落实到位乃至出神入化的人凤毛麟角，究其原因，其实都是没能真正明白奖惩的核心精髓，甚至因为错用奖惩而受到惩罚。</p>
-<h4 id="首先，奖惩时为了更好的控制别人吗？"><a href="#首先，奖惩时为了更好的控制别人吗？" class="headerlink" title="首先，奖惩时为了更好的控制别人吗？"></a>首先，奖惩时为了更好的控制别人吗？</h4><p>你以为是，但必定不是。若是为了更好的控制别人，为何那么多人用了奖惩手段并未真正收到真正控制别人的真正效果？  </p>
-<h4 id="那么，奖惩到底是为了什么？"><a href="#那么，奖惩到底是为了什么？" class="headerlink" title="那么，奖惩到底是为了什么？"></a>那么，奖惩到底是为了什么？</h4><p>那是为了促进对方强大的同时与其交心。  </p>
-<h4 id="何时奖惩？"><a href="#何时奖惩？" class="headerlink" title="何时奖惩？"></a>何时奖惩？</h4><p>尽快，及时  </p>
-<h4 id="何处奖惩？"><a href="#何处奖惩？" class="headerlink" title="何处奖惩？"></a>何处奖惩？</h4><p>公开的要公开，私下的要私下，否则就是反效果。</p>
-<p>此刻，十三先生要你深深的明白：在你的人际关系管理中，若是你的奖惩只是你控制别人的手段，那你的手段最多只是临时效果，最终必定不能如你所愿，甚至受到反效果；若是你的奖惩是在用心反馈你对别人行为有效性的重视，是为了及时给予对方诚意的肯定或是改进提醒，那你就是在用奖惩的办法促进对方强大的同时与其交心，假以时日，你必定能收获到奖惩给你的人际关系处理的真实力量和价值。</p>
+    <title>心态练习</title>
+    <url>/2022/01/28/xinli/%E5%BF%83%E6%80%81%E7%BB%83%E4%B9%A0/</url>
+    <content><![CDATA[<h3 id="可以刻意练习的六种心态"><a href="#可以刻意练习的六种心态" class="headerlink" title="可以刻意练习的六种心态"></a>可以刻意练习的六种心态</h3><p>1.旁观者心态<br><strong>方法：任何不喜欢的事情发生了，你就想象一个画面-你从身体跳出来了，你在5米之外看自己。</strong><br>作用：可以四两拨千斤，化解所有烦恼。开悟者常用，但一般需要经历太多苦修才能达到境界。</p>
+<p>从旁观者看，这个人既陌生又熟悉，但这人终究是陌生人，他发生的任何事都和你没有关系，甚至很搞笑好玩。</p>
+<p>原理：练习久了，你基本不会被情绪困扰，旁观者心态是不响应生理性、基因性、即时性、冲动性和本能性的反应。这些反应是所有痛苦的根源，不但解决不了问题，反而会让事情变得更加糟糕。</p>
+<p>2.归零者心态<br>当感觉做人不容易，压力特别大，心情非常沮丧，非常迷茫的时候，用这个心态可以安静下来找到目标，让自己的人生变清晰，恢复自信。</p>
+<p><strong>方法：想象过去的一切一切都只是你的一个梦而以。既然过去的一切一切都是梦，全部归零了。现在的自己就是新生婴儿，未来的自己一切都是崭新的。</strong></p>
+<p>原理：既然是新生的，就不要带有包袱，不管是荣誉的还是耻辱的。人生最可怕的事情就是路径依赖。归零者厉害之初在于让你突破路径依赖，成为改变命运的起点。</p>
+<p>3.一日囚心态<br>用于对抗消费主义陷阱，远离个人经济危机</p>
+<p><strong>方法：想买东西的时候，想象自己只能活在今天了，买来的东西今天用不上的话就会消失。</strong></p>
+<p>4.造物主心态<br>献给低自尊，低价值感，低存在感的同学们<br>是不是特别爱觉得对不起？是不是觉得自己终究是不配了？是不是觉得强者的世界中自己就像一颗无足轻重的露珠？</p>
+<p>请大胆勇敢使用造物主心态</p>
+<p><strong>方法：这个世界是你创造的，所有人所有事都是你脑袋里长出来的，它们对你来说，才终究是不配了。</strong></p>
+<p>原理：这其实就是世界运作的本质和人生的真相，可以多读相关的书了解</p>
+<p>应用场景：面对应试面试，演讲；面对弱智和杠精；教员就是造物主心态的代表性人物，参见相关诗词“五岭逶迤腾细浪，乌蒙磅翎走泥丸“</p>
+<p>5.复仇者心态<br>弱者最大的问题在于甘于弱势地位，认为“大家不都这样过的吗”，但凡能成就的人都有卧薪尝胆的复仇之心，老天爷不会平白无故帮助一个过于佛系的人。</p>
+<p>首先要找个仇人（不是真正意义上的，是为了成就自己找的一个靶子），可以虚构一个人出来。他和你有着不共戴天之仇，而且如果5年后比他钱少，他就能弄死你。反复构建比较细节，直到可恨。</p>
+<p>方法：如何复仇？如何5年后弄死虚构的人；现在存的每一分钱都是对他的一记耳光。每一分钟认真的工作都是一记飞腿。每一次毫无意义的消费都是仇人射来的箭。每一次自甘堕落都是对手的励精图治。</p>
+<p>可以用于办公室政治，追求对象，追求财富，追求成就上。</p>
+<p>6.永生者心态</p>
+<p>方法：就像永远不会死那样，去追求道德和精神生活的完善。</p>
+<p>“积善之家必有余庆，及不善之家必有余殃”</p>
+<p>总结：心态改变行为，行为改变命运。</p>
+<h3 id="高赞的回答"><a href="#高赞的回答" class="headerlink" title="高赞的回答"></a>高赞的回答</h3><p>1.不内耗<br>不让负面情绪影响自己超过3天，不苦情。有想表达的事情勇敢争取表达；遇到负面反馈再应对，不猜测不内耗。</p>
+<p>2.不让别人消耗自己<br>与简单的人做朋友，远离强势，带来压迫感，会负面打击别人的人。</p>
+<p>3.戒掉虚荣心<br>认清事物的本质，刨去表面毫无用处的附加值</p>
+<p>4.表达出来与内心完全一致，相信别人也如此<br>不害怕表达真实的自己，表达出来的跟内心完全一致，不让别人猜；推己及人，相信别人表达出来的也跟内心一致</p>
+<p>5.练习深度工作<br>专注工作，控制自控力，集中精力在眼前有难度，有挑战的事情上。</p>
+<p>6.做长期主义者<br>人人都渴望“快速成功”，但真正成功的事情都是经历播种、施肥、浇灌而成的。</p>
+<p>7.社交时，不把自己放在被评价的位置<br>遇到比自己强的人，不要在意，承认对方优点，也不否定自我，没有必要太在意别人的看法。</p>
+<p>8.克制自我的同理心<br>太敏感感知别人情绪，容易成为讨好型人格。</p>
 ]]></content>
       <categories>
-        <category>十三手记</category>
+        <category>心理</category>
       </categories>
       <tags>
-        <tag>十三手记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>恐惧之破</title>
-    <url>/2022/01/05/shisan/%E6%81%90%E6%83%A7%E4%B9%8B%E7%A0%B4/</url>
-    <content><![CDATA[<p>你有恐惧吗？  想必有的<br>你想解除恐惧吗？  必定想的<br>可为什么你无法真正解除？  因为你不知道恐惧从何而来，更不知道什么是恐惧。</p>
-<h3 id="那么恐惧从何而来？"><a href="#那么恐惧从何而来？" class="headerlink" title="那么恐惧从何而来？"></a>那么恐惧从何而来？</h3><p>从曲解真相而来</p>
-<h3 id="恐惧是什么？"><a href="#恐惧是什么？" class="headerlink" title="恐惧是什么？"></a>恐惧是什么？</h3><p>是你的人生大礼给你的提醒。</p>
-<h3 id="此刻要你深深明白"><a href="#此刻要你深深明白" class="headerlink" title="此刻要你深深明白"></a>此刻要你深深明白</h3><p>二元有相世界，恐惧来自于你对真相的无视或者曲解。如此，只要你无视或者曲解了真相，必定会形成相应的恐惧；如此，你内心恐惧的形成是为了提醒你搞清楚恐惧背后的真相；如此，若是你逃避真相，你必定会反复感受到恐惧；如此，当你心有恐惧，请直面你所恐惧的东西，并搞清楚其真相，当你一旦真正清楚真相，恐惧必定就会随之而消失；与此同时，必定你就能在搞清楚真相的过程中收获到你人生的大礼。</p>
-]]></content>
-      <categories>
-        <category>十三手记</category>
-      </categories>
-      <tags>
-        <tag>十三手记</tag>
+        <tag>心理</tag>
       </tags>
   </entry>
   <entry>
@@ -1682,6 +1688,160 @@
       </tags>
   </entry>
   <entry>
+    <title>努力方向之正解</title>
+    <url>/2021/12/21/shisan/%E5%8A%AA%E5%8A%9B%E6%96%B9%E5%90%91%E4%B9%8B%E6%AD%A3%E8%A7%A3/</url>
+    <content><![CDATA[<p><code>文章摘自微信公众号：十三先生手记</code></p>
+<p>人们总是误以为”方向不对，努力白费“</p>
+<p>所以到底什么方向是努力的正确方向，是对事情方向性的选择吗？<br>看起来是这样的，其实不然，在事情没有出现结果之前，谁能确定方向对不对？<br>于是乎，在很长一段时间里，你在方向的选择上纠结，大量耗费了精力；久而久之，方向选择对你的意义就逐步降低；久而久之，你在没有了方向的努力中不断的迷茫，努力所收获到的就多半不如意；久而久之，你便自然逐步丧失了努力的动力。</p>
+<p>所以其中蕴含<em><strong>真正的智慧</strong></em>是什么呢？<br>此刻，十三先生要你深深的明白：对于你真正想要成就的方向而言，基于外在目标而牵引你的行动方向就是你的迷障，基于你内心真正愿意去做的方向才是真正利于你达成整体目标的方向。若是你在每次做选择之际，你都按你内心真正未权衡的意愿立刻去着手行动，并在行动的过程中，实事求是的不断优化解决遇到的问题，而不是在事前先拿你预设的可能遇到的问题去和你的资源做权衡匹配，在来做方向选择的决定，假以时日，必定你会不断收获到你真正想要收获到的利益。</p>
+<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>与其纠结于方向正确，不如尽快行动起来，尽快在行动中感受自我。那些未经反复驱动，内心自发想要完成的事情就是你人生的正确方向了。</p>
+]]></content>
+      <categories>
+        <category>十三手记</category>
+      </categories>
+      <tags>
+        <tag>十三手记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>盐选健康</title>
+    <url>/2022/01/21/xinli/%E7%9B%90%E9%80%89%E5%81%A5%E5%BA%B7/</url>
+    <content><![CDATA[<h3 id="优雅起床"><a href="#优雅起床" class="headerlink" title="优雅起床"></a>优雅起床</h3><p>熬夜:睡眠不规律,睡眠不足以及整夜不睡.而非指定睡觉时间,当然中医养生的角度应该是需要早睡早起,早上练功升阳.</p>
+<p>如何优雅起床：</p>
+<ol>
+<li>早起一杯温白开</li>
+<li>感受阳光感受风，开窗通风</li>
+<li>刷牙洗鼻如厕</li>
+<li>吃好早餐</li>
+<li>洗臉：干性用冷水，油性用热水</li>
+</ol>
+<p>起床三不要：</p>
+<ol>
+<li>不要起床太快，可以先拉伸慢慢活动开</li>
+<li>晨练不要太剧烈，八段锦</li>
+<li>如厕不能太用力，自然而为</li>
+</ol>
+<p>避免起床气，其成因：混乱性觉醒，避险本能；不吃早餐危害：肥胖</p>
+<p>完美早餐 = 主食 + 蛋白质 + 蔬菜 + 水果<br>主食可配粗粮红薯、玉米、红豆、紫米等</p>
+<h3 id="早高峰养生"><a href="#早高峰养生" class="headerlink" title="早高峰养生"></a>早高峰养生</h3><p>正常脖子需成熟头部的压力约4～5公斤，但低头幅度达45度时，相当于顶着10瓶大可乐，应尽可能减少低头。长期前伸容易导致肌肉疼痛僵硬，久而久之出现劳损和椎间盘突出；影响心血管健康，血循环及脑供氧。莫憋屁尿，憋尿坏处多。</p>
+<h3 id="对抗久坐"><a href="#对抗久坐" class="headerlink" title="对抗久坐"></a>对抗久坐</h3><p>久坐的坏处：肥胖，腿部血液流速减慢，大量静脉血淤积在小腿，肌肉和韧带等组织过度拉伸的酸胀，使人处于低代谢水平，影响内分泌功能。</p>
+<p>解决方法：寻找站立办公的机会，多走动。小水杯，多厕所，绕远路.</p>
+<p>正确坐姿：抬头挺胸收腹，目视前方</p>
+<p>头部米字操，锻炼颈部后方肌肉</p>
+<p>枕头：压缩后一拳大小，别太软要有支撑</p>
+<p>改善腰部：桥式，飞燕，平板支撑</p>
+<h3 id="关于午休"><a href="#关于午休" class="headerlink" title="关于午休"></a>关于午休</h3><p>吃完睡并不会长胖，多吃或者睡完又吃才会。午睡讲究火候，一般10-20恰到好处，起来神清气爽；如果超过一个小时则进入完全睡眠，起来身体很疲惫。</p>
+<p>晚上难入睡的伙伴，建议中午攒攒睡意，等到晚上再一口气休息好。<br>善用垫枕和U型枕，尽量躺睡，如果不睡觉建议听点音乐作休息，另外善用降噪耳机。</p>
+<h3 id="关于外卖"><a href="#关于外卖" class="headerlink" title="关于外卖"></a>关于外卖</h3><p>正规店家要求《餐饮服务许可证》和《营业执照》<br>远离三种菜：干煸/干锅，“水煮”，炒土豆三鲜等；少油少盐少淀粉。<br>油脂单位热量高，而且代谢困难。减少油炸，重油食品，而且大部分吃到的油不新鲜，进入身体代谢严重影响健康。点菜要避免眼大肚小，饿的时候容易点多。更绝的是可以把油先蹭掉再蘸料吃，实现味道与健康的双赢。</p>
+<p>爱吃炸鸡的朋友，可以把鸡皮扒开吃，尽量摄入非常油的食品。</p>
+<p>针对甜点欲望，可以慢节奏吃+喝水，有效缓解甜品的高热量诱惑。<br>另外要打破杜绝浪费的观念，针对不健康的食品应该果断浪费，因为引起的健康问题反而得不偿失！</p>
+<h3 id="关于晚饭"><a href="#关于晚饭" class="headerlink" title="关于晚饭"></a>关于晚饭</h3><p>正常是规律进食，除非当天中午或者下午吃多了，热量摄入足够了。再就是晚上8～9点入睡的朋友也可不吃，因为睡眠消耗比较小。</p>
+<p>晚饭需要注意的是：1.早吃 2.不暴食 </p>
+<h3 id="关于夜宵"><a href="#关于夜宵" class="headerlink" title="关于夜宵"></a>关于夜宵</h3><p>夜宵的吸引力：1.无聊 2.压力 3.心情不佳<br>可以选择牛奶燕麦粥，少放盐</p>
+<h3 id="关于熬夜"><a href="#关于熬夜" class="headerlink" title="关于熬夜"></a>关于熬夜</h3><p>危害多，长期的睡眠不足比急性通宵的影响更大；严重影响身体机能，免疫力以及反映力等。</p>
+<p>熬夜的主要原因：追剧，小说，游戏。一线普遍12点后睡，日均7.8小时。<br>只要生活规律，睡眠质量高，一觉醒来活力四射，元气满满，那么这样的作息就是适合你的。</p>
+<h3 id="延缓衰老"><a href="#延缓衰老" class="headerlink" title="延缓衰老"></a>延缓衰老</h3><p>25岁后，人的衰老主要是基础代谢下降，预防衰老第一步是维持高水平的代谢率。皮肤衰老首要原因是紫外线，注意防晒。有光就有太阳，有太阳就有紫外线，有紫外线就会变老。</p>
+<h4 id="饮食"><a href="#饮食" class="headerlink" title="饮食"></a>饮食</h4><p>主要方法：1.低油低糖不过饱，过度进食容易消化不良，影响肠胃正常运作 2.均衡饮食，三餐规律。</p>
+<p>多摄入牛奶，酸奶和豆腐，高钙能缓解衰老。铁和锌，维生素ABCD等族群，起到意想不到的作用。</p>
+<p>多摄入粗粮，粗粮最大的优点是带来饱腹感，膳食纤维能与脂肪和胆固醇结合，预防高血脂和脂肪肝等病。</p>
+<p>减少多糖，糖基化是糖和蛋白质结合，使其失去正常的结构和颜色。</p>
+<h4 id="快乐"><a href="#快乐" class="headerlink" title="快乐"></a>快乐</h4><p><code>傻人有傻福</code>，生活已经很苦，不要再给自己太大的压力，学会和自己和解，保持良好心情。长期高压下，导致失眠，毛孔粗大，脱发，皮肤暗沉等问题。试着让自己每天都快乐，接受和享受快乐。</p>
+<h4 id="运动"><a href="#运动" class="headerlink" title="运动"></a>运动</h4><p>动起来，每天半小时的健身锻炼，让你的生理状态和精神面貌都年轻；长久不锻炼，肌肉会退化，人的反映也会变缓。</p>
+<h3 id="关于零食"><a href="#关于零食" class="headerlink" title="关于零食"></a>关于零食</h3><p>每天一小包坚果是可行，但注意油炸和蟹黄等。可以考虑燕麦制品的零食，至于糖果巧克力则是甜蜜的负担，心情不好时可以来一下。最后果脯果干不能当水果吃，选择钠含量不超标的食物。辣条含钠量太高，基本卫生也无法保证，还是别吃了。同时也要减少吃冰制品。方便面垃圾不在于其他，只在于热量高，含盐量高，蛋白质和膳食纤维不足。尽量进食新鲜食材，而非加工制品。</p>
+<p><code>胖子不是一口吃成的，你摄入的每一份糖和油脂都不是无辜的。</code></p>
+<h3 id="生活中的建议"><a href="#生活中的建议" class="headerlink" title="生活中的建议"></a>生活中的建议</h3><ul>
+<li>好好吃每一顿正餐，减少时长产生的饥饿感</li>
+<li>保持学习和工作环境的清爽，不把零食放到容易看见的地方，人的意志很容易动摇，不要自己给自己设置考验</li>
+<li>多喝水，有时你感觉饿了并不一定是身体真的缺少能量，也可能是缺水了，试试站起来倒杯水，补充水分，转移注意力，有时候就能骗过大脑</li>
+<li>买小包装或者分装，拆开一大包容易全部吃完</li>
+<li>定时摄入，稍微补充，而不是随时随地补充能量</li>
+<li>千万不要一边看剧综艺一边零食，否则根本想象不到自己吃了多少<br>总之进食要注意糖、脂肪、热量、钠和蛋白质，尽量选低糖、低热量、低钠、高蛋白的食物，用全麦面包和燕麦来饱腹吧～</li>
+</ul>
+<h3 id="关于饮料"><a href="#关于饮料" class="headerlink" title="关于饮料"></a>关于饮料</h3><p>提神饮料可选茶叶，茶本身比较健康，无糖无脂低热量。咖啡可选美式，名字越好听越可能是健康陷阱。平时午饭后，可来一杯咖啡，小憩15-20分钟，即可在午后华丽转身。能量饮料中含有大量糖，而且咖啡因不能摄入过量，最多依赖茶叶，尽量不依赖功能饮料。</p>
+]]></content>
+      <categories>
+        <category>身体健康</category>
+      </categories>
+      <tags>
+        <tag>身体健康</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>恐惧之破</title>
+    <url>/2022/01/05/shisan/%E6%81%90%E6%83%A7%E4%B9%8B%E7%A0%B4/</url>
+    <content><![CDATA[<p>你有恐惧吗？  想必有的<br>你想解除恐惧吗？  必定想的<br>可为什么你无法真正解除？  因为你不知道恐惧从何而来，更不知道什么是恐惧。</p>
+<h3 id="那么恐惧从何而来？"><a href="#那么恐惧从何而来？" class="headerlink" title="那么恐惧从何而来？"></a>那么恐惧从何而来？</h3><p>从曲解真相而来</p>
+<h3 id="恐惧是什么？"><a href="#恐惧是什么？" class="headerlink" title="恐惧是什么？"></a>恐惧是什么？</h3><p>是你的人生大礼给你的提醒。</p>
+<h3 id="此刻要你深深明白"><a href="#此刻要你深深明白" class="headerlink" title="此刻要你深深明白"></a>此刻要你深深明白</h3><p>二元有相世界，恐惧来自于你对真相的无视或者曲解。如此，只要你无视或者曲解了真相，必定会形成相应的恐惧；如此，你内心恐惧的形成是为了提醒你搞清楚恐惧背后的真相；如此，若是你逃避真相，你必定会反复感受到恐惧；如此，当你心有恐惧，请直面你所恐惧的东西，并搞清楚其真相，当你一旦真正清楚真相，恐惧必定就会随之而消失；与此同时，必定你就能在搞清楚真相的过程中收获到你人生的大礼。</p>
+]]></content>
+      <categories>
+        <category>十三手记</category>
+      </categories>
+      <tags>
+        <tag>十三手记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>奖惩精要</title>
+    <url>/2021/12/27/shisan/%E5%A5%96%E6%83%A9%E7%B2%BE%E8%A6%81/</url>
+    <content><![CDATA[<p><code>摘自微信公众号十三手记</code></p>
+<p>自古以来，在团队、组织及家庭教育等人际关系管理中，奖惩都是当事人的必修课，凡能善用者，都能收获到相当的人生成就，可是真正能把奖惩落实到位乃至出神入化的人凤毛麟角，究其原因，其实都是没能真正明白奖惩的核心精髓，甚至因为错用奖惩而受到惩罚。</p>
+<h4 id="首先，奖惩时为了更好的控制别人吗？"><a href="#首先，奖惩时为了更好的控制别人吗？" class="headerlink" title="首先，奖惩时为了更好的控制别人吗？"></a>首先，奖惩时为了更好的控制别人吗？</h4><p>你以为是，但必定不是。若是为了更好的控制别人，为何那么多人用了奖惩手段并未真正收到真正控制别人的真正效果？  </p>
+<h4 id="那么，奖惩到底是为了什么？"><a href="#那么，奖惩到底是为了什么？" class="headerlink" title="那么，奖惩到底是为了什么？"></a>那么，奖惩到底是为了什么？</h4><p>那是为了促进对方强大的同时与其交心。  </p>
+<h4 id="何时奖惩？"><a href="#何时奖惩？" class="headerlink" title="何时奖惩？"></a>何时奖惩？</h4><p>尽快，及时  </p>
+<h4 id="何处奖惩？"><a href="#何处奖惩？" class="headerlink" title="何处奖惩？"></a>何处奖惩？</h4><p>公开的要公开，私下的要私下，否则就是反效果。</p>
+<p>此刻，十三先生要你深深的明白：在你的人际关系管理中，若是你的奖惩只是你控制别人的手段，那你的手段最多只是临时效果，最终必定不能如你所愿，甚至受到反效果；若是你的奖惩是在用心反馈你对别人行为有效性的重视，是为了及时给予对方诚意的肯定或是改进提醒，那你就是在用奖惩的办法促进对方强大的同时与其交心，假以时日，你必定能收获到奖惩给你的人际关系处理的真实力量和价值。</p>
+]]></content>
+      <categories>
+        <category>十三手记</category>
+      </categories>
+      <tags>
+        <tag>十三手记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>接纳麻烦</title>
+    <url>/2022/01/18/shisan/%E6%8E%A5%E7%BA%B3%E9%BA%BB%E7%83%A6/</url>
+    <content><![CDATA[<p><code>摘自微信号十三手记</code></p>
+<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>什么是麻烦？<br>是那些你特别想忽略或粗糙嫌弃的事。</p>
+<p>麻烦是什么？<br>是你逃避直面真实自己的托词。</p>
+<p>既然如此，还有真正的麻烦吗？<br>没有，麻烦都是必要的，都是来成就你的礼物。</p>
+<p>类似的麻烦为何会反复出现？<br>因为你一直没有透过直面解决这些麻烦去解除生命中的困惑。</p>
+<p>如此一来，不解决麻烦的结果是什么？<br>你始终不能真正感受自己内心的智慧与力量。</p>
+<h3 id="此刻你要明白"><a href="#此刻你要明白" class="headerlink" title="此刻你要明白"></a>此刻你要明白</h3><p>在你的人生旅程中，你与别人的整体差距，就是你们解决麻烦的程度的差距，如此，当你遇到你以为的麻烦，请不要嫌弃和忽略，请你力所能及的去具体解决，尽量到位，因为在这些解决行为里，不仅有你值得提升的认知，也有你智慧与力量的创造，也有你生命活性的体验，更加你累积人生成就的大礼。</p>
+<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>虽然我们需要惜时，但也要耐心解决问题，大大小小的问题都是提升自我的途径，尽管麻烦也要去接纳。如果重复度大的则可以考虑自动化去解决。</p>
+]]></content>
+      <categories>
+        <category>十三手记</category>
+      </categories>
+      <tags>
+        <tag>十三手记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>洞见睡眠</title>
+    <url>/2021/12/28/shisan/%E6%B4%9E%E8%A7%81%E7%9D%A1%E7%9C%A0/</url>
+    <content><![CDATA[<p><code>摘自微信号十三手记</code></p>
+<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>定时睡眠和睡眠时长时一个人精神饱满的关键吗？<br>你以为是，其实不是。<br>为什么？ 因为你没有真正懂得人的能量消耗和补充的原理，所以被某些单边的睡眠观念影响纠结，进而降低了睡眠质量。  </p>
+<ul>
+<li><p>人的系统能量是怎么消耗的？<br>眼耳鼻舌身的功能运行和头脑里的各种念想。 </p>
+</li>
+<li><p>系统能量是怎么补充的？<br>适当的时候，主动放松降低眼耳鼻舌身意的运行频率，生命本源会自动补充你的精神能量；适度的饮食支持会提供身体所需要的物质能量。</p>
+</li>
+</ul>
+<h3 id="要你深深明白"><a href="#要你深深明白" class="headerlink" title="要你深深明白"></a>要你深深明白</h3><p>二元有相世界，任何时候，当你放松敞开不纠结，系统能量便会自动减少消耗，补充便会自动提高。所以，定时睡眠以及睡眠时长并不是一个人精神饱满的关键，关键的问题是人的系统能量消耗和补充的原理，当你明白了这个原理，你便打破了睡眠是你能量补充的必须形式的局限认知，你便打破了你对睡眠的依赖性。  </p>
+<p>如此，反而你何时睡眠以及睡眠时长就可以根据你的意愿而主动安排；如此，你便不会因所谓的失眠而形成恐惧，便不会被恐惧纠结而形成反复消耗，反而能量补充会更加顺畅；如此，你的睡眠质量反而得到提高，你的生命自由度便会随着你心境的提升而逐步提升，身心健康和自由便走上了可期的道路。</p>
+<h3 id="附赠"><a href="#附赠" class="headerlink" title="附赠"></a>附赠</h3><p>失眠是什么？<br>是你先给自己定个睡觉时间，再把睡不着当成失眠吗？失眠是没睡觉的样子？还是说在特定时间没睡觉？为什么要特定？谁特定的？谁能除了定自己还能定别人？难道你不可以睡得着就睡，睡不着就不睡吗？</p>
+<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>人类对自己的认知是那么的不足，对睡眠也几乎是一无所知。十三手记表达了令人惊奇的观点，人恢复能量和元气并不完完全全依赖于睡眠。虽然大部分时候睡眠质量很重要，但同时也没有必要一直纠结于自身的睡眠质量。能量的恢复是自然而然的，而人的感官意识都是无时无刻在耗费精力的，但当你关闭了这些感官和意识时，其实你就已经在休整，你的能量就已经是呈现上升的态势。所以，关于休息，我们应该更少焦虑的纠结于睡眠，更多关注我们感官意识的状态。这就是所谓的闭目养神，同时冥想可能可带来注意力的自主调整和加快能量恢复，以致于很多人推荐。</p>
+]]></content>
+      <categories>
+        <category>十三手记</category>
+      </categories>
+      <tags>
+        <tag>十三手记</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>金钱之二元整体观</title>
     <url>/2021/12/22/shisan/%E9%87%91%E9%92%B1%E4%B9%8B%E4%BA%8C%E5%85%83%E6%95%B4%E4%BD%93%E8%A7%82/</url>
     <content><![CDATA[<p><code>摘自微信号十三手记</code></p>
@@ -1705,16 +1865,11 @@
       </tags>
   </entry>
   <entry>
-    <title>接纳麻烦</title>
-    <url>/2022/01/18/shisan/%E6%8E%A5%E7%BA%B3%E9%BA%BB%E7%83%A6/</url>
-    <content><![CDATA[<p><code>摘自微信号十三手记</code></p>
-<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>什么是麻烦？<br>是那些你特别想忽略或粗糙嫌弃的事。</p>
-<p>麻烦是什么？<br>是你逃避直面真实自己的托词。</p>
-<p>既然如此，还有真正的麻烦吗？<br>没有，麻烦都是必要的，都是来成就你的礼物。</p>
-<p>类似的麻烦为何会反复出现？<br>因为你一直没有透过直面解决这些麻烦去解除生命中的困惑。</p>
-<p>如此一来，不解决麻烦的结果是什么？<br>你始终不能真正感受自己内心的智慧与力量。</p>
-<h3 id="此刻你要明白"><a href="#此刻你要明白" class="headerlink" title="此刻你要明白"></a>此刻你要明白</h3><p>在你的人生旅程中，你与别人的整体差距，就是你们解决麻烦的程度的差距，如此，当你遇到你以为的麻烦，请不要嫌弃和忽略，请你力所能及的去具体解决，尽量到位，因为在这些解决行为里，不仅有你值得提升的认知，也有你智慧与力量的创造，也有你生命活性的体验，更加你累积人生成就的大礼。</p>
-<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>虽然我们需要惜时，但也要耐心解决问题，大大小小的问题都是提升自我的途径，尽管麻烦也要去接纳。如果重复度大的则可以考虑自动化去解决。</p>
+    <title>能量朗读</title>
+    <url>/2021/12/20/shisan/%E8%83%BD%E9%87%8F%E6%9C%97%E8%AF%BB/</url>
+    <content><![CDATA[<p><code>文章摘自微信公众号：十三先生手记</code></p>
+<p>小时候，我就一直渴望幸福，一直渴望坚强；<br>小时候，我就一直渴望正直，一直渴望善良；<br>小时候，为就一直渴望快乐，一直渴望成长；<br>现在，我几乎丢失了我的信心，我几乎丢失了我的梦想！<br>我知道，我不能再这样消极的逃避。<br>我知道，我不能再这样平庸的彷徨。<br>我知道，我要全力迸发我的热情；我要勇敢的收复我的希望。<br>我知道，我要真诚的对待身边每一个人，这样，我才能被每一个人真诚的对待；<br>我知道，我要用心的对待每天的时光，这样，我才能收获每天的力量；<br>我知道，我要帮助身边每一个人达成心愿，这样，大家才能帮助我实现梦想。<br>从今天起，我要打败我的懒惰，重拾我的阳光；<br>从今天起，我要改变我的粗俗，提升我的修养；<br>从今天起，我要挑战我的懦弱，找回我的坚强；</p>
+<p>我是为爱这个世界而来<br>我要让世界因我的爱而更加美丽，<br>我要让世界因我的爱而更加安康，<br>我要让世界因我的爱而更加真诚，<br>我要让世界因我的爱而更加和畅。</p>
 ]]></content>
       <categories>
         <category>十三手记</category>
@@ -1758,101 +1913,6 @@
       </categories>
       <tags>
         <tag>十三手记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>洞见睡眠</title>
-    <url>/2021/12/28/shisan/%E6%B4%9E%E8%A7%81%E7%9D%A1%E7%9C%A0/</url>
-    <content><![CDATA[<p><code>摘自微信号十三手记</code></p>
-<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>定时睡眠和睡眠时长时一个人精神饱满的关键吗？<br>你以为是，其实不是。<br>为什么？ 因为你没有真正懂得人的能量消耗和补充的原理，所以被某些单边的睡眠观念影响纠结，进而降低了睡眠质量。  </p>
-<ul>
-<li><p>人的系统能量是怎么消耗的？<br>眼耳鼻舌身的功能运行和头脑里的各种念想。 </p>
-</li>
-<li><p>系统能量是怎么补充的？<br>适当的时候，主动放松降低眼耳鼻舌身意的运行频率，生命本源会自动补充你的精神能量；适度的饮食支持会提供身体所需要的物质能量。</p>
-</li>
-</ul>
-<h3 id="要你深深明白"><a href="#要你深深明白" class="headerlink" title="要你深深明白"></a>要你深深明白</h3><p>二元有相世界，任何时候，当你放松敞开不纠结，系统能量便会自动减少消耗，补充便会自动提高。所以，定时睡眠以及睡眠时长并不是一个人精神饱满的关键，关键的问题是人的系统能量消耗和补充的原理，当你明白了这个原理，你便打破了睡眠是你能量补充的必须形式的局限认知，你便打破了你对睡眠的依赖性。  </p>
-<p>如此，反而你何时睡眠以及睡眠时长就可以根据你的意愿而主动安排；如此，你便不会因所谓的失眠而形成恐惧，便不会被恐惧纠结而形成反复消耗，反而能量补充会更加顺畅；如此，你的睡眠质量反而得到提高，你的生命自由度便会随着你心境的提升而逐步提升，身心健康和自由便走上了可期的道路。</p>
-<h3 id="附赠"><a href="#附赠" class="headerlink" title="附赠"></a>附赠</h3><p>失眠是什么？<br>是你先给自己定个睡觉时间，再把睡不着当成失眠吗？失眠是没睡觉的样子？还是说在特定时间没睡觉？为什么要特定？谁特定的？谁能除了定自己还能定别人？难道你不可以睡得着就睡，睡不着就不睡吗？</p>
-<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>人类对自己的认知是那么的不足，对睡眠也几乎是一无所知。十三手记表达了令人惊奇的观点，人恢复能量和元气并不完完全全依赖于睡眠。虽然大部分时候睡眠质量很重要，但同时也没有必要一直纠结于自身的睡眠质量。能量的恢复是自然而然的，而人的感官意识都是无时无刻在耗费精力的，但当你关闭了这些感官和意识时，其实你就已经在休整，你的能量就已经是呈现上升的态势。所以，关于休息，我们应该更少焦虑的纠结于睡眠，更多关注我们感官意识的状态。这就是所谓的闭目养神，同时冥想可能可带来注意力的自主调整和加快能量恢复，以致于很多人推荐。</p>
-]]></content>
-      <categories>
-        <category>十三手记</category>
-      </categories>
-      <tags>
-        <tag>十三手记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>高效行动</title>
-    <url>/2022/01/18/shisan/%E9%AB%98%E6%95%88%E8%A1%8C%E5%8A%A8/</url>
-    <content><![CDATA[<p><code>摘自微信号十三手记</code></p>
-<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>为什么那么忙，却没有达到想要的效果？<br>因为多余动作太多</p>
-<p>什么是多余动作？<br>对事情发展本身不直接着力的动作</p>
-<p>多余动作为什么会出现？<br>因为你害怕不利的结果来得太快，所以，你内心的恐惧感让你不自知的搞了这些动作来减缓进展的速度，虽然你以为这样做可以更好的优化过程，可以更快得到有利的结果。</p>
-<p>多余动作会产生什么效果？<br>你以为会让事态进展更高效，但，其实必定会生出更多跟事件发展本身无关的新问题，进而形成层层阻碍。</p>
-<h3 id="此刻你要明白"><a href="#此刻你要明白" class="headerlink" title="此刻你要明白"></a>此刻你要明白</h3><p>在事情发展过程中，只有你的行为尽量实事求是的直接着力于事件本身，你才能尽量减少多余动作产生的能耗，你才能让事件在发展过程中更加清晰的优化，你才能让事件的进展更加高效。</p>
-<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>对于自我而言，其实是逃避真正问题的根因。有时候明知道面前有必须要解决的问题，但是总是希望从外界或者其他不相关的内容中得到方法，而非从自身出发努力去解决问题。因此往往会偏离有价值的行为，以及有效的解决真正问题，因此才一直无法有效解决问题。</p>
-]]></content>
-      <categories>
-        <category>十三手记</category>
-      </categories>
-      <tags>
-        <tag>十三手记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>能量朗读</title>
-    <url>/2021/12/20/shisan/%E8%83%BD%E9%87%8F%E6%9C%97%E8%AF%BB/</url>
-    <content><![CDATA[<p><code>文章摘自微信公众号：十三先生手记</code></p>
-<p>小时候，我就一直渴望幸福，一直渴望坚强；<br>小时候，我就一直渴望正直，一直渴望善良；<br>小时候，为就一直渴望快乐，一直渴望成长；<br>现在，我几乎丢失了我的信心，我几乎丢失了我的梦想！<br>我知道，我不能再这样消极的逃避。<br>我知道，我不能再这样平庸的彷徨。<br>我知道，我要全力迸发我的热情；我要勇敢的收复我的希望。<br>我知道，我要真诚的对待身边每一个人，这样，我才能被每一个人真诚的对待；<br>我知道，我要用心的对待每天的时光，这样，我才能收获每天的力量；<br>我知道，我要帮助身边每一个人达成心愿，这样，大家才能帮助我实现梦想。<br>从今天起，我要打败我的懒惰，重拾我的阳光；<br>从今天起，我要改变我的粗俗，提升我的修养；<br>从今天起，我要挑战我的懦弱，找回我的坚强；</p>
-<p>我是为爱这个世界而来<br>我要让世界因我的爱而更加美丽，<br>我要让世界因我的爱而更加安康，<br>我要让世界因我的爱而更加真诚，<br>我要让世界因我的爱而更加和畅。</p>
-]]></content>
-      <categories>
-        <category>十三手记</category>
-      </categories>
-      <tags>
-        <tag>十三手记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>心态练习</title>
-    <url>/2022/01/28/xinli/%E5%BF%83%E6%80%81%E7%BB%83%E4%B9%A0/</url>
-    <content><![CDATA[<h3 id="可以刻意练习的六种心态"><a href="#可以刻意练习的六种心态" class="headerlink" title="可以刻意练习的六种心态"></a>可以刻意练习的六种心态</h3><p>1.旁观者心态<br><strong>方法：任何不喜欢的事情发生了，你就想象一个画面-你从身体跳出来了，你在5米之外看自己。</strong><br>作用：可以四两拨千斤，化解所有烦恼。开悟者常用，但一般需要经历太多苦修才能达到境界。</p>
-<p>从旁观者看，这个人既陌生又熟悉，但这人终究是陌生人，他发生的任何事都和你没有关系，甚至很搞笑好玩。</p>
-<p>原理：练习久了，你基本不会被情绪困扰，旁观者心态是不响应生理性、基因性、即时性、冲动性和本能性的反应。这些反应是所有痛苦的根源，不但解决不了问题，反而会让事情变得更加糟糕。</p>
-<p>2.归零者心态<br>当感觉做人不容易，压力特别大，心情非常沮丧，非常迷茫的时候，用这个心态可以安静下来找到目标，让自己的人生变清晰，恢复自信。</p>
-<p><strong>方法：想象过去的一切一切都只是你的一个梦而以。既然过去的一切一切都是梦，全部归零了。现在的自己就是新生婴儿，未来的自己一切都是崭新的。</strong></p>
-<p>原理：既然是新生的，就不要带有包袱，不管是荣誉的还是耻辱的。人生最可怕的事情就是路径依赖。归零者厉害之初在于让你突破路径依赖，成为改变命运的起点。</p>
-<p>3.一日囚心态<br>用于对抗消费主义陷阱，远离个人经济危机</p>
-<p><strong>方法：想买东西的时候，想象自己只能活在今天了，买来的东西今天用不上的话就会消失。</strong></p>
-<p>4.造物主心态<br>献给低自尊，低价值感，低存在感的同学们<br>是不是特别爱觉得对不起？是不是觉得自己终究是不配了？是不是觉得强者的世界中自己就像一颗无足轻重的露珠？</p>
-<p>请大胆勇敢使用造物主心态</p>
-<p><strong>方法：这个世界是你创造的，所有人所有事都是你脑袋里长出来的，它们对你来说，才终究是不配了。</strong></p>
-<p>原理：这其实就是世界运作的本质和人生的真相，可以多读相关的书了解</p>
-<p>应用场景：面对应试面试，演讲；面对弱智和杠精；教员就是造物主心态的代表性人物，参见相关诗词“五岭逶迤腾细浪，乌蒙磅翎走泥丸“</p>
-<p>5.复仇者心态<br>弱者最大的问题在于甘于弱势地位，认为“大家不都这样过的吗”，但凡能成就的人都有卧薪尝胆的复仇之心，老天爷不会平白无故帮助一个过于佛系的人。</p>
-<p>首先要找个仇人（不是真正意义上的，是为了成就自己找的一个靶子），可以虚构一个人出来。他和你有着不共戴天之仇，而且如果5年后比他钱少，他就能弄死你。反复构建比较细节，直到可恨。</p>
-<p>方法：如何复仇？如何5年后弄死虚构的人；现在存的每一分钱都是对他的一记耳光。每一分钟认真的工作都是一记飞腿。每一次毫无意义的消费都是仇人射来的箭。每一次自甘堕落都是对手的励精图治。</p>
-<p>可以用于办公室政治，追求对象，追求财富，追求成就上。</p>
-<p>6.永生者心态</p>
-<p>方法：就像永远不会死那样，去追求道德和精神生活的完善。</p>
-<p>“积善之家必有余庆，及不善之家必有余殃”</p>
-<p>总结：心态改变行为，行为改变命运。</p>
-<h3 id="高赞的回答"><a href="#高赞的回答" class="headerlink" title="高赞的回答"></a>高赞的回答</h3><p>1.不内耗<br>不让负面情绪影响自己超过3天，不苦情。有想表达的事情勇敢争取表达；遇到负面反馈再应对，不猜测不内耗。</p>
-<p>2.不让别人消耗自己<br>与简单的人做朋友，远离强势，带来压迫感，会负面打击别人的人。</p>
-<p>3.戒掉虚荣心<br>认清事物的本质，刨去表面毫无用处的附加值</p>
-<p>4.表达出来与内心完全一致，相信别人也如此<br>不害怕表达真实的自己，表达出来的跟内心完全一致，不让别人猜；推己及人，相信别人表达出来的也跟内心一致</p>
-<p>5.练习深度工作<br>专注工作，控制自控力，集中精力在眼前有难度，有挑战的事情上。</p>
-<p>6.做长期主义者<br>人人都渴望“快速成功”，但真正成功的事情都是经历播种、施肥、浇灌而成的。</p>
-<p>7.社交时，不把自己放在被评价的位置<br>遇到比自己强的人，不要在意，承认对方优点，也不否定自我，没有必要太在意别人的看法。</p>
-<p>8.克制自我的同理心<br>太敏感感知别人情绪，容易成为讨好型人格。</p>
-]]></content>
-      <categories>
-        <category>心理</category>
-      </categories>
-      <tags>
-        <tag>心理</tag>
       </tags>
   </entry>
   <entry>
@@ -2419,66 +2479,21 @@
       </tags>
   </entry>
   <entry>
-    <title>盐选健康</title>
-    <url>/2022/01/21/xinli/%E7%9B%90%E9%80%89%E5%81%A5%E5%BA%B7/</url>
-    <content><![CDATA[<h3 id="优雅起床"><a href="#优雅起床" class="headerlink" title="优雅起床"></a>优雅起床</h3><p>熬夜:睡眠不规律,睡眠不足以及整夜不睡.而非指定睡觉时间,当然中医养生的角度应该是需要早睡早起,早上练功升阳.</p>
-<p>如何优雅起床：</p>
-<ol>
-<li>早起一杯温白开</li>
-<li>感受阳光感受风，开窗通风</li>
-<li>刷牙洗鼻如厕</li>
-<li>吃好早餐</li>
-<li>洗臉：干性用冷水，油性用热水</li>
-</ol>
-<p>起床三不要：</p>
-<ol>
-<li>不要起床太快，可以先拉伸慢慢活动开</li>
-<li>晨练不要太剧烈，八段锦</li>
-<li>如厕不能太用力，自然而为</li>
-</ol>
-<p>避免起床气，其成因：混乱性觉醒，避险本能；不吃早餐危害：肥胖</p>
-<p>完美早餐 = 主食 + 蛋白质 + 蔬菜 + 水果<br>主食可配粗粮红薯、玉米、红豆、紫米等</p>
-<h3 id="早高峰养生"><a href="#早高峰养生" class="headerlink" title="早高峰养生"></a>早高峰养生</h3><p>正常脖子需成熟头部的压力约4～5公斤，但低头幅度达45度时，相当于顶着10瓶大可乐，应尽可能减少低头。长期前伸容易导致肌肉疼痛僵硬，久而久之出现劳损和椎间盘突出；影响心血管健康，血循环及脑供氧。莫憋屁尿，憋尿坏处多。</p>
-<h3 id="对抗久坐"><a href="#对抗久坐" class="headerlink" title="对抗久坐"></a>对抗久坐</h3><p>久坐的坏处：肥胖，腿部血液流速减慢，大量静脉血淤积在小腿，肌肉和韧带等组织过度拉伸的酸胀，使人处于低代谢水平，影响内分泌功能。</p>
-<p>解决方法：寻找站立办公的机会，多走动。小水杯，多厕所，绕远路.</p>
-<p>正确坐姿：抬头挺胸收腹，目视前方</p>
-<p>头部米字操，锻炼颈部后方肌肉</p>
-<p>枕头：压缩后一拳大小，别太软要有支撑</p>
-<p>改善腰部：桥式，飞燕，平板支撑</p>
-<h3 id="关于午休"><a href="#关于午休" class="headerlink" title="关于午休"></a>关于午休</h3><p>吃完睡并不会长胖，多吃或者睡完又吃才会。午睡讲究火候，一般10-20恰到好处，起来神清气爽；如果超过一个小时则进入完全睡眠，起来身体很疲惫。</p>
-<p>晚上难入睡的伙伴，建议中午攒攒睡意，等到晚上再一口气休息好。<br>善用垫枕和U型枕，尽量躺睡，如果不睡觉建议听点音乐作休息，另外善用降噪耳机。</p>
-<h3 id="关于外卖"><a href="#关于外卖" class="headerlink" title="关于外卖"></a>关于外卖</h3><p>正规店家要求《餐饮服务许可证》和《营业执照》<br>远离三种菜：干煸/干锅，“水煮”，炒土豆三鲜等；少油少盐少淀粉。<br>油脂单位热量高，而且代谢困难。减少油炸，重油食品，而且大部分吃到的油不新鲜，进入身体代谢严重影响健康。点菜要避免眼大肚小，饿的时候容易点多。更绝的是可以把油先蹭掉再蘸料吃，实现味道与健康的双赢。</p>
-<p>爱吃炸鸡的朋友，可以把鸡皮扒开吃，尽量摄入非常油的食品。</p>
-<p>针对甜点欲望，可以慢节奏吃+喝水，有效缓解甜品的高热量诱惑。<br>另外要打破杜绝浪费的观念，针对不健康的食品应该果断浪费，因为引起的健康问题反而得不偿失！</p>
-<h3 id="关于晚饭"><a href="#关于晚饭" class="headerlink" title="关于晚饭"></a>关于晚饭</h3><p>正常是规律进食，除非当天中午或者下午吃多了，热量摄入足够了。再就是晚上8～9点入睡的朋友也可不吃，因为睡眠消耗比较小。</p>
-<p>晚饭需要注意的是：1.早吃 2.不暴食 </p>
-<h3 id="关于夜宵"><a href="#关于夜宵" class="headerlink" title="关于夜宵"></a>关于夜宵</h3><p>夜宵的吸引力：1.无聊 2.压力 3.心情不佳<br>可以选择牛奶燕麦粥，少放盐</p>
-<h3 id="关于熬夜"><a href="#关于熬夜" class="headerlink" title="关于熬夜"></a>关于熬夜</h3><p>危害多，长期的睡眠不足比急性通宵的影响更大；严重影响身体机能，免疫力以及反映力等。</p>
-<p>熬夜的主要原因：追剧，小说，游戏。一线普遍12点后睡，日均7.8小时。<br>只要生活规律，睡眠质量高，一觉醒来活力四射，元气满满，那么这样的作息就是适合你的。</p>
-<h3 id="延缓衰老"><a href="#延缓衰老" class="headerlink" title="延缓衰老"></a>延缓衰老</h3><p>25岁后，人的衰老主要是基础代谢下降，预防衰老第一步是维持高水平的代谢率。皮肤衰老首要原因是紫外线，注意防晒。有光就有太阳，有太阳就有紫外线，有紫外线就会变老。</p>
-<h4 id="饮食"><a href="#饮食" class="headerlink" title="饮食"></a>饮食</h4><p>主要方法：1.低油低糖不过饱，过度进食容易消化不良，影响肠胃正常运作 2.均衡饮食，三餐规律。</p>
-<p>多摄入牛奶，酸奶和豆腐，高钙能缓解衰老。铁和锌，维生素ABCD等族群，起到意想不到的作用。</p>
-<p>多摄入粗粮，粗粮最大的优点是带来饱腹感，膳食纤维能与脂肪和胆固醇结合，预防高血脂和脂肪肝等病。</p>
-<p>减少多糖，糖基化是糖和蛋白质结合，使其失去正常的结构和颜色。</p>
-<h4 id="快乐"><a href="#快乐" class="headerlink" title="快乐"></a>快乐</h4><p><code>傻人有傻福</code>，生活已经很苦，不要再给自己太大的压力，学会和自己和解，保持良好心情。长期高压下，导致失眠，毛孔粗大，脱发，皮肤暗沉等问题。试着让自己每天都快乐，接受和享受快乐。</p>
-<h4 id="运动"><a href="#运动" class="headerlink" title="运动"></a>运动</h4><p>动起来，每天半小时的健身锻炼，让你的生理状态和精神面貌都年轻；长久不锻炼，肌肉会退化，人的反映也会变缓。</p>
-<h3 id="关于零食"><a href="#关于零食" class="headerlink" title="关于零食"></a>关于零食</h3><p>每天一小包坚果是可行，但注意油炸和蟹黄等。可以考虑燕麦制品的零食，至于糖果巧克力则是甜蜜的负担，心情不好时可以来一下。最后果脯果干不能当水果吃，选择钠含量不超标的食物。辣条含钠量太高，基本卫生也无法保证，还是别吃了。同时也要减少吃冰制品。方便面垃圾不在于其他，只在于热量高，含盐量高，蛋白质和膳食纤维不足。尽量进食新鲜食材，而非加工制品。</p>
-<p><code>胖子不是一口吃成的，你摄入的每一份糖和油脂都不是无辜的。</code></p>
-<h3 id="生活中的建议"><a href="#生活中的建议" class="headerlink" title="生活中的建议"></a>生活中的建议</h3><ul>
-<li>好好吃每一顿正餐，减少时长产生的饥饿感</li>
-<li>保持学习和工作环境的清爽，不把零食放到容易看见的地方，人的意志很容易动摇，不要自己给自己设置考验</li>
-<li>多喝水，有时你感觉饿了并不一定是身体真的缺少能量，也可能是缺水了，试试站起来倒杯水，补充水分，转移注意力，有时候就能骗过大脑</li>
-<li>买小包装或者分装，拆开一大包容易全部吃完</li>
-<li>定时摄入，稍微补充，而不是随时随地补充能量</li>
-<li>千万不要一边看剧综艺一边零食，否则根本想象不到自己吃了多少<br>总之进食要注意糖、脂肪、热量、钠和蛋白质，尽量选低糖、低热量、低钠、高蛋白的食物，用全麦面包和燕麦来饱腹吧～</li>
-</ul>
-<h3 id="关于饮料"><a href="#关于饮料" class="headerlink" title="关于饮料"></a>关于饮料</h3><p>提神饮料可选茶叶，茶本身比较健康，无糖无脂低热量。咖啡可选美式，名字越好听越可能是健康陷阱。平时午饭后，可来一杯咖啡，小憩15-20分钟，即可在午后华丽转身。能量饮料中含有大量糖，而且咖啡因不能摄入过量，最多依赖茶叶，尽量不依赖功能饮料。</p>
+    <title>高效行动</title>
+    <url>/2022/01/18/shisan/%E9%AB%98%E6%95%88%E8%A1%8C%E5%8A%A8/</url>
+    <content><![CDATA[<p><code>摘自微信号十三手记</code></p>
+<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>为什么那么忙，却没有达到想要的效果？<br>因为多余动作太多</p>
+<p>什么是多余动作？<br>对事情发展本身不直接着力的动作</p>
+<p>多余动作为什么会出现？<br>因为你害怕不利的结果来得太快，所以，你内心的恐惧感让你不自知的搞了这些动作来减缓进展的速度，虽然你以为这样做可以更好的优化过程，可以更快得到有利的结果。</p>
+<p>多余动作会产生什么效果？<br>你以为会让事态进展更高效，但，其实必定会生出更多跟事件发展本身无关的新问题，进而形成层层阻碍。</p>
+<h3 id="此刻你要明白"><a href="#此刻你要明白" class="headerlink" title="此刻你要明白"></a>此刻你要明白</h3><p>在事情发展过程中，只有你的行为尽量实事求是的直接着力于事件本身，你才能尽量减少多余动作产生的能耗，你才能让事件在发展过程中更加清晰的优化，你才能让事件的进展更加高效。</p>
+<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>对于自我而言，其实是逃避真正问题的根因。有时候明知道面前有必须要解决的问题，但是总是希望从外界或者其他不相关的内容中得到方法，而非从自身出发努力去解决问题。因此往往会偏离有价值的行为，以及有效的解决真正问题，因此才一直无法有效解决问题。</p>
 ]]></content>
       <categories>
-        <category>身体健康</category>
+        <category>十三手记</category>
       </categories>
       <tags>
-        <tag>身体健康</tag>
+        <tag>十三手记</tag>
       </tags>
   </entry>
 </search>
