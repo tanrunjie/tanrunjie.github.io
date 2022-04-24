@@ -20,20 +20,22 @@
     var CONFIG = {"hostname":"tanrunjie.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
   </script>
 
-  <meta name="description" content="工作上本职工作由于产品部对预研项目的信心和期望不高，今年头三个月我主推的项目基本没有进展。于是我在本来就量产项目为重的小公司里面地位更卑微了，随时有被毕业的风险，也可能是因为薪资不高，反正我现在有点“食之无味，弃之可惜”的味道了。只能趁着这段时间多学习，多看看论文，多写写代码。希望能让自己的职业生涯有点起色。 虽然入职以来沟通能力和代码能力未见长足的进步，但是空间思考能力、阅读能力以及专利能力都有">
+  <meta name="description" content="前言：努力做西湖区最好的算法题解。分为算法专题、91天学算法、精选题解、高频考题（简单-中等-困难） 算法专题数据结构线性结构：使用连续内存，序列。利于查询，不利于插入删除非线性结构：使用间断内存，通过地址指针连接,链表。运行时动态生成 队列、栈都是受限序列。非线性结构是为了高效兼顾静态操作和动态操作，如树堆。堆是一种优先队列，二叉查找树（查找快），AVL平衡树优化深度的BST，及后面的红黑树。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2022第一季度总结">
-<meta property="og:url" content="http://tanrunjie.github.io/2022/04/07/personal/2022%E7%AC%AC%E4%B8%80%E5%AD%A3%E5%BA%A6%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:title" content="力扣加加">
+<meta property="og:url" content="http://tanrunjie.github.io/2022/04/24/reading/lcpp/index.html">
 <meta property="og:site_name" content="奇幻物语">
-<meta property="og:description" content="工作上本职工作由于产品部对预研项目的信心和期望不高，今年头三个月我主推的项目基本没有进展。于是我在本来就量产项目为重的小公司里面地位更卑微了，随时有被毕业的风险，也可能是因为薪资不高，反正我现在有点“食之无味，弃之可惜”的味道了。只能趁着这段时间多学习，多看看论文，多写写代码。希望能让自己的职业生涯有点起色。 虽然入职以来沟通能力和代码能力未见长足的进步，但是空间思考能力、阅读能力以及专利能力都有">
+<meta property="og:description" content="前言：努力做西湖区最好的算法题解。分为算法专题、91天学算法、精选题解、高频考题（简单-中等-困难） 算法专题数据结构线性结构：使用连续内存，序列。利于查询，不利于插入删除非线性结构：使用间断内存，通过地址指针连接,链表。运行时动态生成 队列、栈都是受限序列。非线性结构是为了高效兼顾静态操作和动态操作，如树堆。堆是一种优先队列，二叉查找树（查找快），AVL平衡树优化深度的BST，及后面的红黑树。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-04-07T07:16:30.000Z">
-<meta property="article:modified_time" content="2022-04-07T08:01:56.562Z">
+<meta property="og:image" content="http://tanrunjie.github.io/images/4_24_1.jpg">
+<meta property="article:published_time" content="2022-04-24T03:30:15.000Z">
+<meta property="article:modified_time" content="2022-04-24T08:26:31.037Z">
 <meta property="article:author" content="神秘囚徒">
-<meta property="article:tag" content="总结">
+<meta property="article:tag" content="读书笔记">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://tanrunjie.github.io/images/4_24_1.jpg">
 
-<link rel="canonical" href="http://tanrunjie.github.io/2022/04/07/personal/2022%E7%AC%AC%E4%B8%80%E5%AD%A3%E5%BA%A6%E6%80%BB%E7%BB%93/">
+<link rel="canonical" href="http://tanrunjie.github.io/2022/04/24/reading/lcpp/">
 
 
 <script id="page-configurations">
@@ -46,7 +48,7 @@
   };
 </script>
 
-  <title>2022第一季度总结 | 奇幻物语</title>
+  <title>力扣加加 | 奇幻物语</title>
   
 
 
@@ -200,7 +202,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://tanrunjie.github.io/2022/04/07/personal/2022%E7%AC%AC%E4%B8%80%E5%AD%A3%E5%BA%A6%E6%80%BB%E7%BB%93/">
+    <link itemprop="mainEntityOfPage" href="http://tanrunjie.github.io/2022/04/24/reading/lcpp/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -213,7 +215,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          2022第一季度总结
+          力扣加加
         </h1>
 
         <div class="post-meta">
@@ -224,7 +226,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-04-07 15:16:30 / 修改时间：16:01:56" itemprop="dateCreated datePublished" datetime="2022-04-07T15:16:30+08:00">2022-04-07</time>
+              <time title="创建时间：2022-04-24 11:30:15 / 修改时间：16:26:31" itemprop="dateCreated datePublished" datetime="2022-04-24T11:30:15+08:00">2022-04-24</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -232,7 +234,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%80%BB%E7%BB%93/" itemprop="url" rel="index"><span itemprop="name">总结</span></a>
+                  <a href="/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">读书笔记</span></a>
                 </span>
             </span>
 
@@ -249,7 +251,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.3k</span>
+              <span>1.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -268,21 +270,48 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="工作上"><a href="#工作上" class="headerlink" title="工作上"></a>工作上</h3><h4 id="本职工作"><a href="#本职工作" class="headerlink" title="本职工作"></a>本职工作</h4><p>由于产品部对预研项目的信心和期望不高，今年头三个月我主推的项目基本没有进展。于是我在本来就量产项目为重的小公司里面地位更卑微了，随时有被毕业的风险，也可能是因为薪资不高，反正我现在有点“食之无味，弃之可惜”的味道了。只能趁着这段时间多学习，多看看论文，多写写代码。希望能让自己的职业生涯有点起色。</p>
-<p>虽然入职以来沟通能力和代码能力未见长足的进步，但是空间思考能力、阅读能力以及专利能力都有所提升，跟着一哥学习思考的深度也有一定程度的进步。值得一提的是，由于3月两篇专利的贡献，个人还获得部门月度之星的殊荣，个人还是很需要鼓励和积极的心态的。希望自己再接再砺，勇往直前！</p>
-<h4 id="工作之余"><a href="#工作之余" class="headerlink" title="工作之余"></a>工作之余</h4><p>积极了解互联网行业具体情况和进展，当初正因为自己疏于认真准备找工作，缺乏了必要技能的锻炼。自然而然也没能获得一个良好的职业规划，在年至30之际才幡然醒悟，重新准备出发。查漏补缺，刷刷题目，学学新东西。一个好的技术人员，必须与时俱进，时刻维护自己的知识体系，丰富个人的武器库。</p>
-<p>认识了梓淳，认真分析自己的经历以及能力，确实自己缺乏始终如一的目标以及深度认真学习工作的高效能力，加之受个人性格以及情绪影响，错过各种锻炼成长的机会。如今开始，认真提升自己的能力，不再像以往朝三暮四地另辟蹊径，而是朝着可能的方向一步步前进，反而是最好的结果。</p>
-<h3 id="学习上"><a href="#学习上" class="headerlink" title="学习上"></a>学习上</h3><p>目前工作生活的节奏其实非常好，应该抓紧每一分钟来提升自己，然而很多时候自己是缺乏提升的方向，而非动力。有时候总是担心这个目标太遥远又或者这个些目标不是想要的，以至于始乱终弃。</p>
-<p>最近求职潮可以发现，个人学历条件是一方面，力扣能力以及专项能力才是工作上的考察重点。多年逃避的刷题能力，始终还是得面对，何不早日攻克，早日完成自我的蜕变。当自己老了，看着满满的leetcode和github应该还是会有所骄傲的吧。30已经是一个人的分水岭了，更年轻的自己也没有放手一搏去折腾，如今的自己更是除了干本专业也就别无他选了，那么请认真过好每一天吧！</p>
-<p>第一季度的学习指标包括：</p>
-<ul>
-<li>阅读：线代漫画 医本正经 泡脚攻略</li>
-<li>编程：基础班class 4, 学习了递归分治DP</li>
-<li>专项：SLAM CH7 / 云台专利</li>
+        <p>前言：努力做西湖区最好的算法题解。分为算法专题、91天学算法、精选题解、高频考题（简单-中等-困难）</p>
+<h2 id="算法专题"><a href="#算法专题" class="headerlink" title="算法专题"></a>算法专题</h2><h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>线性结构：使用连续内存，序列。利于查询，不利于插入删除<br>非线性结构：使用间断内存，通过地址指针连接,链表。运行时动态生成</p>
+<p>队列、栈都是受限序列。非线性结构是为了高效兼顾静态操作和动态操作，如树堆。<br>堆是一种优先队列，二叉查找树（查找快），AVL平衡树优化深度的BST，及后面的红黑树。</p>
+<h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><p><img src="/images/4_24_1.jpg"></p>
+<p>链表基本操作,画图理解：注意头尾指针情况<br>插入节点：<br>1.temp = 待插位置前驱节点.next<br>2.待插位置前驱节点.next = 待插指针<br>3.待插指针.next = temp</p>
+<p>删除节点：<br>1.待删除位置的前驱节点.next = 待删除位置的前驱节点.next.next</p>
+<p>遍历：<br>cur = head<br>while(cur!=nullptr){<br>  print(cur)<br>  cur = cur.next<br>}</p>
+<p>前序遍历递归伪代码</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dfs</span>(cur)&#123;</span><br><span class="line">  <span class="keyword">if</span> cur == <span class="literal">nullptr</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  <span class="built_in">print</span>(cur.val)</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">dfs</span>(cur.next)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="一个原则：画图"><a href="#一个原则：画图" class="headerlink" title="一个原则：画图"></a>一个原则：画图</h4><h4 id="两个考点："><a href="#两个考点：" class="headerlink" title="两个考点："></a>两个考点：</h4><p>1.指针修改<br>比如链表反转，数组直接遍历两两交换</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reverse</span><span class="params">(head, tail)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  cur = head</span><br><span class="line">  pre = <span class="literal">nullptr</span></span><br><span class="line">  <span class="keyword">while</span>(cur!=tail)</span><br><span class="line">  &#123;</span><br><span class="line">    next = cur-&gt;next</span><br><span class="line">    cur-&gt;next = pre</span><br><span class="line">    pre = cur</span><br><span class="line">    cur = next</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> tail</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.链表拼接<br>容易穿来穿去。<br>链表的价值：不必要求物理内存连续性，对插入和删除友好。</p>
+<h4 id="三个注意：-覆盖90-错误"><a href="#三个注意：-覆盖90-错误" class="headerlink" title="三个注意： 覆盖90%错误"></a>三个注意： 覆盖90%错误</h4><ul>
+<li>出现了环，造成死循环</li>
+<li>分不清边界，造成边界条件出错</li>
+<li>搞不懂递归做法</li>
 </ul>
-<p>说实话，目标提出来了，但是效率没有达到。主要个人缺乏高效的执行力以及深度工作的能力，这些都需要继续培养改进，每天反复提醒自己目标以及高效执行。可借助冥想正念以及镜子激励方法。</p>
-<h3 id="生活上"><a href="#生活上" class="headerlink" title="生活上"></a>生活上</h3><p>经过深圳祥和堂的正骨师傅泡洗和外涂药膏调理，大小腿上的湿疹已经慢慢消退，不再痕痒了。脚背上的厚厚褶皱倒是一时半会没办法消除，而每每手抓会引起痕痒，庆幸的是自己经历过最痛苦的时光，自制力已然可以控制住了，只是要让皮肤完完全全恢复如初也有一定的挑战。这个病痛历时三年之久，打击了我的青春，同时也打击了我的事业，人生跌入低谷。而终于迎来这么一天，开始触底反弹，身体和精神好起来了，1就有了。其他0还会远吗！这段经历也让我重新审视学习起中医，包括推拿针灸泡脚药膳艾灸等。身体健康，愿每一个人都拥有健康的身体，美好的人生。</p>
-<p>其次，回看上年总结，除了工作上没有收获到满满的成就感，得到同事们的认可，其余一切皆好，生活诚然有压力，但相信自己能迎接挑战，一天比一天美好！</p>
+<p>关于链表环：</p>
+<ul>
+<li>题目链表可能有环，判断是否有，以及位置（快慢指针）</li>
+<li>本来没环，被你操作出现环（先画图，看操作；仅仅画出一个子结构即可）</li>
+</ul>
+<p>关于边界：</p>
+<ul>
+<li>如果题目的头节点可能移除，考虑使用虚拟节点，使头节点变成中间节点</li>
+<li>题目返回不是原本的头节点，而是尾节点或者中间节点，要注意指针变化</li>
+</ul>
+<h4 id="前后序"><a href="#前后序" class="headerlink" title="前后序"></a>前后序</h4><p>前序：先处理节点，再左右<br>中序：先左，再处理，再右<br>后序：先左右，最后处理节点</p>
+<p>由于链表天生具有递归性，可以引入递归思维。</p>
+<p>如果前序遍历，可以想象前面链表处理好了，这种情况下处理当前；如果后序，则想象后面处理好了，这种情况下处理当前。</p>
+<h4 id="四个技巧"><a href="#四个技巧" class="headerlink" title="四个技巧"></a>四个技巧</h4><p>虚拟头作用：</p>
+<ul>
+<li>头节点变成中间节点，简化判断</li>
+<li>在合适时候断开，返回链表中间节点</li>
+</ul>
+<p>快慢指针：</p>
+<ul>
+<li>一个先走，一个后走</li>
+<li>一个快走，一个慢走</li>
+</ul>
+<p>穿针引线：先穿再引，即记录后续改动的，再变更之前的</p>
 
     </div>
 
@@ -292,7 +321,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%80%BB%E7%BB%93/" rel="tag"># 总结</a>
+              <a href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag"># 读书笔记</a>
           </div>
 
         
@@ -301,13 +330,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/04/01/jiuzhang/behavior/" rel="prev" title="九章行测">
-      <i class="fa fa-chevron-left"></i> 九章行测
+    <a href="/2022/04/21/reading/effective-cpp/" rel="prev" title="effective_cpp 3rd">
+      <i class="fa fa-chevron-left"></i> effective_cpp 3rd
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/04/08/jiuzhang/class5_6/" rel="next" title="九章基础class_5_6">
-      九章基础class_5_6 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -367,7 +393,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E4%B8%8A"><span class="nav-number">1.</span> <span class="nav-text">工作上</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%AC%E8%81%8C%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.1.</span> <span class="nav-text">本职工作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E4%B9%8B%E4%BD%99"><span class="nav-number">1.2.</span> <span class="nav-text">工作之余</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E4%B8%8A"><span class="nav-number">2.</span> <span class="nav-text">学习上</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%B4%BB%E4%B8%8A"><span class="nav-number">3.</span> <span class="nav-text">生活上</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E4%B8%93%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">算法专题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8"><span class="nav-number">1.2.</span> <span class="nav-text">链表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E5%8E%9F%E5%88%99%EF%BC%9A%E7%94%BB%E5%9B%BE"><span class="nav-number">1.2.1.</span> <span class="nav-text">一个原则：画图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E8%80%83%E7%82%B9%EF%BC%9A"><span class="nav-number">1.2.2.</span> <span class="nav-text">两个考点：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E4%B8%AA%E6%B3%A8%E6%84%8F%EF%BC%9A-%E8%A6%86%E7%9B%9690-%E9%94%99%E8%AF%AF"><span class="nav-number">1.2.3.</span> <span class="nav-text">三个注意： 覆盖90%错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E5%90%8E%E5%BA%8F"><span class="nav-number">1.2.4.</span> <span class="nav-text">前后序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E4%B8%AA%E6%8A%80%E5%B7%A7"><span class="nav-number">1.2.5.</span> <span class="nav-text">四个技巧</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -588,7 +614,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'tanrunjie.github.io',
       owner       : 'tanrunjie',
       admin       : ['tanrunjie'],
-      id          : '6ed93e59fcd5b0731e8bae78c0c7f130',
+      id          : 'b89c0eb514936bc87f2ede4528c2f7e6',
         language: 'zh-CN',
       distractionFreeMode: false
     });

@@ -6,7 +6,7 @@
   <link href="http://tanrunjie.github.io/atom.xml" rel="self"/>
   
   <link href="http://tanrunjie.github.io/"/>
-  <updated>2022-04-24T03:27:18.159Z</updated>
+  <updated>2022-04-24T08:26:31.037Z</updated>
   <id>http://tanrunjie.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>力扣加加</title>
+    <link href="http://tanrunjie.github.io/2022/04/24/reading/lcpp/"/>
+    <id>http://tanrunjie.github.io/2022/04/24/reading/lcpp/</id>
+    <published>2022-04-24T03:30:15.000Z</published>
+    <updated>2022-04-24T08:26:31.037Z</updated>
+    
+    <content type="html"><![CDATA[<p>前言：努力做西湖区最好的算法题解。分为算法专题、91天学算法、精选题解、高频考题（简单-中等-困难）</p><h2 id="算法专题"><a href="#算法专题" class="headerlink" title="算法专题"></a>算法专题</h2><h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>线性结构：使用连续内存，序列。利于查询，不利于插入删除<br>非线性结构：使用间断内存，通过地址指针连接,链表。运行时动态生成</p><p>队列、栈都是受限序列。非线性结构是为了高效兼顾静态操作和动态操作，如树堆。<br>堆是一种优先队列，二叉查找树（查找快），AVL平衡树优化深度的BST，及后面的红黑树。</p><h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><p><img src="/images/4_24_1.jpg"></p><p>链表基本操作,画图理解：注意头尾指针情况<br>插入节点：<br>1.temp = 待插位置前驱节点.next<br>2.待插位置前驱节点.next = 待插指针<br>3.待插指针.next = temp</p><p>删除节点：<br>1.待删除位置的前驱节点.next = 待删除位置的前驱节点.next.next</p><p>遍历：<br>cur = head<br>while(cur!=nullptr){<br>  print(cur)<br>  cur = cur.next<br>}</p><p>前序遍历递归伪代码</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dfs</span>(cur)&#123;</span><br><span class="line">  <span class="keyword">if</span> cur == <span class="literal">nullptr</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  <span class="built_in">print</span>(cur.val)</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">dfs</span>(cur.next)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure><h4 id="一个原则：画图"><a href="#一个原则：画图" class="headerlink" title="一个原则：画图"></a>一个原则：画图</h4><h4 id="两个考点："><a href="#两个考点：" class="headerlink" title="两个考点："></a>两个考点：</h4><p>1.指针修改<br>比如链表反转，数组直接遍历两两交换</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reverse</span><span class="params">(head, tail)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  cur = head</span><br><span class="line">  pre = <span class="literal">nullptr</span></span><br><span class="line">  <span class="keyword">while</span>(cur!=tail)</span><br><span class="line">  &#123;</span><br><span class="line">    next = cur-&gt;next</span><br><span class="line">    cur-&gt;next = pre</span><br><span class="line">    pre = cur</span><br><span class="line">    cur = next</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> tail</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>2.链表拼接<br>容易穿来穿去。<br>链表的价值：不必要求物理内存连续性，对插入和删除友好。</p><h4 id="三个注意：-覆盖90-错误"><a href="#三个注意：-覆盖90-错误" class="headerlink" title="三个注意： 覆盖90%错误"></a>三个注意： 覆盖90%错误</h4><ul><li>出现了环，造成死循环</li><li>分不清边界，造成边界条件出错</li><li>搞不懂递归做法</li></ul><p>关于链表环：</p><ul><li>题目链表可能有环，判断是否有，以及位置（快慢指针）</li><li>本来没环，被你操作出现环（先画图，看操作；仅仅画出一个子结构即可）</li></ul><p>关于边界：</p><ul><li>如果题目的头节点可能移除，考虑使用虚拟节点，使头节点变成中间节点</li><li>题目返回不是原本的头节点，而是尾节点或者中间节点，要注意指针变化</li></ul><h4 id="前后序"><a href="#前后序" class="headerlink" title="前后序"></a>前后序</h4><p>前序：先处理节点，再左右<br>中序：先左，再处理，再右<br>后序：先左右，最后处理节点</p><p>由于链表天生具有递归性，可以引入递归思维。</p><p>如果前序遍历，可以想象前面链表处理好了，这种情况下处理当前；如果后序，则想象后面处理好了，这种情况下处理当前。</p><h4 id="四个技巧"><a href="#四个技巧" class="headerlink" title="四个技巧"></a>四个技巧</h4><p>虚拟头作用：</p><ul><li>头节点变成中间节点，简化判断</li><li>在合适时候断开，返回链表中间节点</li></ul><p>快慢指针：</p><ul><li>一个先走，一个后走</li><li>一个快走，一个慢走</li></ul><p>穿针引线：先穿再引，即记录后续改动的，再变更之前的</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;前言：努力做西湖区最好的算法题解。分为算法专题、91天学算法、精选题解、高频考题（简单-中等-困难）&lt;/p&gt;
+&lt;h2 id=&quot;算法专题&quot;&gt;&lt;a href=&quot;#算法专题&quot; class=&quot;headerlink&quot; title=&quot;算法专题&quot;&gt;&lt;/a&gt;算法专题&lt;/h2&gt;&lt;h3 id=</summary>
+      
+    
+    
+    
+    <category term="读书笔记" scheme="http://tanrunjie.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+    <category term="读书笔记" scheme="http://tanrunjie.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>effective_cpp 3rd</title>
@@ -236,6 +261,32 @@
   </entry>
   
   <entry>
+    <title>SLAMBOOK_7_8</title>
+    <link href="http://tanrunjie.github.io/2022/03/04/SLAMBOOK2/SLAMBOOK_7_8/"/>
+    <id>http://tanrunjie.github.io/2022/03/04/SLAMBOOK2/SLAMBOOK_7_8/</id>
+    <published>2022-03-04T09:30:33.000Z</published>
+    <updated>2022-03-30T07:18:06.555Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="视觉里程计"><a href="#视觉里程计" class="headerlink" title="视觉里程计"></a>视觉里程计</h3><p>主要目标：</p><ul><li>理解图像特征点的意义，掌握单幅图像提取特征点及多幅图像中匹配特征点的方法</li><li>理解对极几何原理，利用对极约束，恢复图像之间的camera位姿</li><li>理解PnP问题，利用已知三维结构与图像对应关系，求解camera位姿</li><li>理解ICP问题，利用点云匹配关系，求解camera位姿</li><li>理解三角化获得二维图像上对应点的三维结构</li></ul><p>图像特征性质：多图可重复、可区别、高效率、本地性</p><p>对极几何：从两张RGB图的特征匹配中求解本质矩阵，从而推出R，t.由8组特征匹配对SVD求解有4个可能解，幸运地只有一个解均在两个相机的光轴正向。但因缺乏深度尺度，所以t为单位1.<br>不稳定的问题：1.初始化纯旋转t为0，三角化R不稳定； 2.多于8个特征匹配点可用最小二乘或者RANSAC方法求E，F，H；</p><p>三角测量：将两个二维点对以及之间的位姿变换输入opencv的triangulatePoints中，得到点对的三维空间坐标；由于三角测量由平移产生，引出核心矛盾：平移小，则像素有较大深度不确定性；平移大，则图像外观变化大，特征匹配困难。</p><p>PnP:载入两张RGB图及其中一张对齐的Depth图，使用opencv的solvePnP解三维点对及二维点对的外参位姿变化R，t;</p><p>Bundle Adjustment：用于最小化重投影误差，将观测到的三维空间点与当前估计位姿投影位置得到的误差。考虑匹配特征点上的最优化重投影。</p><p>ICP方法：载入两个位姿状态的RGBD图，图像匹配后获得匹配好的3D点对，直接采用线性代数的求解（SVD）及BA优化获得最佳外参位姿即可。</p><h4 id="课后习题"><a href="#课后习题" class="headerlink" title="课后习题"></a>课后习题</h4><p>1.图像特征点原理及区别<br>Harris角点：基于图像灰度的一阶导数滤波检测，主要依赖与移动方向窗口内图像块的相似性。</p><p>SIFT/SURF：1.构建高斯差分金字塔 2.准确提取关键点 3.结合邻域构建描述子</p><p>2.opencv接口，SIFT::create(nfeatures, nOctavelLayers, constrastThreshold, edgeThreshold, sigma);<br>特征数量，金字塔最小层数，特征过滤阈值，边缘过滤阈值，高斯层级。<br>默认参数下，1000个SIFT特征点用时0.15s;</p><p>3.如何让特征点分布更均匀：goodFeatureToTrack(GFTT)方法</p><p>4.特征匹配方法有哪些？<br>FLANN快速最近邻搜索包，大数据下比BFMatcher暴力搜索要佳。FLANN主要三种算法：KD tree, k-means tree, hiearachy tree;</p><p>5.其他PNP方法：EPNP精度较高，复杂度为O（N）.DLT更快，精度下降。</p><p>6.G2O可把两图的空间点都加进来一起优化</p><p>7.图像误匹配影响整体优化效果，可以通过鲁棒核函数降低影响程度，同时引入RANSAC.</p><h3 id="视觉里程计2"><a href="#视觉里程计2" class="headerlink" title="视觉里程计2"></a>视觉里程计2</h3><p>本章目标：</p><ul><li>理解光流法特征点跟踪</li><li>理解直接法估计相机位姿</li><li>使用G2O进行直接法计算</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;视觉里程计&quot;&gt;&lt;a href=&quot;#视觉里程计&quot; class=&quot;headerlink&quot; title=&quot;视觉里程计&quot;&gt;&lt;/a&gt;视觉里程计&lt;/h3&gt;&lt;p&gt;主要目标：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;理解图像特征点的意义，掌握单幅图像提取特征点及多幅图像中匹配特征点的方法&lt;/l</summary>
+      
+    
+    
+    
+    <category term="SLAMBOOK" scheme="http://tanrunjie.github.io/categories/SLAMBOOK/"/>
+    
+    
+    <category term="SLAMBOOK" scheme="http://tanrunjie.github.io/tags/SLAMBOOK/"/>
+    
+  </entry>
+  
+  <entry>
     <title>SLAMBOOK_5_6</title>
     <link href="http://tanrunjie.github.io/2022/03/04/SLAMBOOK2/SLAMBOOK_5_6/"/>
     <id>http://tanrunjie.github.io/2022/03/04/SLAMBOOK2/SLAMBOOK_5_6/</id>
@@ -251,32 +302,6 @@
 &lt;ul&gt;
 &lt;li&gt;理解针孔模型、内参以及径向畸变参数&lt;/li&gt;
 &lt;li&gt;理解空间点如何投影到相机</summary>
-      
-    
-    
-    
-    <category term="SLAMBOOK" scheme="http://tanrunjie.github.io/categories/SLAMBOOK/"/>
-    
-    
-    <category term="SLAMBOOK" scheme="http://tanrunjie.github.io/tags/SLAMBOOK/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>SLAMBOOK_7_8</title>
-    <link href="http://tanrunjie.github.io/2022/03/04/SLAMBOOK2/SLAMBOOK_7_8/"/>
-    <id>http://tanrunjie.github.io/2022/03/04/SLAMBOOK2/SLAMBOOK_7_8/</id>
-    <published>2022-03-04T09:30:33.000Z</published>
-    <updated>2022-03-30T07:18:06.555Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="视觉里程计"><a href="#视觉里程计" class="headerlink" title="视觉里程计"></a>视觉里程计</h3><p>主要目标：</p><ul><li>理解图像特征点的意义，掌握单幅图像提取特征点及多幅图像中匹配特征点的方法</li><li>理解对极几何原理，利用对极约束，恢复图像之间的camera位姿</li><li>理解PnP问题，利用已知三维结构与图像对应关系，求解camera位姿</li><li>理解ICP问题，利用点云匹配关系，求解camera位姿</li><li>理解三角化获得二维图像上对应点的三维结构</li></ul><p>图像特征性质：多图可重复、可区别、高效率、本地性</p><p>对极几何：从两张RGB图的特征匹配中求解本质矩阵，从而推出R，t.由8组特征匹配对SVD求解有4个可能解，幸运地只有一个解均在两个相机的光轴正向。但因缺乏深度尺度，所以t为单位1.<br>不稳定的问题：1.初始化纯旋转t为0，三角化R不稳定； 2.多于8个特征匹配点可用最小二乘或者RANSAC方法求E，F，H；</p><p>三角测量：将两个二维点对以及之间的位姿变换输入opencv的triangulatePoints中，得到点对的三维空间坐标；由于三角测量由平移产生，引出核心矛盾：平移小，则像素有较大深度不确定性；平移大，则图像外观变化大，特征匹配困难。</p><p>PnP:载入两张RGB图及其中一张对齐的Depth图，使用opencv的solvePnP解三维点对及二维点对的外参位姿变化R，t;</p><p>Bundle Adjustment：用于最小化重投影误差，将观测到的三维空间点与当前估计位姿投影位置得到的误差。考虑匹配特征点上的最优化重投影。</p><p>ICP方法：载入两个位姿状态的RGBD图，图像匹配后获得匹配好的3D点对，直接采用线性代数的求解（SVD）及BA优化获得最佳外参位姿即可。</p><h4 id="课后习题"><a href="#课后习题" class="headerlink" title="课后习题"></a>课后习题</h4><p>1.图像特征点原理及区别<br>Harris角点：基于图像灰度的一阶导数滤波检测，主要依赖与移动方向窗口内图像块的相似性。</p><p>SIFT/SURF：1.构建高斯差分金字塔 2.准确提取关键点 3.结合邻域构建描述子</p><p>2.opencv接口，SIFT::create(nfeatures, nOctavelLayers, constrastThreshold, edgeThreshold, sigma);<br>特征数量，金字塔最小层数，特征过滤阈值，边缘过滤阈值，高斯层级。<br>默认参数下，1000个SIFT特征点用时0.15s;</p><p>3.如何让特征点分布更均匀：goodFeatureToTrack(GFTT)方法</p><p>4.特征匹配方法有哪些？<br>FLANN快速最近邻搜索包，大数据下比BFMatcher暴力搜索要佳。FLANN主要三种算法：KD tree, k-means tree, hiearachy tree;</p><p>5.其他PNP方法：EPNP精度较高，复杂度为O（N）.DLT更快，精度下降。</p><p>6.G2O可把两图的空间点都加进来一起优化</p><p>7.图像误匹配影响整体优化效果，可以通过鲁棒核函数降低影响程度，同时引入RANSAC.</p><h3 id="视觉里程计2"><a href="#视觉里程计2" class="headerlink" title="视觉里程计2"></a>视觉里程计2</h3><p>本章目标：</p><ul><li>理解光流法特征点跟踪</li><li>理解直接法估计相机位姿</li><li>使用G2O进行直接法计算</li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h3 id=&quot;视觉里程计&quot;&gt;&lt;a href=&quot;#视觉里程计&quot; class=&quot;headerlink&quot; title=&quot;视觉里程计&quot;&gt;&lt;/a&gt;视觉里程计&lt;/h3&gt;&lt;p&gt;主要目标：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;理解图像特征点的意义，掌握单幅图像提取特征点及多幅图像中匹配特征点的方法&lt;/l</summary>
       
     
     
@@ -484,30 +509,6 @@
     
     
     <category term="EIGEN" scheme="http://tanrunjie.github.io/tags/EIGEN/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>皮肤的秘密</title>
-    <link href="http://tanrunjie.github.io/2022/01/19/reading/%E7%9A%AE%E8%82%A4%E7%9A%84%E7%A7%98%E5%AF%86/"/>
-    <id>http://tanrunjie.github.io/2022/01/19/reading/%E7%9A%AE%E8%82%A4%E7%9A%84%E7%A7%98%E5%AF%86/</id>
-    <published>2022-01-19T03:07:58.000Z</published>
-    <updated>2022-01-19T06:40:18.090Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="认识皮肤"><a href="#认识皮肤" class="headerlink" title="认识皮肤"></a>认识皮肤</h3><p>皮肤是人体最大的器官，展开达两平方米，是人体之于外界环境的保护膜，同时也是零距离感受外界的第一道关卡，所以每一寸都遍布了神经细胞。</p><p>皮肤主要由三层构成：表皮，真皮以及皮下组合。其中表皮与真皮间的基底膜带决定了皮肤的弹性紧致，而且是在1岁形成不可逆的衰老，无法重生所以只能好好保护延缓其衰老。皮肤细胞从底层出生，衰老于真皮并死亡在表皮并成为保护屏障，正常周期为4周。患有皮肤病的可能会加速该过程至5天，导致表皮的屏障并不完整。</p><h3 id="表皮"><a href="#表皮" class="headerlink" title="表皮"></a>表皮</h3><p>由于皮肤表面存在着大量微生物群，所以保持皮肤的pH值是非常重要的，应当合理维持完好无损的酸性保护膜，人工清洁剂约5.5，另外对于皮下脂肪过厚的皮肤褶皱，唯一有效办法是减肥。可以用抗真菌软膏，另外带锌软膏可缓解皮肤炎症，带走多余水分。</p><p><img src="/images/01_19_1.png"></p><p>生长纹无足轻重，关于肤色，是有黑色素影响的。研究表明，橙色皮肤最具吸引力，可多摄入胡萝卜素B达到。颠痕主要由基底膜带大面积受损，表皮过度损耗引起的。对于渗水伤口可用硅霜或贴上硅凝胶伤口贴。治疗疙瘩需要强效疗法如：激光疗法、热针、冷冻疗法以及X射线放射疗法。</p><h3 id="真皮"><a href="#真皮" class="headerlink" title="真皮"></a>真皮</h3><p>真皮充满紧致的结缔组织，带来稳固性以及拉伸性，任何的日晒、日光浴、烟草、压力、睡眠不足、营养不良以及缺乏运动等会加速弹性纤维的流失。臀部皮肤就是自然老化的参考，面部等受光照影响较大是老化较快的皮肤。另外，皮肤在4度就开始出现冻疮，而冬天皮肤也能适应，所以只在晚上睡前使用保湿即可，白天冬天保湿使皮肤含水量升高，反而容易冻伤。</p><p>真皮层拥有大量神经，使皮肤成为最大的神经器官，抚摸有调节中枢神经和社交等作用。同时含有腺体，会分泌激素气味等。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h3 id=&quot;认识皮肤&quot;&gt;&lt;a href=&quot;#认识皮肤&quot; class=&quot;headerlink&quot; title=&quot;认识皮肤&quot;&gt;&lt;/a&gt;认识皮肤&lt;/h3&gt;&lt;p&gt;皮肤是人体最大的器官，展开达两平方米，是人体之于外界环境的保护膜，同时也是零距离感受外界的第一道关卡，所以每一寸都遍布了神经</summary>
-      
-    
-    
-    
-    <category term="读书笔记" scheme="http://tanrunjie.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-    
-    <category term="读书笔记" scheme="http://tanrunjie.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
