@@ -186,61 +186,6 @@
       </tags>
   </entry>
   <entry>
-    <title>SLAMBOOK_3_4</title>
-    <url>/2022/02/28/SLAMBOOK2/SLAMBOOK_3_4/</url>
-    <content><![CDATA[<h3 id="三维空间刚体运动"><a href="#三维空间刚体运动" class="headerlink" title="三维空间刚体运动"></a>三维空间刚体运动</h3><p>目标：</p>
-<ul>
-<li>理解三维空间的刚体运动描述方式：旋转、变换、四元数和欧拉角</li>
-<li>掌握Eigen库的矩阵和几何模块</li>
-</ul>
-<p>基本概念：<br>坐标：一方面与向量本身有关，另一方面与坐标系选取有关。<br>向量：可以是空间中的一样东西<br>外积可表示旋转：右手系叉乘<br>欧式变换：保证同一个向量在各个坐标系下的长度和夹角都不会变化，则可由一个旋转和平移组成<br>旋转矩阵的性质：行列式为1的正交矩阵，SO(n)是特殊正交群<br>齐次坐标：把旋转和平移写入一个矩阵，且保持整个关系为线性关系<br>变换矩阵T：左上为旋转，右侧为平移，左下为0，右下为1的特殊欧式群</p>
-<h4 id="旋转的表达"><a href="#旋转的表达" class="headerlink" title="旋转的表达"></a>旋转的表达</h4><p>1.旋转矩阵：正交阵且行列式为1,行列向量相互正交；内积为0；</p>
-<p>2.三个旋转轴和旋转角：使用一个向量，方向与旋转轴一致，长度等于旋转角，即李代数。由Rodrigues’s Formula可得：$R = cos\theta I + (1-cos\theta)nn^T + sin\theta n^`$ 其中n’是向量到反对称的转换符，从旋转矩阵到旋转向量转换$\theta = arccos(\frac{tr(R)-1}{2})$<br>转轴n是矩阵R特征值1对应的特征向量。解此方程归一化可得旋转轴。</p>
-<p>3.欧拉角：分离成三次绕坐标轴旋转即yaw-pitch-roll.注意著名的<strong>万向锁</strong>问题，+-90度时，丢失一个自由度，产生奇异性问题。因此不适于插值和迭代，往往只用于人机交互。</p>
-<p>4.四元数：既是紧凑的，也没有奇异性的旋转表达。缺点不够直观和运算复杂。<br>熟悉相互表达之间的转换。</p>
-<h4 id="相似、仿射、射影变换"><a href="#相似、仿射、射影变换" class="headerlink" title="相似、仿射、射影变换"></a>相似、仿射、射影变换</h4><p>1.相似： $T_s = [sR t]$, 7个自由度，xyz坐标上均匀缩放<br>2.仿射： $T_A = [A t]$, 12个自由度，A是可逆矩阵而不必是正交矩阵<br>3.射影： $T_p $, 15个自由度，最不规则的</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Eigen rotate data structure</span></span><br><span class="line">Eigen::Matrix3d;  <span class="comment">// 3*3 R matrix</span></span><br><span class="line">Eigen::AngleAxisd;  <span class="comment">// 3*1 R vector</span></span><br><span class="line">Eigen::Vector3d;   <span class="comment">// 3*1 Euler Angle</span></span><br><span class="line">Eigen::Quaterniond;  <span class="comment">// 4*1 quaternion</span></span><br><span class="line">Eigen::Isometry3d;  <span class="comment">// 4*4 T transformed</span></span><br><span class="line">Eigen::Affine3d;   <span class="comment">// 4*4 affine matrix</span></span><br><span class="line">Eigen::Projective3d;  <span class="comment">// 4*4 projective matrix</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="李群与李代数"><a href="#李群与李代数" class="headerlink" title="李群与李代数"></a>李群与李代数</h3><p>目标：</p>
-<ul>
-<li>理解概念，掌握SO(3),SE(3)</li>
-<li>理解BCH近似意义</li>
-<li>李代数的扰动模型</li>
-<li>运用Sohpus对李代数运算</li>
-</ul>
-<p>什么是Sophus? Sophus是Eigen的拓展，李代数库</p>
-<p>为何引入李代数？ 旋转矩阵自身带有正交和行列式为1的约束，作为优化变量引入额外的约束使得优化困难。通过李群和李代数的转换关系，使位姿估计变成无约束的优化问题，简化求解方式。</p>
-<h4 id="数学基础"><a href="#数学基础" class="headerlink" title="数学基础"></a>数学基础</h4><p>什么是群？ 一种集合加上一种运算的代数结构。封结幺逆<br>可以验证：</p>
-<ul>
-<li>旋转矩阵集合和矩阵乘法构成群</li>
-<li>变换矩阵和矩阵乘法也构成群</li>
-<li>因此它们为旋转矩阵群和交换矩阵群</li>
-</ul>
-<p>矩阵中常见的群：</p>
-<ul>
-<li>一般线性群GL(n) : n*n的可逆矩阵，对矩阵乘法成群</li>
-<li>特殊正交群SO(n) : 旋转矩阵群SO(2)和SO(3)</li>
-<li>特殊欧式群SE(n) : 前面的n维欧式变换， SE(2)和SE(3)</li>
-</ul>
-<p>什么是李群Lie Group？ 指具有连续（光滑）性质的群，既是群也是流形。整数群是离散的，不属于。而SO和SE在实数空间连续运动，所以属于李群。SO(3)和SE(3)只有定义良好的乘法，没有加法所以难以进行取极限和求导的操作。将旋转矩阵用李代数逼近迭代优化。</p>
-<p>一种李代数（小写）对应一种李群（大写）。</p>
-<p>$RR^T = I$ 对连续时间求导得 $ R^, R^T = -(R^, R^T )^T $, $R^,$为对时间t的导数。即满足反对称矩阵。最后得$R(t) = exp(\phi_0t)$<br>这表示：</p>
-<ul>
-<li>1.给定某时刻的R，我们能求一个$\phi$描述R在局部的导数关系，正切空间邻域。$\phi$正是SO(3)上的李代数so(3)</li>
-<li>2.矩阵指数如何计算？事实上这正是李群与李代数之间的指数/对数映射</li>
-</ul>
-<p>什么是李代数？ 每个李群对应一个李代数，描述了李群单位元数的正切空间性质。满足封闭性、双线性、自反性、雅可比等价</p>
-<p>什么是李括号？二元运算，表达了两个元素的差异。</p>
-<h4 id="指数与对数映射"><a href="#指数与对数映射" class="headerlink" title="指数与对数映射"></a>指数与对数映射</h4><p>// To do 后续补充，本章涉及较多数学和公式</p>
-]]></content>
-      <categories>
-        <category>SLAMBOOK</category>
-      </categories>
-      <tags>
-        <tag>SLAMBOOK</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SLAM十四讲_一预备及初识</title>
     <url>/2022/01/07/SLAMBOOK2/SLAMBOOK_1_2/</url>
     <content><![CDATA[<h3 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h3><h4 id="SLAM：Simultaneous-Localization-and-Mapping"><a href="#SLAM：Simultaneous-Localization-and-Mapping" class="headerlink" title="SLAM：Simultaneous Localization and Mapping"></a>SLAM：Simultaneous Localization and Mapping</h4><p>同步定位及建图：搭载特定传感器的主体，在没有环境先验信息情况下，在运动过程中建立环境模型，同时估计自己位姿的过程。根据传感器分为深度相机，RGB相机和激光。不同传感器特点不一样，应用环境以及遇到的难点不同。本书主要是视觉SLAM：围绕RGB相机，也会引入Depth相机。</p>
@@ -398,6 +343,61 @@
       </tags>
   </entry>
   <entry>
+    <title>SLAMBOOK_3_4</title>
+    <url>/2022/02/28/SLAMBOOK2/SLAMBOOK_3_4/</url>
+    <content><![CDATA[<h3 id="三维空间刚体运动"><a href="#三维空间刚体运动" class="headerlink" title="三维空间刚体运动"></a>三维空间刚体运动</h3><p>目标：</p>
+<ul>
+<li>理解三维空间的刚体运动描述方式：旋转、变换、四元数和欧拉角</li>
+<li>掌握Eigen库的矩阵和几何模块</li>
+</ul>
+<p>基本概念：<br>坐标：一方面与向量本身有关，另一方面与坐标系选取有关。<br>向量：可以是空间中的一样东西<br>外积可表示旋转：右手系叉乘<br>欧式变换：保证同一个向量在各个坐标系下的长度和夹角都不会变化，则可由一个旋转和平移组成<br>旋转矩阵的性质：行列式为1的正交矩阵，SO(n)是特殊正交群<br>齐次坐标：把旋转和平移写入一个矩阵，且保持整个关系为线性关系<br>变换矩阵T：左上为旋转，右侧为平移，左下为0，右下为1的特殊欧式群</p>
+<h4 id="旋转的表达"><a href="#旋转的表达" class="headerlink" title="旋转的表达"></a>旋转的表达</h4><p>1.旋转矩阵：正交阵且行列式为1,行列向量相互正交；内积为0；</p>
+<p>2.三个旋转轴和旋转角：使用一个向量，方向与旋转轴一致，长度等于旋转角，即李代数。由Rodrigues’s Formula可得：$R = cos\theta I + (1-cos\theta)nn^T + sin\theta n^`$ 其中n’是向量到反对称的转换符，从旋转矩阵到旋转向量转换$\theta = arccos(\frac{tr(R)-1}{2})$<br>转轴n是矩阵R特征值1对应的特征向量。解此方程归一化可得旋转轴。</p>
+<p>3.欧拉角：分离成三次绕坐标轴旋转即yaw-pitch-roll.注意著名的<strong>万向锁</strong>问题，+-90度时，丢失一个自由度，产生奇异性问题。因此不适于插值和迭代，往往只用于人机交互。</p>
+<p>4.四元数：既是紧凑的，也没有奇异性的旋转表达。缺点不够直观和运算复杂。<br>熟悉相互表达之间的转换。</p>
+<h4 id="相似、仿射、射影变换"><a href="#相似、仿射、射影变换" class="headerlink" title="相似、仿射、射影变换"></a>相似、仿射、射影变换</h4><p>1.相似： $T_s = [sR t]$, 7个自由度，xyz坐标上均匀缩放<br>2.仿射： $T_A = [A t]$, 12个自由度，A是可逆矩阵而不必是正交矩阵<br>3.射影： $T_p $, 15个自由度，最不规则的</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Eigen rotate data structure</span></span><br><span class="line">Eigen::Matrix3d;  <span class="comment">// 3*3 R matrix</span></span><br><span class="line">Eigen::AngleAxisd;  <span class="comment">// 3*1 R vector</span></span><br><span class="line">Eigen::Vector3d;   <span class="comment">// 3*1 Euler Angle</span></span><br><span class="line">Eigen::Quaterniond;  <span class="comment">// 4*1 quaternion</span></span><br><span class="line">Eigen::Isometry3d;  <span class="comment">// 4*4 T transformed</span></span><br><span class="line">Eigen::Affine3d;   <span class="comment">// 4*4 affine matrix</span></span><br><span class="line">Eigen::Projective3d;  <span class="comment">// 4*4 projective matrix</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="李群与李代数"><a href="#李群与李代数" class="headerlink" title="李群与李代数"></a>李群与李代数</h3><p>目标：</p>
+<ul>
+<li>理解概念，掌握SO(3),SE(3)</li>
+<li>理解BCH近似意义</li>
+<li>李代数的扰动模型</li>
+<li>运用Sohpus对李代数运算</li>
+</ul>
+<p>什么是Sophus? Sophus是Eigen的拓展，李代数库</p>
+<p>为何引入李代数？ 旋转矩阵自身带有正交和行列式为1的约束，作为优化变量引入额外的约束使得优化困难。通过李群和李代数的转换关系，使位姿估计变成无约束的优化问题，简化求解方式。</p>
+<h4 id="数学基础"><a href="#数学基础" class="headerlink" title="数学基础"></a>数学基础</h4><p>什么是群？ 一种集合加上一种运算的代数结构。封结幺逆<br>可以验证：</p>
+<ul>
+<li>旋转矩阵集合和矩阵乘法构成群</li>
+<li>变换矩阵和矩阵乘法也构成群</li>
+<li>因此它们为旋转矩阵群和交换矩阵群</li>
+</ul>
+<p>矩阵中常见的群：</p>
+<ul>
+<li>一般线性群GL(n) : n*n的可逆矩阵，对矩阵乘法成群</li>
+<li>特殊正交群SO(n) : 旋转矩阵群SO(2)和SO(3)</li>
+<li>特殊欧式群SE(n) : 前面的n维欧式变换， SE(2)和SE(3)</li>
+</ul>
+<p>什么是李群Lie Group？ 指具有连续（光滑）性质的群，既是群也是流形。整数群是离散的，不属于。而SO和SE在实数空间连续运动，所以属于李群。SO(3)和SE(3)只有定义良好的乘法，没有加法所以难以进行取极限和求导的操作。将旋转矩阵用李代数逼近迭代优化。</p>
+<p>一种李代数（小写）对应一种李群（大写）。</p>
+<p>$RR^T = I$ 对连续时间求导得 $ R^, R^T = -(R^, R^T )^T $, $R^,$为对时间t的导数。即满足反对称矩阵。最后得$R(t) = exp(\phi_0t)$<br>这表示：</p>
+<ul>
+<li>1.给定某时刻的R，我们能求一个$\phi$描述R在局部的导数关系，正切空间邻域。$\phi$正是SO(3)上的李代数so(3)</li>
+<li>2.矩阵指数如何计算？事实上这正是李群与李代数之间的指数/对数映射</li>
+</ul>
+<p>什么是李代数？ 每个李群对应一个李代数，描述了李群单位元数的正切空间性质。满足封闭性、双线性、自反性、雅可比等价</p>
+<p>什么是李括号？二元运算，表达了两个元素的差异。</p>
+<h4 id="指数与对数映射"><a href="#指数与对数映射" class="headerlink" title="指数与对数映射"></a>指数与对数映射</h4><p>// To do 后续补充，本章涉及较多数学和公式</p>
+]]></content>
+      <categories>
+        <category>SLAMBOOK</category>
+      </categories>
+      <tags>
+        <tag>SLAMBOOK</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SLAMBOOK_7_8</title>
     <url>/2022/03/04/SLAMBOOK2/SLAMBOOK_7_8/</url>
     <content><![CDATA[<h3 id="视觉里程计"><a href="#视觉里程计" class="headerlink" title="视觉里程计"></a>视觉里程计</h3><p>主要目标：</p>
@@ -437,6 +437,44 @@
       </tags>
   </entry>
   <entry>
+    <title>EIGEN_1 HELLO_WOLRD</title>
+    <url>/2022/01/20/eigen/eigen-1/</url>
+    <content><![CDATA[<h3 id="EIGEN简介"><a href="#EIGEN简介" class="headerlink" title="EIGEN简介"></a>EIGEN简介</h3><p>FROM WIKI: Eigen is a high-level C++ library of template headers for linear algebra, matrix and vector operations, geometrical transformations, numerical solvers and related algorithms.<br>简而言之C++开源模板库，支持线性代数、矩阵矢量运算和数值分析，是个方便好用的数学库。</p>
+<p>更绝的是，EIGEN所有源码用头文件编写，所以只需要Include,无需编译链接过程，直接与平台无关，非常通用！</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>安装过程也很简单，在UBUNTU下直接</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">sudo apt-get install libeigen3-dev</span><br></pre></td></tr></table></figure>
+<p>一般安装在/usr/include目录下</p>
+<p>使用直接与标准库类似，#include &lt;Eigen/Dense&gt;等</p>
+<h3 id="主要模块"><a href="#主要模块" class="headerlink" title="主要模块"></a>主要模块</h3><p><img src="/images/01_20_1.png"></p>
+<h3 id="简单例子"><a href="#简单例子" class="headerlink" title="简单例子"></a>简单例子</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;eigen3/Eigen/Dense&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> Eigen;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">    Matrix3d m = Matrix3d::<span class="built_in">Random</span>();</span><br><span class="line">    m = ( m + Matrix3d::<span class="built_in">Constant</span>(<span class="number">1.2</span>)) * <span class="number">50</span>;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; m &lt;&lt; endl;</span><br><span class="line">    <span class="function">Vector3d <span class="title">v</span><span class="params">(<span class="number">3</span>)</span></span>;</span><br><span class="line">    v &lt;&lt; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>;</span><br><span class="line">    cout &lt;&lt;m*v &lt;&lt; endl;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这是fix_sized定义的写法，一般4*4以下的矩阵矢量用固定大小写法，对于比较大的才用不定量写法MatirxXd, VectorXd;</p>
+<p>主要结构为1D对象Vector, Array和2D对象Matrix</p>
+]]></content>
+      <categories>
+        <category>EIGEN</category>
+      </categories>
+      <tags>
+        <tag>EIGEN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>chrono库</title>
+    <url>/2021/12/29/cpp/chrono%E5%BA%93/</url>
+    <content><![CDATA[<p>计时，常用于测试代码的运行时间和效率。</p>
+<h3 id="以往用法ctime"><a href="#以往用法ctime" class="headerlink" title="以往用法ctime"></a>以往用法ctime</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ctime&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">clock_t</span> start = <span class="built_in">clock</span>();</span><br><span class="line"><span class="built_in">func</span>();</span><br><span class="line"><span class="keyword">clock_t</span> end = <span class="built_in">clock</span>();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;spend &quot;</span> &lt;&lt; (<span class="keyword">double</span>)(end-start)/CLOCKS_PER_SEC &lt;&lt;<span class="string">&quot; second&quot;</span> &lt;&lt; endl;  <span class="comment">// 精确到毫秒</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="chrono用法"><a href="#chrono用法" class="headerlink" title="chrono用法"></a>chrono用法</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;chrono&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> chrono;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> start = system_clock::<span class="built_in">now</span>();</span><br><span class="line"><span class="built_in">func</span>();</span><br><span class="line"><span class="keyword">auto</span> end = system_clock::<span class="built_in">now</span>();</span><br><span class="line"><span class="keyword">auto</span> duration = duration_cast&lt;microseconds&gt;(end-start);</span><br><span class="line">cout &lt;&lt;<span class="string">&quot;spend &quot;</span> &lt;&lt; <span class="built_in"><span class="keyword">double</span></span>(duration.<span class="built_in">count</span>()) * microseconds::period::num / microseconds::period::den &lt;&lt; <span class="string">&quot; second&quot;</span> &lt;&lt; endl;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>其中，auto为自动类型；除了system_clock,还可用steady_clock和high_resolution_clock; microseconds表示微妙，甚至还有nanoseconds纳秒；num和den表示计时单位的分子和分母。</p>
+]]></content>
+      <categories>
+        <category>c++</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>c++并发实战</title>
     <url>/2021/12/28/cpp/c-%E5%B9%B6%E5%8F%91%E5%AE%9E%E6%88%98/</url>
     <content><![CDATA[<h3 id="chap1-c-并发世界"><a href="#chap1-c-并发世界" class="headerlink" title="chap1 c++并发世界"></a>chap1 c++并发世界</h3><p>C++98的13年后，2011的C++11成为新的规范，同时确认了每三年发布新的扩展技术规范。<br>在C++11中，c++ standard第一次承认多线程存在于C++语言中，意味CPP编写与平台无关的多线程程序成为可能。以往编写多线程并发需要针对运行平台部署依赖扩展库，如今可移植性成为可能。</p>
@@ -459,23 +497,6 @@
       </categories>
       <tags>
         <tag>c++ 多线程 并发</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>chrono库</title>
-    <url>/2021/12/29/cpp/chrono%E5%BA%93/</url>
-    <content><![CDATA[<p>计时，常用于测试代码的运行时间和效率。</p>
-<h3 id="以往用法ctime"><a href="#以往用法ctime" class="headerlink" title="以往用法ctime"></a>以往用法ctime</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ctime&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">clock_t</span> start = <span class="built_in">clock</span>();</span><br><span class="line"><span class="built_in">func</span>();</span><br><span class="line"><span class="keyword">clock_t</span> end = <span class="built_in">clock</span>();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;spend &quot;</span> &lt;&lt; (<span class="keyword">double</span>)(end-start)/CLOCKS_PER_SEC &lt;&lt;<span class="string">&quot; second&quot;</span> &lt;&lt; endl;  <span class="comment">// 精确到毫秒</span></span><br></pre></td></tr></table></figure>
-
-
-<h3 id="chrono用法"><a href="#chrono用法" class="headerlink" title="chrono用法"></a>chrono用法</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;chrono&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> chrono;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> start = system_clock::<span class="built_in">now</span>();</span><br><span class="line"><span class="built_in">func</span>();</span><br><span class="line"><span class="keyword">auto</span> end = system_clock::<span class="built_in">now</span>();</span><br><span class="line"><span class="keyword">auto</span> duration = duration_cast&lt;microseconds&gt;(end-start);</span><br><span class="line">cout &lt;&lt;<span class="string">&quot;spend &quot;</span> &lt;&lt; <span class="built_in"><span class="keyword">double</span></span>(duration.<span class="built_in">count</span>()) * microseconds::period::num / microseconds::period::den &lt;&lt; <span class="string">&quot; second&quot;</span> &lt;&lt; endl;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>其中，auto为自动类型；除了system_clock,还可用steady_clock和high_resolution_clock; microseconds表示微妙，甚至还有nanoseconds纳秒；num和den表示计时单位的分子和分母。</p>
-]]></content>
-      <categories>
-        <category>c++</category>
-      </categories>
-      <tags>
-        <tag>c++</tag>
       </tags>
   </entry>
   <entry>
@@ -514,40 +535,6 @@
       </categories>
       <tags>
         <tag>c++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>字符串</title>
-    <url>/2021/12/15/cpp/%E5%AD%97%E7%AC%A6%E4%B8%B2/</url>
-    <content><![CDATA[<h3 id="C-style字符串"><a href="#C-style字符串" class="headerlink" title="C-style字符串"></a>C-style字符串</h3><p>结尾带’\0’,这对于很多处理字符串的函数很关键。#include <cstring>包含大量C语言字串的操作函数如strlen, strcpy, strcat…</p>
-<p>strlen():只计算数组或者指针中的字符个数，不带结尾</p>
-<p><code>cin.getline(name,20)</code>:读取整行的字串到name,最多20个<br>cin.get()：类似，但下一次调用开头会带有换行(换行缓存到下次get)，顺便检查了上一次输入的正确程度。</p>
-<p>针对string类的getline(cin, string); 与cin混合使用时，在cin&gt;&gt;完成后，getline前需要通过getline(cin,”\n”)清除缓存，否则不进入getline输入。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 清除缓存</span></span><br><span class="line">string str=<span class="string">&quot;\n&quot;</span>;</span><br><span class="line"><span class="built_in">getline</span>(cin,str);</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="string类"><a href="#string类" class="headerlink" title="string类"></a>string类</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line">std::string</span><br></pre></td></tr></table></figure>
-<p>更方便，也更安全。像vector一样管理char.</p>
-<h3 id="struct和union"><a href="#struct和union" class="headerlink" title="struct和union"></a>struct和union</h3><p>union只能同时存储<strong>一种</strong>类型，其他类型的会lost</p>
-<h3 id="new和delete"><a href="#new和delete" class="headerlink" title="new和delete"></a>new和delete</h3><ul>
-<li>不要delete释放不是new的内存</li>
-<li>不要delete同一块内存两次</li>
-<li>new[]数组应当用delete []释放</li>
-<li>若用new[]为单一实体分配内存，应使用delete（不带方括号）释放</li>
-<li>对空指针delete是安全的</li>
-</ul>
-<h3 id="cin与cin-getline区别"><a href="#cin与cin-getline区别" class="headerlink" title="cin与cin.getline区别"></a>cin与cin.getline区别</h3><p>cin.getline(addr,80) 与cin&gt;&gt;addr<br>getline:读整行直到‘回车’<br>cin:首先跳过‘空格’，读取字串，再次遇‘空格’停止；即跳过前面的空格，读取单个单词。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">cin&gt;&gt;ch;</span><br><span class="line">cin.<span class="built_in">get</span>(ch);</span><br><span class="line">ch=cin.<span class="built_in">get</span>();</span><br></pre></td></tr></table></figure>
-<p>上面区别主要是cin&gt;&gt;ch直接跳过空格换行以及制表符</p>
-<h3 id="string格式化输出4位数字-前面补0，多用于文件名操作"><a href="#string格式化输出4位数字-前面补0，多用于文件名操作" class="headerlink" title="string格式化输出4位数字,前面补0，多用于文件名操作"></a>string格式化输出4位数字,前面补0，多用于文件名操作</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> num_zero = <span class="number">4</span>;</span><br><span class="line">string num = <span class="built_in">to_string</span>(int_val);</span><br><span class="line">string new_num = <span class="built_in">string</span>(num_zero-num.<span class="built_in">length</span>(),<span class="string">&#x27;0&#x27;</span>) + num;</span><br></pre></td></tr></table></figure>
-<p>注意int_val长度小于num_zero。</p>
-]]></content>
-      <categories>
-        <category>c++</category>
-      </categories>
-      <tags>
-        <tag>c++ primer</tag>
       </tags>
   </entry>
   <entry>
@@ -606,6 +593,40 @@
       </categories>
       <tags>
         <tag>c++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>字符串</title>
+    <url>/2021/12/15/cpp/%E5%AD%97%E7%AC%A6%E4%B8%B2/</url>
+    <content><![CDATA[<h3 id="C-style字符串"><a href="#C-style字符串" class="headerlink" title="C-style字符串"></a>C-style字符串</h3><p>结尾带’\0’,这对于很多处理字符串的函数很关键。#include <cstring>包含大量C语言字串的操作函数如strlen, strcpy, strcat…</p>
+<p>strlen():只计算数组或者指针中的字符个数，不带结尾</p>
+<p><code>cin.getline(name,20)</code>:读取整行的字串到name,最多20个<br>cin.get()：类似，但下一次调用开头会带有换行(换行缓存到下次get)，顺便检查了上一次输入的正确程度。</p>
+<p>针对string类的getline(cin, string); 与cin混合使用时，在cin&gt;&gt;完成后，getline前需要通过getline(cin,”\n”)清除缓存，否则不进入getline输入。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 清除缓存</span></span><br><span class="line">string str=<span class="string">&quot;\n&quot;</span>;</span><br><span class="line"><span class="built_in">getline</span>(cin,str);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="string类"><a href="#string类" class="headerlink" title="string类"></a>string类</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line">std::string</span><br></pre></td></tr></table></figure>
+<p>更方便，也更安全。像vector一样管理char.</p>
+<h3 id="struct和union"><a href="#struct和union" class="headerlink" title="struct和union"></a>struct和union</h3><p>union只能同时存储<strong>一种</strong>类型，其他类型的会lost</p>
+<h3 id="new和delete"><a href="#new和delete" class="headerlink" title="new和delete"></a>new和delete</h3><ul>
+<li>不要delete释放不是new的内存</li>
+<li>不要delete同一块内存两次</li>
+<li>new[]数组应当用delete []释放</li>
+<li>若用new[]为单一实体分配内存，应使用delete（不带方括号）释放</li>
+<li>对空指针delete是安全的</li>
+</ul>
+<h3 id="cin与cin-getline区别"><a href="#cin与cin-getline区别" class="headerlink" title="cin与cin.getline区别"></a>cin与cin.getline区别</h3><p>cin.getline(addr,80) 与cin&gt;&gt;addr<br>getline:读整行直到‘回车’<br>cin:首先跳过‘空格’，读取字串，再次遇‘空格’停止；即跳过前面的空格，读取单个单词。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">cin&gt;&gt;ch;</span><br><span class="line">cin.<span class="built_in">get</span>(ch);</span><br><span class="line">ch=cin.<span class="built_in">get</span>();</span><br></pre></td></tr></table></figure>
+<p>上面区别主要是cin&gt;&gt;ch直接跳过空格换行以及制表符</p>
+<h3 id="string格式化输出4位数字-前面补0，多用于文件名操作"><a href="#string格式化输出4位数字-前面补0，多用于文件名操作" class="headerlink" title="string格式化输出4位数字,前面补0，多用于文件名操作"></a>string格式化输出4位数字,前面补0，多用于文件名操作</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> num_zero = <span class="number">4</span>;</span><br><span class="line">string num = <span class="built_in">to_string</span>(int_val);</span><br><span class="line">string new_num = <span class="built_in">string</span>(num_zero-num.<span class="built_in">length</span>(),<span class="string">&#x27;0&#x27;</span>) + num;</span><br></pre></td></tr></table></figure>
+<p>注意int_val长度小于num_zero。</p>
+]]></content>
+      <categories>
+        <category>c++</category>
+      </categories>
+      <tags>
+        <tag>c++ primer</tag>
       </tags>
   </entry>
   <entry>
@@ -751,6 +772,18 @@
       </tags>
   </entry>
   <entry>
+    <title>九章行测</title>
+    <url>/2022/04/01/jiuzhang/behavior/</url>
+    <content><![CDATA[<h4 id="Intro-yourself"><a href="#Intro-yourself" class="headerlink" title="Intro yourself"></a>Intro yourself</h4><p>要点：适当的内容表达，元气健康的兴趣，</p>
+]]></content>
+      <categories>
+        <category>九章算法</category>
+      </categories>
+      <tags>
+        <tag>九章算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>腾讯课堂-C++11多线程</title>
     <url>/2021/12/28/cpp/%E8%85%BE%E8%AE%AF%E8%AF%BE%E5%A0%82-C-11%E5%A4%9A%E7%BA%BF%E7%A8%8B/</url>
     <content><![CDATA[<h3 id="线程管理"><a href="#线程管理" class="headerlink" title="线程管理"></a>线程管理</h3><p>多线程的执行函数尽量用传引用，以减少不必要资源开销；根据hardware_concurrency得到核心数来决定开多线程的数量；</p>
@@ -784,39 +817,6 @@
       </categories>
       <tags>
         <tag>C++ 多线程 并发</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>EIGEN_1 HELLO_WOLRD</title>
-    <url>/2022/01/20/eigen/eigen-1/</url>
-    <content><![CDATA[<h3 id="EIGEN简介"><a href="#EIGEN简介" class="headerlink" title="EIGEN简介"></a>EIGEN简介</h3><p>FROM WIKI: Eigen is a high-level C++ library of template headers for linear algebra, matrix and vector operations, geometrical transformations, numerical solvers and related algorithms.<br>简而言之C++开源模板库，支持线性代数、矩阵矢量运算和数值分析，是个方便好用的数学库。</p>
-<p>更绝的是，EIGEN所有源码用头文件编写，所以只需要Include,无需编译链接过程，直接与平台无关，非常通用！</p>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>安装过程也很简单，在UBUNTU下直接</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">sudo apt-get install libeigen3-dev</span><br></pre></td></tr></table></figure>
-<p>一般安装在/usr/include目录下</p>
-<p>使用直接与标准库类似，#include &lt;Eigen/Dense&gt;等</p>
-<h3 id="主要模块"><a href="#主要模块" class="headerlink" title="主要模块"></a>主要模块</h3><p><img src="/images/01_20_1.png"></p>
-<h3 id="简单例子"><a href="#简单例子" class="headerlink" title="简单例子"></a>简单例子</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;eigen3/Eigen/Dense&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> Eigen;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">    Matrix3d m = Matrix3d::<span class="built_in">Random</span>();</span><br><span class="line">    m = ( m + Matrix3d::<span class="built_in">Constant</span>(<span class="number">1.2</span>)) * <span class="number">50</span>;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; m &lt;&lt; endl;</span><br><span class="line">    <span class="function">Vector3d <span class="title">v</span><span class="params">(<span class="number">3</span>)</span></span>;</span><br><span class="line">    v &lt;&lt; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>;</span><br><span class="line">    cout &lt;&lt;m*v &lt;&lt; endl;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>这是fix_sized定义的写法，一般4*4以下的矩阵矢量用固定大小写法，对于比较大的才用不定量写法MatirxXd, VectorXd;</p>
-<p>主要结构为1D对象Vector, Array和2D对象Matrix</p>
-]]></content>
-      <categories>
-        <category>EIGEN</category>
-      </categories>
-      <tags>
-        <tag>EIGEN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>九章行测</title>
-    <url>/2022/04/01/jiuzhang/behavior/</url>
-    <content><![CDATA[<h4 id="Intro-yourself"><a href="#Intro-yourself" class="headerlink" title="Intro yourself"></a>Intro yourself</h4><p>要点：适当的内容表达，元气健康的兴趣，</p>
-]]></content>
-      <categories>
-        <category>九章算法</category>
-      </categories>
-      <tags>
-        <tag>九章算法</tag>
       </tags>
   </entry>
   <entry>
@@ -932,17 +932,6 @@
       </tags>
   </entry>
   <entry>
-    <title>九章基础class_7_8</title>
-    <url>/2022/04/18/jiuzhang/class7-8/</url>
-    <content><![CDATA[<h3 id="第七课-图搜索"><a href="#第七课-图搜索" class="headerlink" title="第七课 图搜索"></a>第七课 图搜索</h3>]]></content>
-      <categories>
-        <category>九章基础</category>
-      </categories>
-      <tags>
-        <tag>九章基础</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>九章基础class_3_4</title>
     <url>/2022/03/24/jiuzhang/class3_4/</url>
     <content><![CDATA[<h3 id="第三课-分治"><a href="#第三课-分治" class="headerlink" title="第三课 分治"></a>第三课 分治</h3><p>先序： 根 左 右<br>后序： 左 右 根<br>中序： 左 根 右</p>
@@ -1019,6 +1008,17 @@
       </categories>
       <tags>
         <tag>九章算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>九章基础class_7_8</title>
+    <url>/2022/04/18/jiuzhang/class7-8/</url>
+    <content><![CDATA[<h3 id="第七课-图搜索"><a href="#第七课-图搜索" class="headerlink" title="第七课 图搜索"></a>第七课 图搜索</h3>]]></content>
+      <categories>
+        <category>九章基础</category>
+      </categories>
+      <tags>
+        <tag>九章基础</tag>
       </tags>
   </entry>
   <entry>
@@ -1136,6 +1136,135 @@
       </tags>
   </entry>
   <entry>
+    <title>六年前的自己</title>
+    <url>/2021/12/22/personal/%E5%85%AD%E5%B9%B4%E5%89%8D%E7%9A%84%E8%87%AA%E5%B7%B1/</url>
+    <content><![CDATA[<p><a href="https://csrjtan.github.io/">https://csrjtan.github.io/</a><br>回看六年前的自己，摘录一些当时有意义的文段</p>
+<h3 id="23岁的生日"><a href="#23岁的生日" class="headerlink" title="23岁的生日"></a>23岁的生日</h3><p>重读六年前的自己，用文字记录对这个世界的感受和认知，那时候的自己充满了希望，虽然能力配不上欲望而渐渐失落，但依然希望找到那种年轻的感觉。</p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3><p>当年的愿望：</p>
+<ul>
+<li>工作上：提高编程和学术能力</li>
+<li>生活上：爱家人，爱生活，爱伴侣</li>
+<li>日常上：坚持读，坚持写，坚持学，坚持感受，坚持表达</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">《成长的天空》 </span><br><span class="line">我沉浸在自己的世界里</span><br><span class="line">写着无关是非的歌谣</span><br><span class="line">点蓝的笔触</span><br><span class="line">划过了年轻的天空</span><br><span class="line">一只飞鸟带走我的青春</span><br><span class="line">还我，岁月沉淀的帽子</span><br><span class="line">轻声说道</span><br><span class="line">年轻总不是永远的借口</span><br></pre></td></tr></table></figure>
+
+<h3 id="回看中秋自省的自己"><a href="#回看中秋自省的自己" class="headerlink" title="回看中秋自省的自己"></a>回看中秋自省的自己</h3><p>经过5年起起落落，心态转变得很明显甚至于有点得过且过的样子，现在自己比年轻的自己多了一点能力和资源，却失去了做大梦的勇气和毅力。希望自己能依然不断找到人生的兴奋点，勇往直前地去追寻探索，从今天开始，真正的为自己而活，不在乎别人的眼光，不在乎可能会失去的安逸。</p>
+<h3 id="家人信息简要"><a href="#家人信息简要" class="headerlink" title="家人信息简要"></a>家人信息简要</h3><p>爸：1961.7.8，牛，会计。爱好军事政治经济唱歌。性格硬朗好面子。优点：精神好，能干，勤勉<br>妈：1961.11.12，牛，仓管（退休）。爱好家庭家人养生。优点：节俭，爱戴我们，慈祥<br>哥：1987.8.9，兔，前端全栈，爱好广泛潮流酷玩。优点：工程能力强，迁就随和<br>为：1992.08.13，猴，算法攻城狮。爱好：声乐，运动，游戏。优点：耐受力，随和</p>
+<h3 id="选书策略"><a href="#选书策略" class="headerlink" title="选书策略"></a>选书策略</h3><p>出版社-&gt;作者-&gt;版次-&gt;印次-&gt;印数</p>
+<h3 id="追逐幸福的要素"><a href="#追逐幸福的要素" class="headerlink" title="追逐幸福的要素"></a>追逐幸福的要素</h3><ul>
+<li>找到喜欢的工作，有收入又受到社会尊重</li>
+<li>减少上下班耗费的时间，有充足的社交时间</li>
+<li>对国家和社会有政治热情，有参与度</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">不论曾经的彼此多么幼稚，多么可笑</span><br><span class="line">终有一天我们都变得成熟；</span><br><span class="line">也终有一天，我们都会老去；</span><br><span class="line">可是，却没有人可以永远不长大，</span><br><span class="line">却没有人可以永远年轻，</span><br><span class="line">成熟，有时候会让人心痛、很无奈。</span><br><span class="line">那个时候才会懂得：</span><br><span class="line">爱情本不是件该执着的事情。</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>日常</category>
+      </categories>
+      <tags>
+        <tag>博客迁移</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2021_年终总结</title>
+    <url>/2021/12/31/personal/2021-%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<p>回顾今年的自己，提出个人思见和应该执行改进的点。</p>
+<h3 id="工作上"><a href="#工作上" class="headerlink" title="工作上"></a>工作上</h3><p>年初从测量机器人这个项目跳出来，主要是派发的需求集中在基于opencv的图表绘制上，另外一个是基于opencv的户型图分割项目。由于数据来源没有统一化，基于图像的户型分割较大的不稳定因素；关于图表绘制核心的功能就是解决文本碰撞的问题；期间还用网页自动化点击脚本完成了一个疫情一日一表的自动填表功能，节省了每日必做的无用行为。之前看到python基于桌面图像识别可以自动匹配鼠标行为，这是原来项目的高级方法。作为一个程序员，生活中如果出现较多的重复度大的行为与操作时，就应该开始考虑自动化脚本或者程序去自动执行。</p>
+<p>跳出在顺德的工作后，由于皮肤问题变本加厉，有很长的一段时间我是在家休养，每天除了睡得非常多以外，大部分时间都在宅家度过，让老父母亲着实担心不浅。这个坏毛病是在香港最后几年养成的，当时的这个研究生和本科的一些坏习惯让我最终渐渐失去了对自我的自律以及对自我的期待，对自我的希望。我当时像泄了气的气球，一泻千里，由此深深的陷入人生以来的低谷。也许是我的叛逆期晚到了，从那一刻我才开始体会到一点点的自由，自我开始向这个世界抗争拉扯。大学以前，一直认为只要读书好就可报答家人，这种被动的内驱力面对真正的困难和社会的残酷竞争时是多么的无力。</p>
+<p>害怕失败，害怕白眼，害怕接受自己的无能，于是我有点像堕落的高材生，开始逃避，开始偷懒。一些不良的嗜好也让我的人格不再高尚，比如毫无意义重复的游戏世界,比如深陷情绪的孤独，<a href="%EF%BC%8C%E6%AF%94%E5%A6%82%E5%94%BE%E6%89%8B%E5%8F%AF%E5%BE%97%E7%9A%84%E9%BB%84%E8%89%B2%E5%BF%AB%E4%B9%90%EF%BC%8C"></a>还好从没接触直达灵魂的药品了。值得庆幸的是，我自小深深的记住了外婆反复强调的千万不能碰毒品。这句话是外婆对孙辈们的苦口婆心，也是最低最低的要求了。经历的这一切，我深知自己自制力的脆弱，应减少对不良事物的好奇与冒险，希望我这一辈子都能与成瘾性隔绝，否则我很容易预见到自己再一次的堕落。</p>
+<p>这一切就发生在今年上，直到年中我也发现自己不能再给自己找借口了，在香港的时候无人约束，我可以随意的挥霍光阴。在家里宅的话，亲戚朋友尤其家里人很是担心，特别是我生命中最重要的两个女人：母亲和媳妇。于是到了年中，虽然皮肤病依然没有康复，但我已经厌倦了作为一个毫无价值的人存在于世。心底里，我渴望世界听到我的声音，因我存在而改变，而不是一直作为一个边缘人物存在着。但很多时候我还是会给自我设限，会介怀于我虚度的光阴，介怀于我曾经的失败，介怀于我那并不闪闪发光的履历。但无论如何，我收拾行囊，重新出发了，以一个更谦卑的姿态。</p>
+<p>在boss上，我海投以及面笔了好些公司，最终我依然没有自信的奔赴大公司，我选择了一家智能硬件作为自我调整的起点。6月15日我再次翻开人生的新篇章，来到了深圳塘朗，追逐体面的生活，希望用自己的文字，代码以及思想发光发亮。至此，在HOLA已然半年，早期为算法组开展论文研讨学习，后续是全程跟进云台项目的算法实现：包括SLAM，三维重建以及点云墙面分割的核心模块。目前为止虽然基本的核心功能已然完成，但仍然有很多内容需要补齐学习，为后续真正的工程化作知识储备。另外如CTO所说，HOLA这个平台是否适合我继续发展个人的职业规划以及技术路径。工作这半年，大部分时间是孤身负重前行的，业务最相似的还是算法组的兄弟朋友们：研发一哥，世攀；玩乐达人，炯彬；斯文大汉，啸天；苦比打工人，东勇；除此还有系统大佬jazzy以及CTO聪哥。基本上，公司内部对三维这块是一片空白的，所以产生了硬币的两端：无人监管我的工作，无人能准确评价我的工作；无人关注我的工作，无人协同我的工作。未来的一年希望能加快项目的落地应用，产生实际的价值。</p>
+<h4 id="2022上半年的工作指标"><a href="#2022上半年的工作指标" class="headerlink" title="2022上半年的工作指标"></a>2022上半年的工作指标</h4><ul>
+<li>薪资至少上调20%</li>
+<li>SLAM 14讲的book &amp; homework</li>
+<li>PCL的系统学习</li>
+</ul>
+<h3 id="学习上"><a href="#学习上" class="headerlink" title="学习上"></a>学习上</h3><p>关于今年的学习，从上文就可知确实进步较慢，但要相信人生是个不断经历的过程，如同重看五年前的自己一样，当时虽然稚嫩但充满阳光和希望；如今的自己，虽有初老心态，但尚未暮年，重新出发，为时未晚。</p>
+<p>已读书单：《浪潮之巅》，《为我的身体养阳气》，《C++ Primer》</p>
+<p>在读书单：《SLAM 14讲》，《三十岁，一切刚刚开始》</p>
+<p>学习方向&amp;主题： C++， SLAM， 三维重建， std标准库， STL模板， 算法导论， LEETCODE</p>
+<p>重新开始经营我的github,以及我的个人博客，记录生活的点点滴滴，一部一脚印。三十年以来的输入足够我输出一些东西了，积极认真地输出自己的观点，去和这个可爱的世界碰撞摩擦吧！马上要三十岁了，走在这个重要的节点上，希望自己成为有担当，值得信任，靠谱的人。更希望自己打破自我设限的枷锁，去勇敢探索生活，探索生命，去冒险，去舞蹈，去歌唱，这是每个人唯一一次的人生阿，已然安然度过了30年了，没有什么再让你值得畏惧了，那就放手去做吧。</p>
+<h3 id="生活上"><a href="#生活上" class="headerlink" title="生活上"></a>生活上</h3><p>首先是运动和减肥！！！</p>
+<p>关于生活，最大的关键字可能是安逸，但影响最大的词应该是疾病。无论精神上还是身体上，长时间缺乏对生活的激情与热情容易致抑。更进一步引起睡眠紊乱，身体亚健康的各种慢性病也冒出来，比如湿疹，这两年简直痛苦不堪，夜不能寐。战胜严重的皮肤慢性病，需要持之以恒的耐心，需要强颜欢笑的乐观，需要时刻注意控制行为。多少次深夜里，我甚至愿意用各种誓言，只为换来自己的身体健康。年轻时拥有的一切是如此轻而易举而又在后来失去时觉得弥足珍贵。</p>
+<p>困扰我工作生活生命已经两年的湿疹，在近期终于在积极阳光的生活中得到一丝丝的控制，明年我并不奢望和贪心康复，只希望面积能缩小至不影响作息，毕竟良好的作息和生活习惯是每一天元气能量的源泉。</p>
+<p>另一方面，说到生活，最应该被提起的就是家人与朋友。关于朋友，虽然有丝许的进步，得到现在算法组同事的互动来往，但可能是自身技术不够牛逼或者是不苟言笑，或者是不够真挚待人。虽然入职半年，但真正有互动能见面言笑的人可能两个手也数得完，希望新的一年也继续勇敢表达自我，真挚对待别人。然后就是最重要的家人，来到深圳后，在顺德待的时间大幅减少，一个月能有两次回家看看就不错了。另外和珊珊结婚后尚未育儿，随着年岁渐长，年近30的我们迫切需要生儿育女了，而这一点更是双方家长最迫切的事情了，希望明年能有新的突破。说实话，没有完美的工作，只有称心如意的工作，在HOLA的工作让我慢慢走出自己人生的低谷，work-life balance的双休与无加班节奏也很好的平衡我身体上遇到的种种问题。虽然作为程序员毫无忠诚度可言，但我从心底感激和感恩HOLA，让我重新支棱起了自己，不再是瘫倒地上的烂泥，明年愿自己慢慢成为高飞天际的雄鹰。</p>
+]]></content>
+      <categories>
+        <category>年终总结 总结</category>
+      </categories>
+      <tags>
+        <tag>总结</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>经典话术</title>
+    <url>/2021/12/21/personal/%E7%BB%8F%E5%85%B8%E8%AF%9D%E6%9C%AF/</url>
+    <content><![CDATA[<p><code>格林先生说</code></p>
+<p>1.yes and 法则<br>通常交流容易别人提一个观点，我们不认同会yes,but. 这样别人容易产生“那就这样吧，你说什么就是什么吧”</p>
+<p>正常回复应该尽量接纳对方一部分的内容，然后才一点点引出冲突。<br>e.g. …确实会…,不过有时候…</p>
+<p>2.即兴表达框架-PREP<br>Point-&gt;Reason-&gt;Example-&gt;Point</p>
+<p>3.SCQ-A<br>提出问题，寻求帮助。Situation-&gt;Conflict-&gt;Question-&gt;Answer<br>常用于工作汇报，包括问题背景，问题原因，主要问题，如何解决。</p>
+<p>4.FFC 赞美法则<br>Feel-&gt;Fact-&gt;Compare<br>（Feel）我觉得今天你搭配很有气质<br>（Fact）因为腰线能突出身形<br>(Compare) 这是我今年见到的最潮的连衣裙</p>
+<p>5.引导选择<br>模板：是…还是…/ 是否…/ 要不要…,好处是这样<br>提问封闭，只需选择，无需开放式思考</p>
+<p>6.万能表达：观察+感受+需求+请求<br>（观察）珊珊，你最近每晚都是凌晨才睡觉<br>（感受）我觉得有干扰<br>（需求）而且我希望你能身体健康，这样白天才精神<br>（请求）所以希望明天开始，能不能11点准时关灯</p>
+<p>7.汇报FFA法则<br>Fact-&gt;Feeling-&gt;Action<br>最近工作如何，我感觉主要是跟不上进度，接下来一周我会如何做。</p>
+<p><code>蛋蛋碎嘴子</code></p>
+<p>1.工作汇报老手<br>新项目砸了=进行了积极的试错，吸收了宝贵的经验<br>数据不好看=有较大的增长空间<br>啥也没干=稳定发展<br>接下来依旧打算啥也不干=保持现有成绩，稳定成果<br>数据稍微好看一点=取得了较大增长</p>
+<p>2.一个人一直墨迹跟你说话不好意思打断，可以尝试：<br>“好的”，“那确实不错”，“的确是这样”，“嗯你说的对”</p>
+<p>3.接到不想做的任务可以说<br>“领导，我仔细看了一下这个需求，我这里可能存在XXX方面的短板”<br>“想要推进这个事情的话，我可能需要XXX方面的支持”<br>暗含“我可说清楚了，办砸了可不赖我”</p>
+<p>4.当想刺探秘密时，先说结论，然后观察对方的反应<br>“我们公司下个月要发奖金你”</p>
+<p>5.汇报模板：<br>【日常在做什么】+【做这件事的目的】+【做这件事有什么困难】+【怎么做得更好】</p>
+<p>6.当别人布置杂活，不想做就死死的抠细节<br>“你说的这件事大概什么时候需要？”<br>“这个时间点具体到几点？”<br>“我是微信给你还是邮箱给你？”<br>“那我需要先出一个计划，你帮我看看安排合不合适？”<br>如此一来，极大增加之间的沟通成本，让对方崩溃而不想给你安排了。</p>
+<p><code>清闲的九夏</code></p>
+<p>1.别人求你办事，如果想要资源置换，就说：“这事儿不太好办阿”</p>
+<p>2.拒绝借钱：“你知道的，我最近XX，也没钱。”</p>
+<p>3.汇报话术：”这边，我们做了A，B两种方案，各有优势，希望给点意见，看选哪个做比较佳“</p>
+<p>4.经常使用分点叙述<br>我是这么认为的，第一，X；第二，X；第三，X。</p>
+<p>5.请求帮忙时，先提出自己的办法<br>”经过了解，遇到一些问题，我的解决办法是XX，大家看看还有没有更好的办法?”<br>不论多平庸都要提一个。</p>
+<p>6.请求帮忙“不好意思，可以插一下队吗？因为我真的很急”</p>
+<p>7.聊天想聊下去：揪住对方的关键词+延伸过往彼此交流过的信息</p>
+<p>“今天又加班，很烦”<br>“怎么又加班，又是上次那个领导吗”</p>
+<p>“我爱豆塌房子了”<br>“哪个，上回说的那个吗，我去”</p>
+<p>8.不想聊下去<br>“今天又加班”<br>“怎么又加班，这算啥事”</p>
+<p>“我爱豆塌房子了”<br>“又他”</p>
+<p>9.领导说“辛苦了”<br>你：“从中学到很多，很有收获。”</p>
+<p>10.领导的节日问候（也可不发，上班的时候再热情问候即可）：<br>尊称+感谢+互动+祝福</p>
+<p>11.说服别人，改变一个人的想法<br>认同立场，替换观点。</p>
+<p>自嘲： 是阿…而且…</p>
+]]></content>
+      <categories>
+        <category>日常</category>
+      </categories>
+      <tags>
+        <tag>知乎</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2022第一季度总结</title>
+    <url>/2022/04/07/personal/2022%E7%AC%AC%E4%B8%80%E5%AD%A3%E5%BA%A6%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<h3 id="工作上"><a href="#工作上" class="headerlink" title="工作上"></a>工作上</h3><h4 id="本职工作"><a href="#本职工作" class="headerlink" title="本职工作"></a>本职工作</h4><p>由于产品部对预研项目的信心和期望不高，今年头三个月我主推的项目基本没有进展。于是我在本来就量产项目为重的小公司里面地位更卑微了，随时有被毕业的风险，也可能是因为薪资不高，反正我现在有点“食之无味，弃之可惜”的味道了。只能趁着这段时间多学习，多看看论文，多写写代码。希望能让自己的职业生涯有点起色。</p>
+<p>虽然入职以来沟通能力和代码能力未见长足的进步，但是空间思考能力、阅读能力以及专利能力都有所提升，跟着一哥学习思考的深度也有一定程度的进步。值得一提的是，由于3月两篇专利的贡献，个人还获得部门月度之星的殊荣，个人还是很需要鼓励和积极的心态的。希望自己再接再砺，勇往直前！</p>
+<h4 id="工作之余"><a href="#工作之余" class="headerlink" title="工作之余"></a>工作之余</h4><p>积极了解互联网行业具体情况和进展，当初正因为自己疏于认真准备找工作，缺乏了必要技能的锻炼。自然而然也没能获得一个良好的职业规划，在年至30之际才幡然醒悟，重新准备出发。查漏补缺，刷刷题目，学学新东西。一个好的技术人员，必须与时俱进，时刻维护自己的知识体系，丰富个人的武器库。</p>
+<p>认识了梓淳，认真分析自己的经历以及能力，确实自己缺乏始终如一的目标以及深度认真学习工作的高效能力，加之受个人性格以及情绪影响，错过各种锻炼成长的机会。如今开始，认真提升自己的能力，不再像以往朝三暮四地另辟蹊径，而是朝着可能的方向一步步前进，反而是最好的结果。</p>
+<h3 id="学习上"><a href="#学习上" class="headerlink" title="学习上"></a>学习上</h3><p>目前工作生活的节奏其实非常好，应该抓紧每一分钟来提升自己，然而很多时候自己是缺乏提升的方向，而非动力。有时候总是担心这个目标太遥远又或者这个些目标不是想要的，以至于始乱终弃。</p>
+<p>最近求职潮可以发现，个人学历条件是一方面，力扣能力以及专项能力才是工作上的考察重点。多年逃避的刷题能力，始终还是得面对，何不早日攻克，早日完成自我的蜕变。当自己老了，看着满满的leetcode和github应该还是会有所骄傲的吧。30已经是一个人的分水岭了，更年轻的自己也没有放手一搏去折腾，如今的自己更是除了干本专业也就别无他选了，那么请认真过好每一天吧！</p>
+<p>第一季度的学习指标包括：</p>
+<ul>
+<li>阅读：线代漫画 医本正经 泡脚攻略</li>
+<li>编程：基础班class 4, 学习了递归分治DP</li>
+<li>专项：SLAM CH7 / 云台专利</li>
+</ul>
+<p>说实话，目标提出来了，但是效率没有达到。主要个人缺乏高效的执行力以及深度工作的能力，这些都需要继续培养改进，每天反复提醒自己目标以及高效执行。可借助冥想正念以及镜子激励方法。</p>
+<h3 id="生活上"><a href="#生活上" class="headerlink" title="生活上"></a>生活上</h3><p>经过深圳祥和堂的正骨师傅泡洗和外涂药膏调理，大小腿上的湿疹已经慢慢消退，不再痕痒了。脚背上的厚厚褶皱倒是一时半会没办法消除，而每每手抓会引起痕痒，庆幸的是自己经历过最痛苦的时光，自制力已然可以控制住了，只是要让皮肤完完全全恢复如初也有一定的挑战。这个病痛历时三年之久，打击了我的青春，同时也打击了我的事业，人生跌入低谷。而终于迎来这么一天，开始触底反弹，身体和精神好起来了，1就有了。其他0还会远吗！这段经历也让我重新审视学习起中医，包括推拿针灸泡脚药膳艾灸等。身体健康，愿每一个人都拥有健康的身体，美好的人生。</p>
+<p>其次，回看上年总结，除了工作上没有收获到满满的成就感，得到同事们的认可，其余一切皆好，生活诚然有压力，但相信自己能迎接挑战，一天比一天美好！</p>
+]]></content>
+      <categories>
+        <category>总结</category>
+      </categories>
+      <tags>
+        <tag>总结</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CMAKE实践</title>
     <url>/2022/02/25/reading/CMAKE%E5%AE%9E%E8%B7%B5/</url>
     <content><![CDATA[<h3 id="初识cmake"><a href="#初识cmake" class="headerlink" title="初识cmake"></a>初识cmake</h3><p>主要特点：</p>
@@ -1162,6 +1291,117 @@
 <li>5.如果项目已经采用非常完备的工程管理工具，且不存在维护问题，没有必要迁移到cmake</li>
 <li>6.如果仅仅使用qt，没必要使用cmake。因为qmake在QT的专业性和自动化程度更高</li>
 </ul>
+]]></content>
+      <categories>
+        <category>读书笔记</category>
+      </categories>
+      <tags>
+        <tag>读书笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>effective_cpp 3rd</title>
+    <url>/2022/04/21/reading/effective-cpp/</url>
+    <content><![CDATA[<h3 id="导读"><a href="#导读" class="headerlink" title="导读"></a>导读</h3><p>声明为explicit的构造函数更佳，避免不明确的自动隐式转换<br>对象使用“=”会自动调用copy构造函数<br>命名尽可能带有意义的缩写：lhs, rhs; pw,pa; rw,ra;等<br>关于线程的点：当C++受到全世界关注时，多线程程序还没诞生。因此C++的多线程更多考虑线程安全性。</p>
+<p>内置类型pass-by-value高效，自定义类型pass-by-reference高效。</p>
+<h3 id="chap1-Accustoming-to-C"><a href="#chap1-Accustoming-to-C" class="headerlink" title="chap1 Accustoming to C++"></a>chap1 Accustoming to C++</h3><h4 id="C-的四大组成部分："><a href="#C-的四大组成部分：" class="headerlink" title="C++的四大组成部分："></a>C++的四大组成部分：</h4><ul>
+<li>原生C，C语言的区别在于没有：模板，异常及重载</li>
+<li>面向对象C++特性：类、封装、继承、多态、虚函数</li>
+<li>模板C++特性：泛型编程</li>
+<li>STL算法库<br>根据应用场合所需使用其中的主要成分。</li>
+</ul>
+<h4 id="const-enum-inline-rather-than-define"><a href="#const-enum-inline-rather-than-define" class="headerlink" title="const, enum, inline rather than #define"></a>const, enum, inline rather than #define</h4><p>使用#define则预处理器解释，编译器不可见,因此也没有进符号表，可能导致编译器无法跟踪具体错误。<br>static char倾向用const string，类中的static int用enum {num=5}; enum hack</p>
+<ul>
+<li>对于简单常量，使用const或者enum</li>
+<li>对于#define函数宏，使用内联函数</li>
+</ul>
+<h4 id="尽可能使用const"><a href="#尽可能使用const" class="headerlink" title="尽可能使用const"></a>尽可能使用const</h4><p>const char* p = pa; // const data<br>char* const p = pa; // const ptr<br>规律：星号左侧const为const data, 星号右侧const为const ptr</p>
+<p>因此，下面f1和f2是一致的</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">(<span class="keyword">const</span> Widget* pw)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f2</span><span class="params">(Widget <span class="keyword">const</span> * pw)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>const 迭代器不得改变指向，但是指向的内容值可以改动。<br>const return可以预防”无意义的赋值动作”错误。<br>const成员函数目的：1.让接口容易理解，指导是否可以改动对象内容 2.使操作const对象成为可能，因为改善C++程序效率根本方法是pass by reference-to-const</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// non-const</span></span><br><span class="line"><span class="keyword">char</span>&amp; <span class="keyword">operator</span>[](<span class="keyword">int</span> pos)</span><br><span class="line">&#123; <span class="keyword">return</span> text[pos];&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// const</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>&amp; <span class="keyword">operator</span>[](<span class="keyword">int</span> pos) <span class="keyword">const</span></span><br><span class="line">&#123; <span class="keyword">return</span> text[pos];&#125;</span><br></pre></td></tr></table></figure>
+<p>非const操作可读可写，const操作只针对const对象的读取；</p>
+<p>bitwise const（C++）与Logical const的思考：<br>引入mutable成员变量使在const成员函数中依然可变，从而打破bitwise const，达到Logical const；<br>但mutable不能解决所有const难题，如指向的外部指针需要做边界检验、日志访问信息、完善性检验等，则在类内部产生一个争议的怪物。不利于代码重复、编译加快及维护。一个办法是non-const operator[]调用其const operator[]兄弟，减少重复代码，但是需要两次转型：一次将*this从原型转型为const &amp;,从而避免递归调用non const版本自身；一次是在返回值移除const。从而用const operator[]实现出non-const版本。反向做法则带有风险：曾经承诺不改动的对象被改动了。因此const成员函数调用non-const函数是错误行为，因为non const可能改变成员。</p>
+<p>总结：熟悉const在指针/迭代器上；在指针迭代器及引用指向的对象身上；在函数参数和返回类型上；在成员函数上的使用细则。</p>
+<ul>
+<li>声明const帮助编译器识别错误用法，const可施加于任何作用域内的对象、函数参数、函数返回类型、函数本身。</li>
+<li>编译器实施bitwise constness,但编程时应该使用logical constness</li>
+<li>const和non-const成员函数有着实质等价的实现时，可令non-const版本调用const版本避免代码重复。</li>
+</ul>
+<h4 id="确定对象被使用前被初始化"><a href="#确定对象被使用前被初始化" class="headerlink" title="确定对象被使用前被初始化"></a>确定对象被使用前被初始化</h4><p>构造函数总是使用成员初始化列表<br>static对象：声明周期从构造到程序结束，包括global对象，namespace作用域内的对象、class内、函数内、file作用域内声明为static的对象。<br>区别于static的stack,heap-based对象属于动态内存。</p>
+<p>其中的问题c++对”定义在不同编译单元内的non-local static对象“初始化相对次序无法明确定义。因为决定初始化次序相当困难，常见形式多个编译单元的non-local static对象经有“模板隐式具现化 implicit template instantiations”形成。</p>
+<p>解决方法：将每个non-local static对象搬到自己专属函数内，函数返回一个reference指向它所包含的对象。即singleton设计模式。</p>
+<p>记住：</p>
+<ul>
+<li>为内置型对象进行手工初始化，因为C++编译器不能保证初始化</li>
+<li>构造函数使用成员初始化列表，且尽量确保次序一致</li>
+<li>解决“跨编译单元的初始化次序”问题，用local static对象替换non-local static对象</li>
+</ul>
+<h3 id="chap2-构造-析构-赋值运算"><a href="#chap2-构造-析构-赋值运算" class="headerlink" title="chap2 构造/析构/赋值运算"></a>chap2 构造/析构/赋值运算</h3><h4 id="了解C-默默编写及调用哪些函数"><a href="#了解C-默默编写及调用哪些函数" class="headerlink" title="了解C++默默编写及调用哪些函数"></a>了解C++默默编写及调用哪些函数</h4><p>空类会自动声明一个default构造函数，copy构造函数,一个copy assignment操作符和析构函数</p>
+<h4 id="若不想使用自动函数，则明确拒绝"><a href="#若不想使用自动函数，则明确拒绝" class="headerlink" title="若不想使用自动函数，则明确拒绝"></a>若不想使用自动函数，则明确拒绝</h4><p>一种做法将不想被自动调用的函数主动声明为private(iostream库做法，只有private声明);如果外部调用则编译器报错，如果member或friend函数调用则链接器报错。<br>更绝的做法专门为阻止copying动作设计一个基类，通过private继承，避免member/friend函数访问。</p>
+<h4 id="为多态基类声明virtual析构函数"><a href="#为多态基类声明virtual析构函数" class="headerlink" title="为多态基类声明virtual析构函数"></a>为多态基类声明virtual析构函数</h4><p>从而确保对象derived成分被销毁，避免资源泄漏及败坏数据结构。</p>
+<p>virtual函数实现细节不重要，重要的是带来对象体积的增强，引入virtual table pointer.因此也不能滥用virtual析构</p>
+<p>一般使用心得：只有当class内含有至少一个virtual函数时，才为它声明virtual析构函数</p>
+<p>注意的是：不要企图继承string, STL容器作为多态基类，因为这些均是带有“non-virtual析构函数”的class</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AWOV</span>&#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">AWOV</span>() = <span class="number">0</span>;  <span class="comment">// 声明pure virtual析构</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">AWOV::~<span class="built_in">AWOV</span>()&#123;&#125; <span class="comment">// 需要明确定义，因为有一系列调用动作</span></span><br></pre></td></tr></table></figure>
+
+<p>记住：</p>
+<ul>
+<li>多态基类应该声明virtual析构函数，如果class带有任何virtual函数，则应该拥有一个virtual析构函数</li>
+<li>class设计不是作为基类或者多态基类使用，就不要声明virtual析构函数，因为增大对象的体积</li>
+</ul>
+<h4 id="别让异常逃离析构函数"><a href="#别让异常逃离析构函数" class="headerlink" title="别让异常逃离析构函数"></a>别让异常逃离析构函数</h4><p>C++不禁止从析构抛出异常，但如果多个对象析构同时抛出多个异常，则容易导致不明确行为。解决方法：1.析构中抛出异常即abort程序 2.吞下异常，虽然覆盖了失败原因的重要信息，但有时候程序继续运行很重要 3.较佳策略重新设计接口，让client在普通函数中对抛出的异常作反应</p>
+<h4 id="绝不在构造和析构过程调用virtual函数"><a href="#绝不在构造和析构过程调用virtual函数" class="headerlink" title="绝不在构造和析构过程调用virtual函数"></a>绝不在构造和析构过程调用virtual函数</h4>]]></content>
+      <tags>
+        <tag>读书笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>力扣加加</title>
+    <url>/2022/04/24/reading/lcpp/</url>
+    <content><![CDATA[<p>前言：努力做西湖区最好的算法题解。分为算法专题、91天学算法、精选题解、高频考题（简单-中等-困难）</p>
+<h2 id="算法专题"><a href="#算法专题" class="headerlink" title="算法专题"></a>算法专题</h2><h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>线性结构：使用连续内存，序列。利于查询，不利于插入删除<br>非线性结构：使用间断内存，通过地址指针连接,链表。运行时动态生成</p>
+<p>队列、栈都是受限序列。非线性结构是为了高效兼顾静态操作和动态操作，如树堆。<br>堆是一种优先队列，二叉查找树（查找快），AVL平衡树优化深度的BST，及后面的红黑树。</p>
+<h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><p><img src="/images/4_24_1.jpg"></p>
+<p>链表基本操作,画图理解：注意头尾指针情况<br>插入节点：<br>1.temp = 待插位置前驱节点.next<br>2.待插位置前驱节点.next = 待插指针<br>3.待插指针.next = temp</p>
+<p>删除节点：<br>1.待删除位置的前驱节点.next = 待删除位置的前驱节点.next.next</p>
+<p>遍历：<br>cur = head<br>while(cur!=nullptr){<br>  print(cur)<br>  cur = cur.next<br>}</p>
+<p>前序遍历递归伪代码</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">dfs</span>(cur)&#123;</span><br><span class="line">  <span class="keyword">if</span> cur == <span class="literal">nullptr</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  <span class="built_in">print</span>(cur.val)</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">dfs</span>(cur.next)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="一个原则：画图"><a href="#一个原则：画图" class="headerlink" title="一个原则：画图"></a>一个原则：画图</h4><h4 id="两个考点："><a href="#两个考点：" class="headerlink" title="两个考点："></a>两个考点：</h4><p>1.指针修改<br>比如链表反转，数组直接遍历两两交换</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reverse</span><span class="params">(head, tail)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  cur = head</span><br><span class="line">  pre = <span class="literal">nullptr</span></span><br><span class="line">  <span class="keyword">while</span>(cur!=tail)</span><br><span class="line">  &#123;</span><br><span class="line">    next = cur-&gt;next</span><br><span class="line">    cur-&gt;next = pre</span><br><span class="line">    pre = cur</span><br><span class="line">    cur = next</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> tail</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.链表拼接<br>容易穿来穿去。<br>链表的价值：不必要求物理内存连续性，对插入和删除友好。</p>
+<h4 id="三个注意：-覆盖90-错误"><a href="#三个注意：-覆盖90-错误" class="headerlink" title="三个注意： 覆盖90%错误"></a>三个注意： 覆盖90%错误</h4><ul>
+<li>出现了环，造成死循环</li>
+<li>分不清边界，造成边界条件出错</li>
+<li>搞不懂递归做法</li>
+</ul>
+<p>关于链表环：</p>
+<ul>
+<li>题目链表可能有环，判断是否有，以及位置（快慢指针）</li>
+<li>本来没环，被你操作出现环（先画图，看操作；仅仅画出一个子结构即可）</li>
+</ul>
+<p>关于边界：</p>
+<ul>
+<li>如果题目的头节点可能移除，考虑使用虚拟节点，使头节点变成中间节点</li>
+<li>题目返回不是原本的头节点，而是尾节点或者中间节点，要注意指针变化</li>
+</ul>
+<h4 id="前后序"><a href="#前后序" class="headerlink" title="前后序"></a>前后序</h4><p>前序：先处理节点，再左右<br>中序：先左，再处理，再右<br>后序：先左右，最后处理节点</p>
+<p>由于链表天生具有递归性，可以引入递归思维。</p>
+<p>如果前序遍历，可以想象前面链表处理好了，这种情况下处理当前；如果后序，则想象后面处理好了，这种情况下处理当前。</p>
+<h4 id="四个技巧"><a href="#四个技巧" class="headerlink" title="四个技巧"></a>四个技巧</h4><p>虚拟头作用：</p>
+<ul>
+<li>头节点变成中间节点，简化判断</li>
+<li>在合适时候断开，返回链表中间节点</li>
+</ul>
+<p>快慢指针：</p>
+<ul>
+<li>一个先走，一个后走</li>
+<li>一个快走，一个慢走</li>
+</ul>
+<p>穿针引线：先穿再引，即记录后续改动的，再变更之前的</p>
 ]]></content>
       <categories>
         <category>读书笔记</category>
@@ -1246,135 +1486,6 @@
       </tags>
   </entry>
   <entry>
-    <title>effective_cpp 3rd</title>
-    <url>/2022/04/21/reading/effective-cpp/</url>
-    <content><![CDATA[<h3 id="导读"><a href="#导读" class="headerlink" title="导读"></a>导读</h3><p>声明为explicit的构造函数更佳，避免不明确的自动隐式转换<br>对象使用“=”会自动调用copy构造函数<br>命名尽可能带有意义的缩写：lhs, rhs; pw,pa; rw,ra;等<br>关于线程的点：当C++受到全世界关注时，多线程程序还没诞生。因此C++的多线程更多考虑线程安全性。</p>
-<p>内置类型pass-by-value高效，自定义类型pass-by-reference高效。</p>
-<h3 id="chap1-Accustoming-to-C"><a href="#chap1-Accustoming-to-C" class="headerlink" title="chap1 Accustoming to C++"></a>chap1 Accustoming to C++</h3><h4 id="C-的四大组成部分："><a href="#C-的四大组成部分：" class="headerlink" title="C++的四大组成部分："></a>C++的四大组成部分：</h4><ul>
-<li>原生C，C语言的区别在于没有：模板，异常及重载</li>
-<li>面向对象C++特性：类、封装、继承、多态、虚函数</li>
-<li>模板C++特性：泛型编程</li>
-<li>STL算法库<br>根据应用场合所需使用其中的主要成分。</li>
-</ul>
-<h4 id="const-enum-inline-rather-than-define"><a href="#const-enum-inline-rather-than-define" class="headerlink" title="const, enum, inline rather than #define"></a>const, enum, inline rather than #define</h4><p>使用#define则预处理器解释，编译器不可见,因此也没有进符号表，可能导致编译器无法跟踪具体错误。<br>static char倾向用const string，类中的static int用enum {num=5}; enum hack</p>
-<ul>
-<li>对于简单常量，使用const或者enum</li>
-<li>对于#define函数宏，使用内联函数</li>
-</ul>
-<h4 id="尽可能使用const"><a href="#尽可能使用const" class="headerlink" title="尽可能使用const"></a>尽可能使用const</h4><p>const char* p = pa; // const data<br>char* const p = pa; // const ptr<br>规律：星号左侧const为const data, 星号右侧const为const ptr</p>
-<p>因此，下面f1和f2是一致的</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">(<span class="keyword">const</span> Widget* pw)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f2</span><span class="params">(Widget <span class="keyword">const</span> * pw)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>const 迭代器不得改变指向，但是指向的内容值可以改动。<br>const return可以预防”无意义的赋值动作”错误。<br>const成员函数目的：1.让接口容易理解，指导是否可以改动对象内容 2.使操作const对象成为可能，因为改善C++程序效率根本方法是pass by reference-to-const</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// non-const</span></span><br><span class="line"><span class="keyword">char</span>&amp; <span class="keyword">operator</span>[](<span class="keyword">int</span> pos)</span><br><span class="line">&#123; <span class="keyword">return</span> text[pos];&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// const</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>&amp; <span class="keyword">operator</span>[](<span class="keyword">int</span> pos) <span class="keyword">const</span></span><br><span class="line">&#123; <span class="keyword">return</span> text[pos];&#125;</span><br></pre></td></tr></table></figure>
-<p>非const操作可读可写，const操作只针对const对象的读取；</p>
-<p>bitwise const（C++）与Logical const的思考：<br>引入mutable成员变量使在const成员函数中依然可变，从而打破bitwise const，达到Logical const；<br>但mutable不能解决所有const难题，如指向的外部指针需要做边界检验、日志访问信息、完善性检验等，则在类内部产生一个争议的怪物。不利于代码重复、编译加快及维护。一个办法是non-const operator[]调用其const operator[]兄弟，减少重复代码，但是需要两次转型：一次将*this从原型转型为const &amp;,从而避免递归调用non const版本自身；一次是在返回值移除const。从而用const operator[]实现出non-const版本。反向做法则带有风险：曾经承诺不改动的对象被改动了。因此const成员函数调用non-const函数是错误行为，因为non const可能改变成员。</p>
-<p>总结：熟悉const在指针/迭代器上；在指针迭代器及引用指向的对象身上；在函数参数和返回类型上；在成员函数上的使用细则。</p>
-<ul>
-<li>声明const帮助编译器识别错误用法，const可施加于任何作用域内的对象、函数参数、函数返回类型、函数本身。</li>
-<li>编译器实施bitwise constness,但编程时应该使用logical constness</li>
-<li>const和non-const成员函数有着实质等价的实现时，可令non-const版本调用const版本避免代码重复。</li>
-</ul>
-<h4 id="确定对象被使用前被初始化"><a href="#确定对象被使用前被初始化" class="headerlink" title="确定对象被使用前被初始化"></a>确定对象被使用前被初始化</h4><p>构造函数总是使用成员初始化列表<br>static对象：声明周期从构造到程序结束，包括global对象，namespace作用域内的对象、class内、函数内、file作用域内声明为static的对象。<br>区别于static的stack,heap-based对象属于动态内存。</p>
-<p>其中的问题c++对”定义在不同编译单元内的non-local static对象“初始化相对次序无法明确定义。因为决定初始化次序相当困难，常见形式多个编译单元的non-local static对象经有“模板隐式具现化 implicit template instantiations”形成。</p>
-<p>解决方法：将每个non-local static对象搬到自己专属函数内，函数返回一个reference指向它所包含的对象。即singleton设计模式。</p>
-<p>记住：</p>
-<ul>
-<li>为内置型对象进行手工初始化，因为C++编译器不能保证初始化</li>
-<li>构造函数使用成员初始化列表，且尽量确保次序一致</li>
-<li>解决“跨编译单元的初始化次序”问题，用local static对象替换non-local static对象</li>
-</ul>
-<h3 id="chap2-构造-析构-赋值运算"><a href="#chap2-构造-析构-赋值运算" class="headerlink" title="chap2 构造/析构/赋值运算"></a>chap2 构造/析构/赋值运算</h3><h4 id="了解C-默默编写及调用哪些函数"><a href="#了解C-默默编写及调用哪些函数" class="headerlink" title="了解C++默默编写及调用哪些函数"></a>了解C++默默编写及调用哪些函数</h4><p>空类会自动声明一个default构造函数，copy构造函数,一个copy assignment操作符和析构函数</p>
-<h4 id="若不想使用自动函数，则明确拒绝"><a href="#若不想使用自动函数，则明确拒绝" class="headerlink" title="若不想使用自动函数，则明确拒绝"></a>若不想使用自动函数，则明确拒绝</h4><p>一种做法将不想被自动调用的函数主动声明为private(iostream库做法，只有private声明);如果外部调用则编译器报错，如果member或friend函数调用则链接器报错。<br>更绝的做法专门为阻止copying动作设计一个基类，通过private继承，避免member/friend函数访问。</p>
-<h4 id="为多态基类声明virtual析构函数"><a href="#为多态基类声明virtual析构函数" class="headerlink" title="为多态基类声明virtual析构函数"></a>为多态基类声明virtual析构函数</h4><p>从而确保对象derived成分被销毁，避免资源泄漏及败坏数据结构。</p>
-<p>virtual函数实现细节不重要，重要的是带来对象体积的增强，引入virtual table pointer.因此也不能滥用virtual析构</p>
-<p>一般使用心得：只有当class内含有至少一个virtual函数时，才为它声明virtual析构函数</p>
-<p>注意的是：不要企图继承string, STL容器作为多态基类，因为这些均是带有“non-virtual析构函数”的class</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AWOV</span>&#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">AWOV</span>() = <span class="number">0</span>;  <span class="comment">// 声明pure virtual析构</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">AWOV::~<span class="built_in">AWOV</span>()&#123;&#125; <span class="comment">// 需要明确定义，因为有一系列调用动作</span></span><br></pre></td></tr></table></figure>
-
-<p>记住：</p>
-<ul>
-<li>多态基类应该声明virtual析构函数，如果class带有任何virtual函数，则应该拥有一个virtual析构函数</li>
-<li>class设计不是作为基类或者多态基类使用，就不要声明virtual析构函数，因为增大对象的体积</li>
-</ul>
-<h4 id="别让异常逃离析构函数"><a href="#别让异常逃离析构函数" class="headerlink" title="别让异常逃离析构函数"></a>别让异常逃离析构函数</h4><p>C++不禁止从析构抛出异常，但如果多个对象析构同时抛出多个异常，则容易导致不明确行为。解决方法：1.析构中抛出异常即abort程序 2.吞下异常，虽然覆盖了失败原因的重要信息，但有时候程序继续运行很重要 3.较佳策略重新设计接口，让client在普通函数中对抛出的异常作反应</p>
-<h4 id="绝不在构造和析构过程调用virtual函数"><a href="#绝不在构造和析构过程调用virtual函数" class="headerlink" title="绝不在构造和析构过程调用virtual函数"></a>绝不在构造和析构过程调用virtual函数</h4>]]></content>
-      <tags>
-        <tag>读书笔记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>皮肤的秘密</title>
-    <url>/2022/01/19/reading/%E7%9A%AE%E8%82%A4%E7%9A%84%E7%A7%98%E5%AF%86/</url>
-    <content><![CDATA[<h3 id="认识皮肤"><a href="#认识皮肤" class="headerlink" title="认识皮肤"></a>认识皮肤</h3><p>皮肤是人体最大的器官，展开达两平方米，是人体之于外界环境的保护膜，同时也是零距离感受外界的第一道关卡，所以每一寸都遍布了神经细胞。</p>
-<p>皮肤主要由三层构成：表皮，真皮以及皮下组合。其中表皮与真皮间的基底膜带决定了皮肤的弹性紧致，而且是在1岁形成不可逆的衰老，无法重生所以只能好好保护延缓其衰老。皮肤细胞从底层出生，衰老于真皮并死亡在表皮并成为保护屏障，正常周期为4周。患有皮肤病的可能会加速该过程至5天，导致表皮的屏障并不完整。</p>
-<h3 id="表皮"><a href="#表皮" class="headerlink" title="表皮"></a>表皮</h3><p>由于皮肤表面存在着大量微生物群，所以保持皮肤的pH值是非常重要的，应当合理维持完好无损的酸性保护膜，人工清洁剂约5.5，另外对于皮下脂肪过厚的皮肤褶皱，唯一有效办法是减肥。可以用抗真菌软膏，另外带锌软膏可缓解皮肤炎症，带走多余水分。</p>
-<p><img src="/images/01_19_1.png"></p>
-<p>生长纹无足轻重，关于肤色，是有黑色素影响的。研究表明，橙色皮肤最具吸引力，可多摄入胡萝卜素B达到。颠痕主要由基底膜带大面积受损，表皮过度损耗引起的。对于渗水伤口可用硅霜或贴上硅凝胶伤口贴。治疗疙瘩需要强效疗法如：激光疗法、热针、冷冻疗法以及X射线放射疗法。</p>
-<h3 id="真皮"><a href="#真皮" class="headerlink" title="真皮"></a>真皮</h3><p>真皮充满紧致的结缔组织，带来稳固性以及拉伸性，任何的日晒、日光浴、烟草、压力、睡眠不足、营养不良以及缺乏运动等会加速弹性纤维的流失。臀部皮肤就是自然老化的参考，面部等受光照影响较大是老化较快的皮肤。另外，皮肤在4度就开始出现冻疮，而冬天皮肤也能适应，所以只在晚上睡前使用保湿即可，白天冬天保湿使皮肤含水量升高，反而容易冻伤。</p>
-<p>真皮层拥有大量神经，使皮肤成为最大的神经器官，抚摸有调节中枢神经和社交等作用。同时含有腺体，会分泌激素气味等。</p>
-]]></content>
-      <categories>
-        <category>读书笔记</category>
-      </categories>
-      <tags>
-        <tag>读书笔记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>力扣加加</title>
-    <url>/2022/04/24/reading/lcpp/</url>
-    <content><![CDATA[<p>前言：努力做西湖区最好的算法题解。分为算法专题、91天学算法、精选题解、高频考题（简单-中等-困难）</p>
-<h2 id="算法专题"><a href="#算法专题" class="headerlink" title="算法专题"></a>算法专题</h2><h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>线性结构：使用连续内存，序列。利于查询，不利于插入删除<br>非线性结构：使用间断内存，通过地址指针连接,链表。运行时动态生成</p>
-<p>队列、栈都是受限序列。非线性结构是为了高效兼顾静态操作和动态操作，如树堆。<br>堆是一种优先队列，二叉查找树（查找快），AVL平衡树优化深度的BST，及后面的红黑树。</p>
-<h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><p><img src="/images/4_24_1.jpg"></p>
-<p>链表基本操作,画图理解：注意头尾指针情况<br>插入节点：<br>1.temp = 待插位置前驱节点.next<br>2.待插位置前驱节点.next = 待插指针<br>3.待插指针.next = temp</p>
-<p>删除节点：<br>1.待删除位置的前驱节点.next = 待删除位置的前驱节点.next.next</p>
-<p>遍历：<br>cur = head<br>while(cur!=nullptr){<br>  print(cur)<br>  cur = cur.next<br>}</p>
-<p>前序遍历递归伪代码</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">dfs</span>(cur)&#123;</span><br><span class="line">  <span class="keyword">if</span> cur == <span class="literal">nullptr</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  <span class="built_in">print</span>(cur.val)</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">dfs</span>(cur.next)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h4 id="一个原则：画图"><a href="#一个原则：画图" class="headerlink" title="一个原则：画图"></a>一个原则：画图</h4><h4 id="两个考点："><a href="#两个考点：" class="headerlink" title="两个考点："></a>两个考点：</h4><p>1.指针修改<br>比如链表反转，数组直接遍历两两交换</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reverse</span><span class="params">(head, tail)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  cur = head</span><br><span class="line">  pre = <span class="literal">nullptr</span></span><br><span class="line">  <span class="keyword">while</span>(cur!=tail)</span><br><span class="line">  &#123;</span><br><span class="line">    next = cur-&gt;next</span><br><span class="line">    cur-&gt;next = pre</span><br><span class="line">    pre = cur</span><br><span class="line">    cur = next</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> tail</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>2.链表拼接<br>容易穿来穿去。<br>链表的价值：不必要求物理内存连续性，对插入和删除友好。</p>
-<h4 id="三个注意：-覆盖90-错误"><a href="#三个注意：-覆盖90-错误" class="headerlink" title="三个注意： 覆盖90%错误"></a>三个注意： 覆盖90%错误</h4><ul>
-<li>出现了环，造成死循环</li>
-<li>分不清边界，造成边界条件出错</li>
-<li>搞不懂递归做法</li>
-</ul>
-<p>关于链表环：</p>
-<ul>
-<li>题目链表可能有环，判断是否有，以及位置（快慢指针）</li>
-<li>本来没环，被你操作出现环（先画图，看操作；仅仅画出一个子结构即可）</li>
-</ul>
-<p>关于边界：</p>
-<ul>
-<li>如果题目的头节点可能移除，考虑使用虚拟节点，使头节点变成中间节点</li>
-<li>题目返回不是原本的头节点，而是尾节点或者中间节点，要注意指针变化</li>
-</ul>
-<h4 id="前后序"><a href="#前后序" class="headerlink" title="前后序"></a>前后序</h4><p>前序：先处理节点，再左右<br>中序：先左，再处理，再右<br>后序：先左右，最后处理节点</p>
-<p>由于链表天生具有递归性，可以引入递归思维。</p>
-<p>如果前序遍历，可以想象前面链表处理好了，这种情况下处理当前；如果后序，则想象后面处理好了，这种情况下处理当前。</p>
-<h4 id="四个技巧"><a href="#四个技巧" class="headerlink" title="四个技巧"></a>四个技巧</h4><p>虚拟头作用：</p>
-<ul>
-<li>头节点变成中间节点，简化判断</li>
-<li>在合适时候断开，返回链表中间节点</li>
-</ul>
-<p>快慢指针：</p>
-<ul>
-<li>一个先走，一个后走</li>
-<li>一个快走，一个慢走</li>
-</ul>
-<p>穿针引线：先穿再引，即记录后续改动的，再变更之前的</p>
-]]></content>
-      <categories>
-        <category>读书笔记</category>
-      </categories>
-      <tags>
-        <tag>读书笔记</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>《浪潮之巅》第4版：读书笔记</title>
     <url>/2021/11/26/reading/%E6%B5%AA%E6%BD%AE%E4%B9%8B%E5%B7%85/</url>
     <content><![CDATA[<h3 id="一部工业革命后的近代科技发展史"><a href="#一部工业革命后的近代科技发展史" class="headerlink" title="一部工业革命后的近代科技发展史"></a>一部工业革命后的近代科技发展史</h3><p>第一次阅读这本书大概是在大学的时期，当时应该还是第一第二版的样子。可惜当时认知有限或者是兴趣使然，确实是没有坚持读下来。作为一本信息科技人的导论书籍，吴军老师主要是从<strong>创始人及公司基因，资本加速以及调整创新</strong>等多个维度阐释每一个时代的技术浪潮。也让我重新认识硅谷，重新认识所有信息产业耳熟能详的近代技术及工业制品。有点后悔当初年少没有认认真真开启好这一本导论，以致于没有一个非常完备的大局观去规划个人职业生涯以及技术路线。弯弯曲曲之下，也就不难预见自己人生所能触及的高度了。</p>
@@ -1400,6 +1511,40 @@
       <tags>
         <tag>读书笔记</tag>
         <tag>心得</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>皮肤的秘密</title>
+    <url>/2022/01/19/reading/%E7%9A%AE%E8%82%A4%E7%9A%84%E7%A7%98%E5%AF%86/</url>
+    <content><![CDATA[<h3 id="认识皮肤"><a href="#认识皮肤" class="headerlink" title="认识皮肤"></a>认识皮肤</h3><p>皮肤是人体最大的器官，展开达两平方米，是人体之于外界环境的保护膜，同时也是零距离感受外界的第一道关卡，所以每一寸都遍布了神经细胞。</p>
+<p>皮肤主要由三层构成：表皮，真皮以及皮下组合。其中表皮与真皮间的基底膜带决定了皮肤的弹性紧致，而且是在1岁形成不可逆的衰老，无法重生所以只能好好保护延缓其衰老。皮肤细胞从底层出生，衰老于真皮并死亡在表皮并成为保护屏障，正常周期为4周。患有皮肤病的可能会加速该过程至5天，导致表皮的屏障并不完整。</p>
+<h3 id="表皮"><a href="#表皮" class="headerlink" title="表皮"></a>表皮</h3><p>由于皮肤表面存在着大量微生物群，所以保持皮肤的pH值是非常重要的，应当合理维持完好无损的酸性保护膜，人工清洁剂约5.5，另外对于皮下脂肪过厚的皮肤褶皱，唯一有效办法是减肥。可以用抗真菌软膏，另外带锌软膏可缓解皮肤炎症，带走多余水分。</p>
+<p><img src="/images/01_19_1.png"></p>
+<p>生长纹无足轻重，关于肤色，是有黑色素影响的。研究表明，橙色皮肤最具吸引力，可多摄入胡萝卜素B达到。颠痕主要由基底膜带大面积受损，表皮过度损耗引起的。对于渗水伤口可用硅霜或贴上硅凝胶伤口贴。治疗疙瘩需要强效疗法如：激光疗法、热针、冷冻疗法以及X射线放射疗法。</p>
+<h3 id="真皮"><a href="#真皮" class="headerlink" title="真皮"></a>真皮</h3><p>真皮充满紧致的结缔组织，带来稳固性以及拉伸性，任何的日晒、日光浴、烟草、压力、睡眠不足、营养不良以及缺乏运动等会加速弹性纤维的流失。臀部皮肤就是自然老化的参考，面部等受光照影响较大是老化较快的皮肤。另外，皮肤在4度就开始出现冻疮，而冬天皮肤也能适应，所以只在晚上睡前使用保湿即可，白天冬天保湿使皮肤含水量升高，反而容易冻伤。</p>
+<p>真皮层拥有大量神经，使皮肤成为最大的神经器官，抚摸有调节中枢神经和社交等作用。同时含有腺体，会分泌激素气味等。</p>
+]]></content>
+      <categories>
+        <category>读书笔记</category>
+      </categories>
+      <tags>
+        <tag>读书笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>努力方向之正解</title>
+    <url>/2021/12/21/shisan/%E5%8A%AA%E5%8A%9B%E6%96%B9%E5%90%91%E4%B9%8B%E6%AD%A3%E8%A7%A3/</url>
+    <content><![CDATA[<p><code>文章摘自微信公众号：十三先生手记</code></p>
+<p>人们总是误以为”方向不对，努力白费“</p>
+<p>所以到底什么方向是努力的正确方向，是对事情方向性的选择吗？<br>看起来是这样的，其实不然，在事情没有出现结果之前，谁能确定方向对不对？<br>于是乎，在很长一段时间里，你在方向的选择上纠结，大量耗费了精力；久而久之，方向选择对你的意义就逐步降低；久而久之，你在没有了方向的努力中不断的迷茫，努力所收获到的就多半不如意；久而久之，你便自然逐步丧失了努力的动力。</p>
+<p>所以其中蕴含<em><strong>真正的智慧</strong></em>是什么呢？<br>此刻，十三先生要你深深的明白：对于你真正想要成就的方向而言，基于外在目标而牵引你的行动方向就是你的迷障，基于你内心真正愿意去做的方向才是真正利于你达成整体目标的方向。若是你在每次做选择之际，你都按你内心真正未权衡的意愿立刻去着手行动，并在行动的过程中，实事求是的不断优化解决遇到的问题，而不是在事前先拿你预设的可能遇到的问题去和你的资源做权衡匹配，在来做方向选择的决定，假以时日，必定你会不断收获到你真正想要收获到的利益。</p>
+<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>与其纠结于方向正确，不如尽快行动起来，尽快在行动中感受自我。那些未经反复驱动，内心自发想要完成的事情就是你人生的正确方向了。</p>
+]]></content>
+      <categories>
+        <category>十三手记</category>
+      </categories>
+      <tags>
+        <tag>十三手记</tag>
       </tags>
   </entry>
   <entry>
@@ -1615,151 +1760,6 @@
       </tags>
   </entry>
   <entry>
-    <title>2021_年终总结</title>
-    <url>/2021/12/31/personal/2021-%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<p>回顾今年的自己，提出个人思见和应该执行改进的点。</p>
-<h3 id="工作上"><a href="#工作上" class="headerlink" title="工作上"></a>工作上</h3><p>年初从测量机器人这个项目跳出来，主要是派发的需求集中在基于opencv的图表绘制上，另外一个是基于opencv的户型图分割项目。由于数据来源没有统一化，基于图像的户型分割较大的不稳定因素；关于图表绘制核心的功能就是解决文本碰撞的问题；期间还用网页自动化点击脚本完成了一个疫情一日一表的自动填表功能，节省了每日必做的无用行为。之前看到python基于桌面图像识别可以自动匹配鼠标行为，这是原来项目的高级方法。作为一个程序员，生活中如果出现较多的重复度大的行为与操作时，就应该开始考虑自动化脚本或者程序去自动执行。</p>
-<p>跳出在顺德的工作后，由于皮肤问题变本加厉，有很长的一段时间我是在家休养，每天除了睡得非常多以外，大部分时间都在宅家度过，让老父母亲着实担心不浅。这个坏毛病是在香港最后几年养成的，当时的这个研究生和本科的一些坏习惯让我最终渐渐失去了对自我的自律以及对自我的期待，对自我的希望。我当时像泄了气的气球，一泻千里，由此深深的陷入人生以来的低谷。也许是我的叛逆期晚到了，从那一刻我才开始体会到一点点的自由，自我开始向这个世界抗争拉扯。大学以前，一直认为只要读书好就可报答家人，这种被动的内驱力面对真正的困难和社会的残酷竞争时是多么的无力。</p>
-<p>害怕失败，害怕白眼，害怕接受自己的无能，于是我有点像堕落的高材生，开始逃避，开始偷懒。一些不良的嗜好也让我的人格不再高尚，比如毫无意义重复的游戏世界,比如深陷情绪的孤独，<a href="%EF%BC%8C%E6%AF%94%E5%A6%82%E5%94%BE%E6%89%8B%E5%8F%AF%E5%BE%97%E7%9A%84%E9%BB%84%E8%89%B2%E5%BF%AB%E4%B9%90%EF%BC%8C"></a>还好从没接触直达灵魂的药品了。值得庆幸的是，我自小深深的记住了外婆反复强调的千万不能碰毒品。这句话是外婆对孙辈们的苦口婆心，也是最低最低的要求了。经历的这一切，我深知自己自制力的脆弱，应减少对不良事物的好奇与冒险，希望我这一辈子都能与成瘾性隔绝，否则我很容易预见到自己再一次的堕落。</p>
-<p>这一切就发生在今年上，直到年中我也发现自己不能再给自己找借口了，在香港的时候无人约束，我可以随意的挥霍光阴。在家里宅的话，亲戚朋友尤其家里人很是担心，特别是我生命中最重要的两个女人：母亲和媳妇。于是到了年中，虽然皮肤病依然没有康复，但我已经厌倦了作为一个毫无价值的人存在于世。心底里，我渴望世界听到我的声音，因我存在而改变，而不是一直作为一个边缘人物存在着。但很多时候我还是会给自我设限，会介怀于我虚度的光阴，介怀于我曾经的失败，介怀于我那并不闪闪发光的履历。但无论如何，我收拾行囊，重新出发了，以一个更谦卑的姿态。</p>
-<p>在boss上，我海投以及面笔了好些公司，最终我依然没有自信的奔赴大公司，我选择了一家智能硬件作为自我调整的起点。6月15日我再次翻开人生的新篇章，来到了深圳塘朗，追逐体面的生活，希望用自己的文字，代码以及思想发光发亮。至此，在HOLA已然半年，早期为算法组开展论文研讨学习，后续是全程跟进云台项目的算法实现：包括SLAM，三维重建以及点云墙面分割的核心模块。目前为止虽然基本的核心功能已然完成，但仍然有很多内容需要补齐学习，为后续真正的工程化作知识储备。另外如CTO所说，HOLA这个平台是否适合我继续发展个人的职业规划以及技术路径。工作这半年，大部分时间是孤身负重前行的，业务最相似的还是算法组的兄弟朋友们：研发一哥，世攀；玩乐达人，炯彬；斯文大汉，啸天；苦比打工人，东勇；除此还有系统大佬jazzy以及CTO聪哥。基本上，公司内部对三维这块是一片空白的，所以产生了硬币的两端：无人监管我的工作，无人能准确评价我的工作；无人关注我的工作，无人协同我的工作。未来的一年希望能加快项目的落地应用，产生实际的价值。</p>
-<h4 id="2022上半年的工作指标"><a href="#2022上半年的工作指标" class="headerlink" title="2022上半年的工作指标"></a>2022上半年的工作指标</h4><ul>
-<li>薪资至少上调20%</li>
-<li>SLAM 14讲的book &amp; homework</li>
-<li>PCL的系统学习</li>
-</ul>
-<h3 id="学习上"><a href="#学习上" class="headerlink" title="学习上"></a>学习上</h3><p>关于今年的学习，从上文就可知确实进步较慢，但要相信人生是个不断经历的过程，如同重看五年前的自己一样，当时虽然稚嫩但充满阳光和希望；如今的自己，虽有初老心态，但尚未暮年，重新出发，为时未晚。</p>
-<p>已读书单：《浪潮之巅》，《为我的身体养阳气》，《C++ Primer》</p>
-<p>在读书单：《SLAM 14讲》，《三十岁，一切刚刚开始》</p>
-<p>学习方向&amp;主题： C++， SLAM， 三维重建， std标准库， STL模板， 算法导论， LEETCODE</p>
-<p>重新开始经营我的github,以及我的个人博客，记录生活的点点滴滴，一部一脚印。三十年以来的输入足够我输出一些东西了，积极认真地输出自己的观点，去和这个可爱的世界碰撞摩擦吧！马上要三十岁了，走在这个重要的节点上，希望自己成为有担当，值得信任，靠谱的人。更希望自己打破自我设限的枷锁，去勇敢探索生活，探索生命，去冒险，去舞蹈，去歌唱，这是每个人唯一一次的人生阿，已然安然度过了30年了，没有什么再让你值得畏惧了，那就放手去做吧。</p>
-<h3 id="生活上"><a href="#生活上" class="headerlink" title="生活上"></a>生活上</h3><p>首先是运动和减肥！！！</p>
-<p>关于生活，最大的关键字可能是安逸，但影响最大的词应该是疾病。无论精神上还是身体上，长时间缺乏对生活的激情与热情容易致抑。更进一步引起睡眠紊乱，身体亚健康的各种慢性病也冒出来，比如湿疹，这两年简直痛苦不堪，夜不能寐。战胜严重的皮肤慢性病，需要持之以恒的耐心，需要强颜欢笑的乐观，需要时刻注意控制行为。多少次深夜里，我甚至愿意用各种誓言，只为换来自己的身体健康。年轻时拥有的一切是如此轻而易举而又在后来失去时觉得弥足珍贵。</p>
-<p>困扰我工作生活生命已经两年的湿疹，在近期终于在积极阳光的生活中得到一丝丝的控制，明年我并不奢望和贪心康复，只希望面积能缩小至不影响作息，毕竟良好的作息和生活习惯是每一天元气能量的源泉。</p>
-<p>另一方面，说到生活，最应该被提起的就是家人与朋友。关于朋友，虽然有丝许的进步，得到现在算法组同事的互动来往，但可能是自身技术不够牛逼或者是不苟言笑，或者是不够真挚待人。虽然入职半年，但真正有互动能见面言笑的人可能两个手也数得完，希望新的一年也继续勇敢表达自我，真挚对待别人。然后就是最重要的家人，来到深圳后，在顺德待的时间大幅减少，一个月能有两次回家看看就不错了。另外和珊珊结婚后尚未育儿，随着年岁渐长，年近30的我们迫切需要生儿育女了，而这一点更是双方家长最迫切的事情了，希望明年能有新的突破。说实话，没有完美的工作，只有称心如意的工作，在HOLA的工作让我慢慢走出自己人生的低谷，work-life balance的双休与无加班节奏也很好的平衡我身体上遇到的种种问题。虽然作为程序员毫无忠诚度可言，但我从心底感激和感恩HOLA，让我重新支棱起了自己，不再是瘫倒地上的烂泥，明年愿自己慢慢成为高飞天际的雄鹰。</p>
-]]></content>
-      <categories>
-        <category>年终总结 总结</category>
-      </categories>
-      <tags>
-        <tag>总结</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>2022第一季度总结</title>
-    <url>/2022/04/07/personal/2022%E7%AC%AC%E4%B8%80%E5%AD%A3%E5%BA%A6%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<h3 id="工作上"><a href="#工作上" class="headerlink" title="工作上"></a>工作上</h3><h4 id="本职工作"><a href="#本职工作" class="headerlink" title="本职工作"></a>本职工作</h4><p>由于产品部对预研项目的信心和期望不高，今年头三个月我主推的项目基本没有进展。于是我在本来就量产项目为重的小公司里面地位更卑微了，随时有被毕业的风险，也可能是因为薪资不高，反正我现在有点“食之无味，弃之可惜”的味道了。只能趁着这段时间多学习，多看看论文，多写写代码。希望能让自己的职业生涯有点起色。</p>
-<p>虽然入职以来沟通能力和代码能力未见长足的进步，但是空间思考能力、阅读能力以及专利能力都有所提升，跟着一哥学习思考的深度也有一定程度的进步。值得一提的是，由于3月两篇专利的贡献，个人还获得部门月度之星的殊荣，个人还是很需要鼓励和积极的心态的。希望自己再接再砺，勇往直前！</p>
-<h4 id="工作之余"><a href="#工作之余" class="headerlink" title="工作之余"></a>工作之余</h4><p>积极了解互联网行业具体情况和进展，当初正因为自己疏于认真准备找工作，缺乏了必要技能的锻炼。自然而然也没能获得一个良好的职业规划，在年至30之际才幡然醒悟，重新准备出发。查漏补缺，刷刷题目，学学新东西。一个好的技术人员，必须与时俱进，时刻维护自己的知识体系，丰富个人的武器库。</p>
-<p>认识了梓淳，认真分析自己的经历以及能力，确实自己缺乏始终如一的目标以及深度认真学习工作的高效能力，加之受个人性格以及情绪影响，错过各种锻炼成长的机会。如今开始，认真提升自己的能力，不再像以往朝三暮四地另辟蹊径，而是朝着可能的方向一步步前进，反而是最好的结果。</p>
-<h3 id="学习上"><a href="#学习上" class="headerlink" title="学习上"></a>学习上</h3><p>目前工作生活的节奏其实非常好，应该抓紧每一分钟来提升自己，然而很多时候自己是缺乏提升的方向，而非动力。有时候总是担心这个目标太遥远又或者这个些目标不是想要的，以至于始乱终弃。</p>
-<p>最近求职潮可以发现，个人学历条件是一方面，力扣能力以及专项能力才是工作上的考察重点。多年逃避的刷题能力，始终还是得面对，何不早日攻克，早日完成自我的蜕变。当自己老了，看着满满的leetcode和github应该还是会有所骄傲的吧。30已经是一个人的分水岭了，更年轻的自己也没有放手一搏去折腾，如今的自己更是除了干本专业也就别无他选了，那么请认真过好每一天吧！</p>
-<p>第一季度的学习指标包括：</p>
-<ul>
-<li>阅读：线代漫画 医本正经 泡脚攻略</li>
-<li>编程：基础班class 4, 学习了递归分治DP</li>
-<li>专项：SLAM CH7 / 云台专利</li>
-</ul>
-<p>说实话，目标提出来了，但是效率没有达到。主要个人缺乏高效的执行力以及深度工作的能力，这些都需要继续培养改进，每天反复提醒自己目标以及高效执行。可借助冥想正念以及镜子激励方法。</p>
-<h3 id="生活上"><a href="#生活上" class="headerlink" title="生活上"></a>生活上</h3><p>经过深圳祥和堂的正骨师傅泡洗和外涂药膏调理，大小腿上的湿疹已经慢慢消退，不再痕痒了。脚背上的厚厚褶皱倒是一时半会没办法消除，而每每手抓会引起痕痒，庆幸的是自己经历过最痛苦的时光，自制力已然可以控制住了，只是要让皮肤完完全全恢复如初也有一定的挑战。这个病痛历时三年之久，打击了我的青春，同时也打击了我的事业，人生跌入低谷。而终于迎来这么一天，开始触底反弹，身体和精神好起来了，1就有了。其他0还会远吗！这段经历也让我重新审视学习起中医，包括推拿针灸泡脚药膳艾灸等。身体健康，愿每一个人都拥有健康的身体，美好的人生。</p>
-<p>其次，回看上年总结，除了工作上没有收获到满满的成就感，得到同事们的认可，其余一切皆好，生活诚然有压力，但相信自己能迎接挑战，一天比一天美好！</p>
-]]></content>
-      <categories>
-        <category>总结</category>
-      </categories>
-      <tags>
-        <tag>总结</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>六年前的自己</title>
-    <url>/2021/12/22/personal/%E5%85%AD%E5%B9%B4%E5%89%8D%E7%9A%84%E8%87%AA%E5%B7%B1/</url>
-    <content><![CDATA[<p><a href="https://csrjtan.github.io/">https://csrjtan.github.io/</a><br>回看六年前的自己，摘录一些当时有意义的文段</p>
-<h3 id="23岁的生日"><a href="#23岁的生日" class="headerlink" title="23岁的生日"></a>23岁的生日</h3><p>重读六年前的自己，用文字记录对这个世界的感受和认知，那时候的自己充满了希望，虽然能力配不上欲望而渐渐失落，但依然希望找到那种年轻的感觉。</p>
-<h3 id=""><a href="#" class="headerlink" title=""></a></h3><p>当年的愿望：</p>
-<ul>
-<li>工作上：提高编程和学术能力</li>
-<li>生活上：爱家人，爱生活，爱伴侣</li>
-<li>日常上：坚持读，坚持写，坚持学，坚持感受，坚持表达</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">《成长的天空》 </span><br><span class="line">我沉浸在自己的世界里</span><br><span class="line">写着无关是非的歌谣</span><br><span class="line">点蓝的笔触</span><br><span class="line">划过了年轻的天空</span><br><span class="line">一只飞鸟带走我的青春</span><br><span class="line">还我，岁月沉淀的帽子</span><br><span class="line">轻声说道</span><br><span class="line">年轻总不是永远的借口</span><br></pre></td></tr></table></figure>
-
-<h3 id="回看中秋自省的自己"><a href="#回看中秋自省的自己" class="headerlink" title="回看中秋自省的自己"></a>回看中秋自省的自己</h3><p>经过5年起起落落，心态转变得很明显甚至于有点得过且过的样子，现在自己比年轻的自己多了一点能力和资源，却失去了做大梦的勇气和毅力。希望自己能依然不断找到人生的兴奋点，勇往直前地去追寻探索，从今天开始，真正的为自己而活，不在乎别人的眼光，不在乎可能会失去的安逸。</p>
-<h3 id="家人信息简要"><a href="#家人信息简要" class="headerlink" title="家人信息简要"></a>家人信息简要</h3><p>爸：1961.7.8，牛，会计。爱好军事政治经济唱歌。性格硬朗好面子。优点：精神好，能干，勤勉<br>妈：1961.11.12，牛，仓管（退休）。爱好家庭家人养生。优点：节俭，爱戴我们，慈祥<br>哥：1987.8.9，兔，前端全栈，爱好广泛潮流酷玩。优点：工程能力强，迁就随和<br>为：1992.08.13，猴，算法攻城狮。爱好：声乐，运动，游戏。优点：耐受力，随和</p>
-<h3 id="选书策略"><a href="#选书策略" class="headerlink" title="选书策略"></a>选书策略</h3><p>出版社-&gt;作者-&gt;版次-&gt;印次-&gt;印数</p>
-<h3 id="追逐幸福的要素"><a href="#追逐幸福的要素" class="headerlink" title="追逐幸福的要素"></a>追逐幸福的要素</h3><ul>
-<li>找到喜欢的工作，有收入又受到社会尊重</li>
-<li>减少上下班耗费的时间，有充足的社交时间</li>
-<li>对国家和社会有政治热情，有参与度</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">不论曾经的彼此多么幼稚，多么可笑</span><br><span class="line">终有一天我们都变得成熟；</span><br><span class="line">也终有一天，我们都会老去；</span><br><span class="line">可是，却没有人可以永远不长大，</span><br><span class="line">却没有人可以永远年轻，</span><br><span class="line">成熟，有时候会让人心痛、很无奈。</span><br><span class="line">那个时候才会懂得：</span><br><span class="line">爱情本不是件该执着的事情。</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>日常</category>
-      </categories>
-      <tags>
-        <tag>博客迁移</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>经典话术</title>
-    <url>/2021/12/21/personal/%E7%BB%8F%E5%85%B8%E8%AF%9D%E6%9C%AF/</url>
-    <content><![CDATA[<p><code>格林先生说</code></p>
-<p>1.yes and 法则<br>通常交流容易别人提一个观点，我们不认同会yes,but. 这样别人容易产生“那就这样吧，你说什么就是什么吧”</p>
-<p>正常回复应该尽量接纳对方一部分的内容，然后才一点点引出冲突。<br>e.g. …确实会…,不过有时候…</p>
-<p>2.即兴表达框架-PREP<br>Point-&gt;Reason-&gt;Example-&gt;Point</p>
-<p>3.SCQ-A<br>提出问题，寻求帮助。Situation-&gt;Conflict-&gt;Question-&gt;Answer<br>常用于工作汇报，包括问题背景，问题原因，主要问题，如何解决。</p>
-<p>4.FFC 赞美法则<br>Feel-&gt;Fact-&gt;Compare<br>（Feel）我觉得今天你搭配很有气质<br>（Fact）因为腰线能突出身形<br>(Compare) 这是我今年见到的最潮的连衣裙</p>
-<p>5.引导选择<br>模板：是…还是…/ 是否…/ 要不要…,好处是这样<br>提问封闭，只需选择，无需开放式思考</p>
-<p>6.万能表达：观察+感受+需求+请求<br>（观察）珊珊，你最近每晚都是凌晨才睡觉<br>（感受）我觉得有干扰<br>（需求）而且我希望你能身体健康，这样白天才精神<br>（请求）所以希望明天开始，能不能11点准时关灯</p>
-<p>7.汇报FFA法则<br>Fact-&gt;Feeling-&gt;Action<br>最近工作如何，我感觉主要是跟不上进度，接下来一周我会如何做。</p>
-<p><code>蛋蛋碎嘴子</code></p>
-<p>1.工作汇报老手<br>新项目砸了=进行了积极的试错，吸收了宝贵的经验<br>数据不好看=有较大的增长空间<br>啥也没干=稳定发展<br>接下来依旧打算啥也不干=保持现有成绩，稳定成果<br>数据稍微好看一点=取得了较大增长</p>
-<p>2.一个人一直墨迹跟你说话不好意思打断，可以尝试：<br>“好的”，“那确实不错”，“的确是这样”，“嗯你说的对”</p>
-<p>3.接到不想做的任务可以说<br>“领导，我仔细看了一下这个需求，我这里可能存在XXX方面的短板”<br>“想要推进这个事情的话，我可能需要XXX方面的支持”<br>暗含“我可说清楚了，办砸了可不赖我”</p>
-<p>4.当想刺探秘密时，先说结论，然后观察对方的反应<br>“我们公司下个月要发奖金你”</p>
-<p>5.汇报模板：<br>【日常在做什么】+【做这件事的目的】+【做这件事有什么困难】+【怎么做得更好】</p>
-<p>6.当别人布置杂活，不想做就死死的抠细节<br>“你说的这件事大概什么时候需要？”<br>“这个时间点具体到几点？”<br>“我是微信给你还是邮箱给你？”<br>“那我需要先出一个计划，你帮我看看安排合不合适？”<br>如此一来，极大增加之间的沟通成本，让对方崩溃而不想给你安排了。</p>
-<p><code>清闲的九夏</code></p>
-<p>1.别人求你办事，如果想要资源置换，就说：“这事儿不太好办阿”</p>
-<p>2.拒绝借钱：“你知道的，我最近XX，也没钱。”</p>
-<p>3.汇报话术：”这边，我们做了A，B两种方案，各有优势，希望给点意见，看选哪个做比较佳“</p>
-<p>4.经常使用分点叙述<br>我是这么认为的，第一，X；第二，X；第三，X。</p>
-<p>5.请求帮忙时，先提出自己的办法<br>”经过了解，遇到一些问题，我的解决办法是XX，大家看看还有没有更好的办法?”<br>不论多平庸都要提一个。</p>
-<p>6.请求帮忙“不好意思，可以插一下队吗？因为我真的很急”</p>
-<p>7.聊天想聊下去：揪住对方的关键词+延伸过往彼此交流过的信息</p>
-<p>“今天又加班，很烦”<br>“怎么又加班，又是上次那个领导吗”</p>
-<p>“我爱豆塌房子了”<br>“哪个，上回说的那个吗，我去”</p>
-<p>8.不想聊下去<br>“今天又加班”<br>“怎么又加班，这算啥事”</p>
-<p>“我爱豆塌房子了”<br>“又他”</p>
-<p>9.领导说“辛苦了”<br>你：“从中学到很多，很有收获。”</p>
-<p>10.领导的节日问候（也可不发，上班的时候再热情问候即可）：<br>尊称+感谢+互动+祝福</p>
-<p>11.说服别人，改变一个人的想法<br>认同立场，替换观点。</p>
-<p>自嘲： 是阿…而且…</p>
-]]></content>
-      <categories>
-        <category>日常</category>
-      </categories>
-      <tags>
-        <tag>知乎</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>努力方向之正解</title>
-    <url>/2021/12/21/shisan/%E5%8A%AA%E5%8A%9B%E6%96%B9%E5%90%91%E4%B9%8B%E6%AD%A3%E8%A7%A3/</url>
-    <content><![CDATA[<p><code>文章摘自微信公众号：十三先生手记</code></p>
-<p>人们总是误以为”方向不对，努力白费“</p>
-<p>所以到底什么方向是努力的正确方向，是对事情方向性的选择吗？<br>看起来是这样的，其实不然，在事情没有出现结果之前，谁能确定方向对不对？<br>于是乎，在很长一段时间里，你在方向的选择上纠结，大量耗费了精力；久而久之，方向选择对你的意义就逐步降低；久而久之，你在没有了方向的努力中不断的迷茫，努力所收获到的就多半不如意；久而久之，你便自然逐步丧失了努力的动力。</p>
-<p>所以其中蕴含<em><strong>真正的智慧</strong></em>是什么呢？<br>此刻，十三先生要你深深的明白：对于你真正想要成就的方向而言，基于外在目标而牵引你的行动方向就是你的迷障，基于你内心真正愿意去做的方向才是真正利于你达成整体目标的方向。若是你在每次做选择之际，你都按你内心真正未权衡的意愿立刻去着手行动，并在行动的过程中，实事求是的不断优化解决遇到的问题，而不是在事前先拿你预设的可能遇到的问题去和你的资源做权衡匹配，在来做方向选择的决定，假以时日，必定你会不断收获到你真正想要收获到的利益。</p>
-<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>与其纠结于方向正确，不如尽快行动起来，尽快在行动中感受自我。那些未经反复驱动，内心自发想要完成的事情就是你人生的正确方向了。</p>
-]]></content>
-      <categories>
-        <category>十三手记</category>
-      </categories>
-      <tags>
-        <tag>十三手记</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>奖惩精要</title>
     <url>/2021/12/27/shisan/%E5%A5%96%E6%83%A9%E7%B2%BE%E8%A6%81/</url>
     <content><![CDATA[<p><code>摘自微信公众号十三手记</code></p>
@@ -1769,21 +1769,6 @@
 <h4 id="何时奖惩？"><a href="#何时奖惩？" class="headerlink" title="何时奖惩？"></a>何时奖惩？</h4><p>尽快，及时  </p>
 <h4 id="何处奖惩？"><a href="#何处奖惩？" class="headerlink" title="何处奖惩？"></a>何处奖惩？</h4><p>公开的要公开，私下的要私下，否则就是反效果。</p>
 <p>此刻，十三先生要你深深的明白：在你的人际关系管理中，若是你的奖惩只是你控制别人的手段，那你的手段最多只是临时效果，最终必定不能如你所愿，甚至受到反效果；若是你的奖惩是在用心反馈你对别人行为有效性的重视，是为了及时给予对方诚意的肯定或是改进提醒，那你就是在用奖惩的办法促进对方强大的同时与其交心，假以时日，你必定能收获到奖惩给你的人际关系处理的真实力量和价值。</p>
-]]></content>
-      <categories>
-        <category>十三手记</category>
-      </categories>
-      <tags>
-        <tag>十三手记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>恐惧之破</title>
-    <url>/2022/01/05/shisan/%E6%81%90%E6%83%A7%E4%B9%8B%E7%A0%B4/</url>
-    <content><![CDATA[<p>你有恐惧吗？  想必有的<br>你想解除恐惧吗？  必定想的<br>可为什么你无法真正解除？  因为你不知道恐惧从何而来，更不知道什么是恐惧。</p>
-<h3 id="那么恐惧从何而来？"><a href="#那么恐惧从何而来？" class="headerlink" title="那么恐惧从何而来？"></a>那么恐惧从何而来？</h3><p>从曲解真相而来</p>
-<h3 id="恐惧是什么？"><a href="#恐惧是什么？" class="headerlink" title="恐惧是什么？"></a>恐惧是什么？</h3><p>是你的人生大礼给你的提醒。</p>
-<h3 id="此刻要你深深明白"><a href="#此刻要你深深明白" class="headerlink" title="此刻要你深深明白"></a>此刻要你深深明白</h3><p>二元有相世界，恐惧来自于你对真相的无视或者曲解。如此，只要你无视或者曲解了真相，必定会形成相应的恐惧；如此，你内心恐惧的形成是为了提醒你搞清楚恐惧背后的真相；如此，若是你逃避真相，你必定会反复感受到恐惧；如此，当你心有恐惧，请直面你所恐惧的东西，并搞清楚其真相，当你一旦真正清楚真相，恐惧必定就会随之而消失；与此同时，必定你就能在搞清楚真相的过程中收获到你人生的大礼。</p>
 ]]></content>
       <categories>
         <category>十三手记</category>
@@ -1812,34 +1797,12 @@
       </tags>
   </entry>
   <entry>
-    <title>洞见睡眠</title>
-    <url>/2021/12/28/shisan/%E6%B4%9E%E8%A7%81%E7%9D%A1%E7%9C%A0/</url>
-    <content><![CDATA[<p><code>摘自微信号十三手记</code></p>
-<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>定时睡眠和睡眠时长时一个人精神饱满的关键吗？<br>你以为是，其实不是。<br>为什么？ 因为你没有真正懂得人的能量消耗和补充的原理，所以被某些单边的睡眠观念影响纠结，进而降低了睡眠质量。  </p>
-<ul>
-<li><p>人的系统能量是怎么消耗的？<br>眼耳鼻舌身的功能运行和头脑里的各种念想。 </p>
-</li>
-<li><p>系统能量是怎么补充的？<br>适当的时候，主动放松降低眼耳鼻舌身意的运行频率，生命本源会自动补充你的精神能量；适度的饮食支持会提供身体所需要的物质能量。</p>
-</li>
-</ul>
-<h3 id="要你深深明白"><a href="#要你深深明白" class="headerlink" title="要你深深明白"></a>要你深深明白</h3><p>二元有相世界，任何时候，当你放松敞开不纠结，系统能量便会自动减少消耗，补充便会自动提高。所以，定时睡眠以及睡眠时长并不是一个人精神饱满的关键，关键的问题是人的系统能量消耗和补充的原理，当你明白了这个原理，你便打破了睡眠是你能量补充的必须形式的局限认知，你便打破了你对睡眠的依赖性。  </p>
-<p>如此，反而你何时睡眠以及睡眠时长就可以根据你的意愿而主动安排；如此，你便不会因所谓的失眠而形成恐惧，便不会被恐惧纠结而形成反复消耗，反而能量补充会更加顺畅；如此，你的睡眠质量反而得到提高，你的生命自由度便会随着你心境的提升而逐步提升，身心健康和自由便走上了可期的道路。</p>
-<h3 id="附赠"><a href="#附赠" class="headerlink" title="附赠"></a>附赠</h3><p>失眠是什么？<br>是你先给自己定个睡觉时间，再把睡不着当成失眠吗？失眠是没睡觉的样子？还是说在特定时间没睡觉？为什么要特定？谁特定的？谁能除了定自己还能定别人？难道你不可以睡得着就睡，睡不着就不睡吗？</p>
-<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>人类对自己的认知是那么的不足，对睡眠也几乎是一无所知。十三手记表达了令人惊奇的观点，人恢复能量和元气并不完完全全依赖于睡眠。虽然大部分时候睡眠质量很重要，但同时也没有必要一直纠结于自身的睡眠质量。能量的恢复是自然而然的，而人的感官意识都是无时无刻在耗费精力的，但当你关闭了这些感官和意识时，其实你就已经在休整，你的能量就已经是呈现上升的态势。所以，关于休息，我们应该更少焦虑的纠结于睡眠，更多关注我们感官意识的状态。这就是所谓的闭目养神，同时冥想可能可带来注意力的自主调整和加快能量恢复，以致于很多人推荐。</p>
-]]></content>
-      <categories>
-        <category>十三手记</category>
-      </categories>
-      <tags>
-        <tag>十三手记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>能量朗读</title>
-    <url>/2021/12/20/shisan/%E8%83%BD%E9%87%8F%E6%9C%97%E8%AF%BB/</url>
-    <content><![CDATA[<p><code>文章摘自微信公众号：十三先生手记</code></p>
-<p>小时候，我就一直渴望幸福，一直渴望坚强；<br>小时候，我就一直渴望正直，一直渴望善良；<br>小时候，为就一直渴望快乐，一直渴望成长；<br>现在，我几乎丢失了我的信心，我几乎丢失了我的梦想！<br>我知道，我不能再这样消极的逃避。<br>我知道，我不能再这样平庸的彷徨。<br>我知道，我要全力迸发我的热情；我要勇敢的收复我的希望。<br>我知道，我要真诚的对待身边每一个人，这样，我才能被每一个人真诚的对待；<br>我知道，我要用心的对待每天的时光，这样，我才能收获每天的力量；<br>我知道，我要帮助身边每一个人达成心愿，这样，大家才能帮助我实现梦想。<br>从今天起，我要打败我的懒惰，重拾我的阳光；<br>从今天起，我要改变我的粗俗，提升我的修养；<br>从今天起，我要挑战我的懦弱，找回我的坚强；</p>
-<p>我是为爱这个世界而来<br>我要让世界因我的爱而更加美丽，<br>我要让世界因我的爱而更加安康，<br>我要让世界因我的爱而更加真诚，<br>我要让世界因我的爱而更加和畅。</p>
+    <title>恐惧之破</title>
+    <url>/2022/01/05/shisan/%E6%81%90%E6%83%A7%E4%B9%8B%E7%A0%B4/</url>
+    <content><![CDATA[<p>你有恐惧吗？  想必有的<br>你想解除恐惧吗？  必定想的<br>可为什么你无法真正解除？  因为你不知道恐惧从何而来，更不知道什么是恐惧。</p>
+<h3 id="那么恐惧从何而来？"><a href="#那么恐惧从何而来？" class="headerlink" title="那么恐惧从何而来？"></a>那么恐惧从何而来？</h3><p>从曲解真相而来</p>
+<h3 id="恐惧是什么？"><a href="#恐惧是什么？" class="headerlink" title="恐惧是什么？"></a>恐惧是什么？</h3><p>是你的人生大礼给你的提醒。</p>
+<h3 id="此刻要你深深明白"><a href="#此刻要你深深明白" class="headerlink" title="此刻要你深深明白"></a>此刻要你深深明白</h3><p>二元有相世界，恐惧来自于你对真相的无视或者曲解。如此，只要你无视或者曲解了真相，必定会形成相应的恐惧；如此，你内心恐惧的形成是为了提醒你搞清楚恐惧背后的真相；如此，若是你逃避真相，你必定会反复感受到恐惧；如此，当你心有恐惧，请直面你所恐惧的东西，并搞清楚其真相，当你一旦真正清楚真相，恐惧必定就会随之而消失；与此同时，必定你就能在搞清楚真相的过程中收获到你人生的大礼。</p>
 ]]></content>
       <categories>
         <category>十三手记</category>
@@ -2409,6 +2372,43 @@
       </categories>
       <tags>
         <tag>读书笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>洞见睡眠</title>
+    <url>/2021/12/28/shisan/%E6%B4%9E%E8%A7%81%E7%9D%A1%E7%9C%A0/</url>
+    <content><![CDATA[<p><code>摘自微信号十三手记</code></p>
+<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>定时睡眠和睡眠时长时一个人精神饱满的关键吗？<br>你以为是，其实不是。<br>为什么？ 因为你没有真正懂得人的能量消耗和补充的原理，所以被某些单边的睡眠观念影响纠结，进而降低了睡眠质量。  </p>
+<ul>
+<li><p>人的系统能量是怎么消耗的？<br>眼耳鼻舌身的功能运行和头脑里的各种念想。 </p>
+</li>
+<li><p>系统能量是怎么补充的？<br>适当的时候，主动放松降低眼耳鼻舌身意的运行频率，生命本源会自动补充你的精神能量；适度的饮食支持会提供身体所需要的物质能量。</p>
+</li>
+</ul>
+<h3 id="要你深深明白"><a href="#要你深深明白" class="headerlink" title="要你深深明白"></a>要你深深明白</h3><p>二元有相世界，任何时候，当你放松敞开不纠结，系统能量便会自动减少消耗，补充便会自动提高。所以，定时睡眠以及睡眠时长并不是一个人精神饱满的关键，关键的问题是人的系统能量消耗和补充的原理，当你明白了这个原理，你便打破了睡眠是你能量补充的必须形式的局限认知，你便打破了你对睡眠的依赖性。  </p>
+<p>如此，反而你何时睡眠以及睡眠时长就可以根据你的意愿而主动安排；如此，你便不会因所谓的失眠而形成恐惧，便不会被恐惧纠结而形成反复消耗，反而能量补充会更加顺畅；如此，你的睡眠质量反而得到提高，你的生命自由度便会随着你心境的提升而逐步提升，身心健康和自由便走上了可期的道路。</p>
+<h3 id="附赠"><a href="#附赠" class="headerlink" title="附赠"></a>附赠</h3><p>失眠是什么？<br>是你先给自己定个睡觉时间，再把睡不着当成失眠吗？失眠是没睡觉的样子？还是说在特定时间没睡觉？为什么要特定？谁特定的？谁能除了定自己还能定别人？难道你不可以睡得着就睡，睡不着就不睡吗？</p>
+<h3 id="个人感悟"><a href="#个人感悟" class="headerlink" title="个人感悟"></a>个人感悟</h3><p>人类对自己的认知是那么的不足，对睡眠也几乎是一无所知。十三手记表达了令人惊奇的观点，人恢复能量和元气并不完完全全依赖于睡眠。虽然大部分时候睡眠质量很重要，但同时也没有必要一直纠结于自身的睡眠质量。能量的恢复是自然而然的，而人的感官意识都是无时无刻在耗费精力的，但当你关闭了这些感官和意识时，其实你就已经在休整，你的能量就已经是呈现上升的态势。所以，关于休息，我们应该更少焦虑的纠结于睡眠，更多关注我们感官意识的状态。这就是所谓的闭目养神，同时冥想可能可带来注意力的自主调整和加快能量恢复，以致于很多人推荐。</p>
+]]></content>
+      <categories>
+        <category>十三手记</category>
+      </categories>
+      <tags>
+        <tag>十三手记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>能量朗读</title>
+    <url>/2021/12/20/shisan/%E8%83%BD%E9%87%8F%E6%9C%97%E8%AF%BB/</url>
+    <content><![CDATA[<p><code>文章摘自微信公众号：十三先生手记</code></p>
+<p>小时候，我就一直渴望幸福，一直渴望坚强；<br>小时候，我就一直渴望正直，一直渴望善良；<br>小时候，为就一直渴望快乐，一直渴望成长；<br>现在，我几乎丢失了我的信心，我几乎丢失了我的梦想！<br>我知道，我不能再这样消极的逃避。<br>我知道，我不能再这样平庸的彷徨。<br>我知道，我要全力迸发我的热情；我要勇敢的收复我的希望。<br>我知道，我要真诚的对待身边每一个人，这样，我才能被每一个人真诚的对待；<br>我知道，我要用心的对待每天的时光，这样，我才能收获每天的力量；<br>我知道，我要帮助身边每一个人达成心愿，这样，大家才能帮助我实现梦想。<br>从今天起，我要打败我的懒惰，重拾我的阳光；<br>从今天起，我要改变我的粗俗，提升我的修养；<br>从今天起，我要挑战我的懦弱，找回我的坚强；</p>
+<p>我是为爱这个世界而来<br>我要让世界因我的爱而更加美丽，<br>我要让世界因我的爱而更加安康，<br>我要让世界因我的爱而更加真诚，<br>我要让世界因我的爱而更加和畅。</p>
+]]></content>
+      <categories>
+        <category>十三手记</category>
+      </categories>
+      <tags>
+        <tag>十三手记</tag>
       </tags>
   </entry>
   <entry>
