@@ -357,7 +357,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-18 15:33:01" itemprop="dateModified" datetime="2022-05-18T15:33:01+08:00">2022-05-18</time>
+                <time title="修改时间：2022-05-19 17:03:38" itemprop="dateModified" datetime="2022-05-19T17:03:38+08:00">2022-05-19</time>
               </span>
 
           <br>
@@ -366,14 +366,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4.7k</span>
+              <span>5.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
+              <span>5 分钟</span>
             </span>
 
         </div>
@@ -447,7 +447,7 @@
 <li>copying函数应该确保复制“对象所有成员变量”及“所有base class成分”</li>
 <li>不要尝试以某copying函数实现另一个copying函数。可将共同功能放入第三个函数中，被两个copying函数调用</li>
 </ul>
-<h3 id="资源管理（C-重要问题）"><a href="#资源管理（C-重要问题）" class="headerlink" title="资源管理（C++重要问题）"></a>资源管理（C++重要问题）</h3><p>主要原则：一旦使用了，将来必须还给系统。<br>资源包括：内存、文件描述器、互斥锁、图形界面的字型和笔刷、数据库连接以及网络sockets。</p>
+<h3 id="chap-2-资源管理（C-重要问题）"><a href="#chap-2-资源管理（C-重要问题）" class="headerlink" title="chap 2 资源管理（C++重要问题）"></a>chap 2 资源管理（C++重要问题）</h3><p>主要原则：一旦使用了，将来必须还给系统。<br>资源包括：内存、文件描述器、互斥锁、图形界面的字型和笔刷、数据库连接以及网络sockets。</p>
 <p>为了警惕调用create动态内存之后，delete的语句有可能被控制流略过，可靠的做法依赖C++的“析构函数自动调用机制”，将资源放进对象内。</p>
 <p>记住：</p>
 <ul>
@@ -467,7 +467,7 @@
 <h4 id="new和delete采取相同形式"><a href="#new和delete采取相同形式" class="headerlink" title="new和delete采取相同形式"></a>new和delete采取相同形式</h4><p>核心问题：被删除的指针所指是单一对象或者对象数组？</p>
 <p>避免对数组形式左typedefs，容易引起new []和delete []一致性问题。由于STL的string和vector，因此C数组需求几乎为零。</p>
 <p>应该以独立语句将newed对象存储于智能指针内，如果不如此，一旦异常抛出有可能导致难以觉察的资源泄漏。</p>
-<h3 id="设计与声明"><a href="#设计与声明" class="headerlink" title="设计与声明"></a>设计与声明</h3><h4 id="让接口容易正确使用，不易被误用"><a href="#让接口容易正确使用，不易被误用" class="headerlink" title="让接口容易正确使用，不易被误用"></a>让接口容易正确使用，不易被误用</h4><p>接口种类：function、class、template，都是客户与你的代码互动的方式。</p>
+<h3 id="chap-3-设计与声明"><a href="#chap-3-设计与声明" class="headerlink" title="chap 3 设计与声明"></a>chap 3 设计与声明</h3><h4 id="让接口容易正确使用，不易被误用"><a href="#让接口容易正确使用，不易被误用" class="headerlink" title="让接口容易正确使用，不易被误用"></a>让接口容易正确使用，不易被误用</h4><p>接口种类：function、class、template，都是客户与你的代码互动的方式。</p>
 <p>理想上，如果客户企图使用某个接口却没有获得他所预期的行为，这个代码不该通过编译；如果通过编译，则API的作为就该是客户所想要的。</p>
 <p>tricks:使用特定类型作为接口参数,使用shared_ptr强迫RAII</p>
 <p>记住：</p>
@@ -498,8 +498,18 @@
 <ul>
 <li>对于内置类型以及STL迭代器和函数对象，使用pass-by-value比较适当</li>
 <li>对于其他struct, type, class用pass-by-reference-to-const更高效</li>
+<li>绝不返回pointer或者reference指向local stack对象，直接返回对象pass-by-value更安全</li>
 </ul>
-
+<h4 id="将成员变量声明为private"><a href="#将成员变量声明为private" class="headerlink" title="将成员变量声明为private"></a>将成员变量声明为private</h4><p>不声明为public有三点：<br>1.统一接口为函数，必须带括号参数，不容易混乱<br>2.可控制变量的读写访问权限<br>3.封装原则，改动底层数据结构无须改动接口<br>如果public成员改动一发牵全身，需要重写代码、重新测试、重新编写文档、重新编译。<br>只有两种访问权限：private(提供封装)和其他（不提供封装）</p>
+<p>记住：</p>
+<ul>
+<li>切记将成员声明为Private,可赋予客户访问数据一致性、可细微划分访问控制、允诺约束条件获得保证，提供class作者充分的实现弹性</li>
+<li>Protected并不比Public更具封装性</li>
+</ul>
+<h4 id="宁用non-member、non-friend替换member函数"><a href="#宁用non-member、non-friend替换member函数" class="headerlink" title="宁用non-member、non-friend替换member函数"></a>宁用non-member、non-friend替换member函数</h4><p>封装原则：改变事物只影响有限客户。另外的角度，愈多函数可访问，数据的封装性愈低。</p>
+<p>c++ standard分装多个头文件以及多个命名空间同样为了封装性，降低编译依赖性。</p>
+<p>如果需要为某个函数所有参数进行类型转换，那么这个函数必须是non-member.</p>
+<h4 id="写一个不抛异常的swap函数"><a href="#写一个不抛异常的swap函数" class="headerlink" title="写一个不抛异常的swap函数"></a>写一个不抛异常的swap函数</h4>
       
     </div>
 
@@ -1612,7 +1622,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:27</span>
+    <span title="站点阅读时长">1:28</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>

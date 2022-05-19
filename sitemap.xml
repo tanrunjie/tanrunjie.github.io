@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://tanrunjie.github.io/2022/01/21/reading/psych/%E7%9B%90%E9%80%89%E5%81%A5%E5%BA%B7/</loc>
+    <loc>http://tanrunjie.github.io/2022/04/21/reading/effective-cpp/</loc>
     
     <lastmod>2022-05-19</lastmod>
     
@@ -10,6 +10,13 @@
   
   <url>
     <loc>http://tanrunjie.github.io/2022/01/28/reading/psych/%E5%BF%83%E6%80%81%E7%BB%83%E4%B9%A0/</loc>
+    
+    <lastmod>2022-05-19</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://tanrunjie.github.io/2022/01/21/reading/psych/%E7%9B%90%E9%80%89%E5%81%A5%E5%BA%B7/</loc>
     
     <lastmod>2022-05-19</lastmod>
     
@@ -82,13 +89,6 @@
     <loc>http://tanrunjie.github.io/2022/01/18/reading/shisan/%E9%AB%98%E6%95%88%E8%A1%8C%E5%8A%A8/</loc>
     
     <lastmod>2022-05-19</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://tanrunjie.github.io/2022/04/21/reading/effective-cpp/</loc>
-    
-    <lastmod>2022-05-18</lastmod>
     
   </url>
   
@@ -375,14 +375,14 @@
 
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/SLAM/</loc>
+    <loc>http://tanrunjie.github.io/tags/bash/</loc>
     <lastmod>2022-05-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/bash/</loc>
+    <loc>http://tanrunjie.github.io/tags/SLAM/</loc>
     <lastmod>2022-05-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -403,14 +403,14 @@
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/c/</loc>
+    <loc>http://tanrunjie.github.io/tags/c-primer/</loc>
     <lastmod>2022-05-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/c-primer/</loc>
+    <loc>http://tanrunjie.github.io/tags/c/</loc>
     <lastmod>2022-05-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -501,14 +501,14 @@
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/%E8%BA%AB%E4%BD%93%E5%81%A5%E5%BA%B7/</loc>
+    <loc>http://tanrunjie.github.io/tags/%E5%BF%83%E7%90%86/</loc>
     <lastmod>2022-05-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/tags/%E5%BF%83%E7%90%86/</loc>
+    <loc>http://tanrunjie.github.io/tags/%E8%BA%AB%E4%BD%93%E5%81%A5%E5%BA%B7/</loc>
     <lastmod>2022-05-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -524,14 +524,14 @@
 
   
   <url>
-    <loc>http://tanrunjie.github.io/categories/SLAM/</loc>
+    <loc>http://tanrunjie.github.io/categories/%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/</loc>
     <lastmod>2022-05-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/categories/%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/</loc>
+    <loc>http://tanrunjie.github.io/categories/SLAM/</loc>
     <lastmod>2022-05-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -622,14 +622,14 @@
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/categories/%E8%BA%AB%E4%BD%93%E5%81%A5%E5%BA%B7/</loc>
+    <loc>http://tanrunjie.github.io/categories/%E5%BF%83%E7%90%86/</loc>
     <lastmod>2022-05-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://tanrunjie.github.io/categories/%E5%BF%83%E7%90%86/</loc>
+    <loc>http://tanrunjie.github.io/categories/%E8%BA%AB%E4%BD%93%E5%81%A5%E5%BA%B7/</loc>
     <lastmod>2022-05-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
